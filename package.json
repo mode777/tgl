@@ -1,0 +1,24 @@
+{
+  "name": "tgl-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/tgl-core.cjs.js",
+  "module": "dist/tgl-core.esm.js",
+  "browser": "dist/tgl-core.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "author": "Alexander Klingenbeck",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^0.57.1",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-typescript2": "^0.12.0",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "deepmerge": "^2.1.0"
+  }
+}
