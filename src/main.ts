@@ -1,4 +1,6 @@
-import { MyModule } from './myModules';
+import { GlContext } from "./gl-context";
 
-const obj = new MyModule();
-console.log(obj.value);
+const canvas = <HTMLCanvasElement>document.getElementById("canvas");
+const context = new GlContext(canvas);
+
+

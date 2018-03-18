@@ -14,7 +14,7 @@ export class GlContext {
     private _canvas: HTMLCanvasElement;
 
     constructor(canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
-        if(canvas != null)
+        if(!canvas)
             throw 'Web GL context was already created.'
 
         this._canvas = canvas;
