@@ -5,7 +5,10 @@ import { UniformValue } from "./options";
 export class Shader {
 
     protected _gl = GlContext.getCurrent().handle;
+
     private _handle: WebGLProgram;
+    private _uniforms: {[name: string]: WebGLUniformLocation} = {};
+    private _attributes: {[name: string]: number} = {};
 
     constructor(vertex: string, pixel: string) {
         const vertexShader = this._gl.createShader(GlShaderType.VERTEX_SHADER);
@@ -41,17 +44,31 @@ export class Shader {
 
     getUniformLocation(name: string) {
         this.use();
-        return this._gl.getUniformLocation(this._handle, name);
+        return this.getUniformLocationInternal(name);
+    }
+
+    private getUniformLocationInternal(name: string) {
+        if(!this._uniforms[name]){
+            this._uniforms[name] = this._gl.getUniformLocation(this._handle, name);
+        }
+        return this._uniforms[name];
     }
 
     getAttributeLocation(name: string) {
         this.use();
-        return this._gl.getAttribLocation(this._handle, name);
+        return this.getAttributeLocationInternal(name);
+    }
+
+    private getAttributeLocationInternal(name: string){
+        if(!this._attributes[name]){
+            this._attributes[name] = this._gl.getAttribLocation(this._handle, name);
+        }
+        return this._attributes[name];
     }
 
     setTexture(name: string, texture: WebGLTexture, unit: GlTexture) {
         this.use();
-        const location = this._gl.getUniformLocation(this._handle, name);
+        const location = this.getUniformLocationInternal(name);
         this._gl.uniform1i(location, unit);
         this._gl.activeTexture(unit);
         this._gl.bindTexture(GlTextureBindType.TEXTURE_2D, texture);
@@ -59,19 +76,19 @@ export class Shader {
 
     setFloat(name: string, value: number) {
         this.use();
-        const location = this._gl.getUniformLocation(this._handle, name);
+        const location = this.getUniformLocationInternal(name);
         this._gl.uniform1f(location, value);
     }
 
     setVec2(name: string, x: number, y: number) {
         this.use();
-        const location = this._gl.getUniformLocation(this._handle, name);
+        const location = this.getUniformLocationInternal(name);
         this._gl.uniform2f(location, x, y);
     }
 
     setVec3(name: string, x: number, y: number, z: number) {
         this.use();
-        const location = this._gl.getUniformLocation(this._handle, name);
+        const location = this.getUniformLocationInternal(name);
         this._gl.uniform3f(location, x, y, z);
     }
 
@@ -80,7 +97,7 @@ export class Shader {
 
         this.use();
         Object.keys(values)
-            .map(name => this._gl.getUniformLocation(this._handle, name))
+            .map(name => this.getUniformLocationInternal(name))
             .forEach(location => {
                 const value = <any>values['location'];
                 const length = value['length'];

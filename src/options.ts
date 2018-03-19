@@ -1,4 +1,4 @@
-import { GlPixelFormat, GlPixelType, GlMagType, GlMinType, GlWrapMode } from "./constants";
+import { GlPixelFormat, GlPixelType, GlMagType, GlMinType, GlWrapMode, GlDataType, GlBufferUsage } from "./constants";
 
 export type TextureImage = ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap
 
@@ -28,3 +28,37 @@ export const DefaultTextureOptions: TextureOptions = {
 }
 
 export type UniformValue = WebGLTexture | number | number[] | Float32Array; 
+
+export interface GeometryOptions {
+    vertices: number,
+    buffers: BufferOptions[],
+    indices?: number[] | Uint16Array;
+}
+
+export interface BufferOptions {
+    usage?: GlBufferUsage,
+    data: number[] | Float32Array | ArrayBuffer
+    attributes: AttributeOptions[]
+}
+
+export interface AttributeOptions {
+    name?: string;
+    components: number,
+    type: GlDataType,
+    normalized?: boolean,
+}
+
+const myGeo: GeometryOptions = {
+    vertices: 3,
+    buffers: [{
+        data: [
+            1,1,1, 1,2,1, 2,1,1, 
+            1,1,2, 1,1,1, 2,1,1,
+            1,2,1, 1,2,1, 2,1,1],
+        attributes: [{
+            name: "texcoord",
+            components: 3,
+            type: GlDataType.FLOAT 
+        }]
+    }]
+}
