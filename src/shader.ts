@@ -4,13 +4,11 @@ import { UniformValue } from "./options";
 
 export class Shader {
 
-    protected _gl = GlContext.getCurrent().handle;
-
     private _handle: WebGLProgram;
     private _uniforms: {[name: string]: WebGLUniformLocation} = {};
     private _attributes: {[name: string]: number} = {};
 
-    constructor(vertex: string, pixel: string) {
+    constructor(protected _gl: WebGLRenderingContext, vertex: string, pixel: string) {
         const vertexShader = this._gl.createShader(GlShaderType.VERTEX_SHADER);
         this._gl.shaderSource(vertexShader, vertex);
         this._gl.compileShader(vertexShader);

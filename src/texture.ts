@@ -7,10 +7,9 @@ import { TextureOptions, DefaultTextureOptions, TextureImage } from "./options";
 export class Texture {
 
     private _handle: WebGLTexture;
-    protected _gl: WebGLRenderingContext = GlContext.getCurrent().handle;
     protected _options: TextureOptions;
 
-    constructor(options: TextureOptions = {}) {
+    constructor(protected _gl: WebGLRenderingContext, options: TextureOptions = {}) {
         this._options = merge(DefaultTextureOptions, options);
         this._handle = this._gl.createTexture();
         

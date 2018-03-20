@@ -51,10 +51,7 @@ export interface AttributeOptions {
 const myGeo: GeometryOptions = {
     vertices: 3,
     buffers: [{
-        data: [
-            1,1,1, 1,2,1, 2,1,1, 
-            1,1,2, 1,1,1, 2,1,1,
-            1,2,1, 1,2,1, 2,1,1],
+        data: [],
         attributes: [{
             name: "texcoord",
             components: 3,

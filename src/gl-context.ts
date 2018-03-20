@@ -1,22 +1,10 @@
 import { GlClearFlags } from "./constants";
 
 export class GlContext {
-    private static _current: GlContext | null = null;
-    
-    static getCurrent(): GlContext {
-        if(GlContext._current === null)
-            throw 'No GlContext available';
-        else
-            return GlContext._current;
-    }
-
     private _handle: WebGLRenderingContext;
     private _canvas: HTMLCanvasElement;
 
     constructor(canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
-        if(!canvas)
-            throw 'Web GL context was already created.'
-
         this._canvas = canvas;
 
         const context = this._canvas.getContext('webgl', options); 
@@ -25,8 +13,6 @@ export class GlContext {
             this._handle = context; 
         else
             throw 'Unable to initialize WebGLRenderingContext';
-       
-        GlContext._current = this;
     }
 
     get handle(){
