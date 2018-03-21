@@ -38,7 +38,8 @@ export interface GeometryOptions {
 export interface BufferOptions {
     usage?: GlBufferUsage,
     data: number[] | Float32Array | ArrayBuffer
-    attributes: AttributeOptions[]
+    attributes?: AttributeOptions[],
+    attribute?: string
 }
 
 export interface AttributeOptions {

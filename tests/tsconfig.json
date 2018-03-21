@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"sourceMap": true,
+		"importHelpers": true,
+		"downlevelIteration": true,
+		"noImplicitAny": false,
+		"noImplicitThis": false,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"baseUrl": ".",
+		"paths": {
+			"@tgl/core": ["./../core/src/main"]
+		}
+	}
+}

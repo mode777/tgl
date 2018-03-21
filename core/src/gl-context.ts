@@ -23,10 +23,10 @@ export class GlContext {
         return this._canvas;
     }
 
-    clear(flags:GlClearFlags = GlClearFlags.COLOR_BUFFER_BIT, r?: number, g?: number, b?: number, a?: number){
-        if(r && g && b)
-            this._handle.clearColor(r,g,b, a || 1);
-
+    clear(flags = GlClearFlags.COLOR_BUFFER_BIT, r?: number, g = 0, b = 0, a = 1){
+        if(r != undefined)
+            this._handle.clearColor(r,g,b,a);
+        
         this._handle.clear(flags);
     }
 }
