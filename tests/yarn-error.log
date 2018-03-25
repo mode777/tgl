@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn add rembrandt
+  /usr/bin/node /usr/bin/yarn install
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.5.1
@@ -28,8 +28,9 @@ npm manifest:
       "url": ""
     },
     "devDependencies": {
-      "@types/node": "^8.0.8",    
-      "ts-loader": "^2.2.2",
+      "@types/node": "^8.0.8",
+      "glob": "^7.1.2",
+      "ts-loader": "3.5.0",
       "typescript": "^2.4.1",
       "webpack": "^3.1.0",
       "webpack-dev-server": "^2.5.0"
@@ -500,7 +501,7 @@ Lockfile:
       align-text "^0.1.3"
       lazy-cache "^1.0.3"
   
-  chalk@^2.0.1:
+  chalk@^2.3.0:
     version "2.3.2"
     resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.2.tgz#250dc96b07491bfd601e648d66ddf5f60c7a5c65"
     dependencies:
@@ -1356,7 +1357,7 @@ Lockfile:
       is-glob "^3.1.0"
       path-dirname "^1.0.0"
   
-  glob@^7.0.3, glob@^7.0.5:
+  glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
     version "7.1.2"
     resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
     dependencies:
@@ -3272,13 +3273,14 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-1.0.0.tgz#5887966bb582a4503a41eb524f7d35011815a613"
   
-  ts-loader@^2.2.2:
-    version "2.3.7"
-    resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-2.3.7.tgz#a9028ced473bee12f28a75f9c5b139979d33f2fc"
+  ts-loader@3.5.0:
+    version "3.5.0"
+    resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-3.5.0.tgz#151d004dcddb4cf8e381a3bf9d6b74c2d957a9c0"
     dependencies:
-      chalk "^2.0.1"
+      chalk "^2.3.0"
       enhanced-resolve "^3.0.0"
       loader-utils "^1.0.2"
+      micromatch "^3.1.4"
       semver "^5.0.1"
   
   tslib@^1.8.0:
@@ -3643,86 +3645,4 @@ Lockfile:
       window-size "0.1.0"
 
 Trace: 
-  Error: /home/aklingenbeck/repos/tgl/tests/node_modules/canvas: Command failed.
-  Exit code: 1
-  Command: sh
-  Arguments: -c node-pre-gyp install --fallback-to-build
-  Directory: /home/aklingenbeck/repos/tgl/tests/node_modules/canvas
-  Output:
-  node-pre-gyp info it worked if it ends with ok
-  node-pre-gyp info using node-pre-gyp@0.6.39
-  node-pre-gyp info using node@8.10.0 | linux | x64
-  node-pre-gyp info check checked for "/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release/canvas-prebuilt.node" (not found)
-  node-pre-gyp http GET https://github.com/node-gfx/node-canvas-prebuilt/releases/download/v2.0.0-alpha.11/canvas-prebuilt-v2.0.0-alpha.11-node-v57-linux-x64.tar.gz
-  node-pre-gyp http 404 https://github.com/node-gfx/node-canvas-prebuilt/releases/download/v2.0.0-alpha.11/canvas-prebuilt-v2.0.0-alpha.11-node-v57-linux-x64.tar.gz
-  node-pre-gyp ERR! Tried to download(404): https://github.com/node-gfx/node-canvas-prebuilt/releases/download/v2.0.0-alpha.11/canvas-prebuilt-v2.0.0-alpha.11-node-v57-linux-x64.tar.gz 
-  node-pre-gyp ERR! Pre-built binaries not found for canvas@2.0.0-alpha.11 and node@8.10.0 (node-v57 ABI, glibc) (falling back to source compile with node-gyp) 
-  node-pre-gyp http 404 status code downloading tarball https://github.com/node-gfx/node-canvas-prebuilt/releases/download/v2.0.0-alpha.11/canvas-prebuilt-v2.0.0-alpha.11-node-v57-linux-x64.tar.gz 
-  gyp info it worked if it ends with ok
-  gyp info using node-gyp@3.6.2
-  gyp info using node@8.10.0 | linux | x64
-  gyp info ok 
-  gyp info it worked if it ends with ok
-  gyp info using node-gyp@3.6.2
-  gyp info using node@8.10.0 | linux | x64
-  gyp info spawn /usr/bin/python2
-  gyp info spawn args [ '/usr/lib/node_modules/npm/node_modules/node-gyp/gyp/gyp_main.py',
-  gyp info spawn args   'binding.gyp',
-  gyp info spawn args   '-f',
-  gyp info spawn args   'make',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/config.gypi',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/usr/lib/node_modules/npm/node_modules/node-gyp/addon.gypi',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/home/aklingenbeck/.node-gyp/8.10.0/include/node/common.gypi',
-  gyp info spawn args   '-Dlibrary=shared_library',
-  gyp info spawn args   '-Dvisibility=default',
-  gyp info spawn args   '-Dnode_root_dir=/home/aklingenbeck/.node-gyp/8.10.0',
-  gyp info spawn args   '-Dnode_gyp_dir=/usr/lib/node_modules/npm/node_modules/node-gyp',
-  gyp info spawn args   '-Dnode_lib_file=/home/aklingenbeck/.node-gyp/8.10.0/<(target_arch)/node.lib',
-  gyp info spawn args   '-Dmodule_root_dir=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas',
-  gyp info spawn args   '-Dnode_engine=v8',
-  gyp info spawn args   '--depth=.',
-  gyp info spawn args   '--no-parallel',
-  gyp info spawn args   '--generator-output',
-  gyp info spawn args   'build',
-  gyp info spawn args   '-Goutput_dir=.' ]
-  /bin/sh: 1: pkg-config: not found
-  gyp: Call to 'pkg-config pixman-1 --libs' returned exit status 127 while in binding.gyp. while trying to load binding.gyp
-  gyp ERR! configure error 
-  gyp ERR! stack Error: `gyp` failed with exit code: 1
-  gyp ERR! stack     at ChildProcess.onCpExit (/usr/lib/node_modules/npm/node_modules/node-gyp/lib/configure.js:336:16)
-  gyp ERR! stack     at emitTwo (events.js:126:13)
-  gyp ERR! stack     at ChildProcess.emit (events.js:214:7)
-  gyp ERR! stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:198:12)
-  gyp ERR! System Linux 4.13.0-37-generic
-  gyp ERR! command "/usr/bin/node" "/usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" "configure" "--fallback-to-build" "--module=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release/canvas-prebuilt.node" "--module_name=canvas-prebuilt" "--module_path=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release"
-  gyp ERR! cwd /home/aklingenbeck/repos/tgl/tests/node_modules/canvas
-  gyp ERR! node -v v8.10.0
-  gyp ERR! node-gyp -v v3.6.2
-  gyp ERR! not ok 
-  node-pre-gyp ERR! build error 
-  node-pre-gyp ERR! stack Error: Failed to execute '/usr/bin/node /usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release/canvas-prebuilt.node --module_name=canvas-prebuilt --module_path=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release' (1)
-  node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (/home/aklingenbeck/repos/tgl/tests/node_modules/node-pre-gyp/lib/util/compile.js:83:29)
-  node-pre-gyp ERR! stack     at emitTwo (events.js:126:13)
-  node-pre-gyp ERR! stack     at ChildProcess.emit (events.js:214:7)
-  node-pre-gyp ERR! stack     at maybeClose (internal/child_process.js:925:16)
-  node-pre-gyp ERR! stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
-  node-pre-gyp ERR! System Linux 4.13.0-37-generic
-  node-pre-gyp ERR! command "/usr/bin/node" "/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/node_modules/.bin/node-pre-gyp" "install" "--fallback-to-build"
-  node-pre-gyp ERR! cwd /home/aklingenbeck/repos/tgl/tests/node_modules/canvas
-  node-pre-gyp ERR! node -v v8.10.0
-  node-pre-gyp ERR! node-pre-gyp -v v0.6.39
-  node-pre-gyp ERR! not ok 
-  Failed to execute '/usr/bin/node /usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release/canvas-prebuilt.node --module_name=canvas-prebuilt --module_path=/home/aklingenbeck/repos/tgl/tests/node_modules/canvas/build/Release' (1)
-      at ProcessTermError.MessageError (/usr/lib/node_modules/yarn/lib/cli.js:186:110)
-      at new ProcessTermError (/usr/lib/node_modules/yarn/lib/cli.js:226:113)
-      at ChildProcess.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:30281:17)
-      at emitTwo (events.js:126:13)
-      at ChildProcess.emit (events.js:214:7)
-      at maybeClose (internal/child_process.js:925:16)
-      at Socket.stream.socket.on (internal/child_process.js:346:11)
-      at emitOne (events.js:116:13)
-      at Socket.emit (events.js:211:7)
-      at Pipe._handle.close [as _onclose] (net.js:567:12)
+  Error: EACCES: permission denied, unlink '/home/aklingenbeck/repos/tgl/tests/node_modules/.bin/acorn'

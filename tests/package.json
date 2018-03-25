@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "test": "webpack-dev-server --open",
     "build": "webpack -p"
   },
   "repository": {

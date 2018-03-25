@@ -5,7 +5,8 @@ const fs = require("fs");
 const defaultOptions = {
     pattern: '**/*.ts',
     path: '.',
-    entry: './tests.ts'
+    entry: './tests.ts',
+    reporter: './src/reporter'
 }
 
 class DiscoveryPlugin {
@@ -15,13 +16,15 @@ class DiscoveryPlugin {
         this.path = options.pattern || defaultOptions.pattern;
         this.extensions = options.extensions || defaultOptions.extensions;
         this.entry = options.entry || defaultOptions.entry;
+        this.reporter = options.reporter || defaultOptions.reporter;
     }
 
     createEntry(){
         const tests = glob.sync(this.path);
         const lines = tests.map(x => "import '" + x + "';") ;
-        lines.push("import { run } from 'test';");   
-        lines.push("run();");
+        lines.push("import { getTests } from 'test';");   
+        lines.push("import Reporter from '"+this.reporter+"';");   
+        lines.push("new Reporter(getTests()).run();");
         return lines.join('\n');
     }
 

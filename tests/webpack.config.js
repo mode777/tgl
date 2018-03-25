@@ -2,12 +2,12 @@ const path = require('path');
 DiscoveryPlugin = require('./webpack/discovery-plugin');
 
 module.exports = {
-    devtool: 'source-map',
     entry: './tests.ts',
     plugins: [
         new DiscoveryPlugin({
             pattern: './test/**/*.ts',
-            entry: './tests.ts'
+            entry: './tests.ts',
+            reporter: './src/reporter'
         })
     ],
     module: {
@@ -19,6 +19,7 @@ module.exports = {
             }
         ]
     },
+    devtool: 'source-map',
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
         alias: {

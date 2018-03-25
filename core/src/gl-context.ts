@@ -1,4 +1,4 @@
-import { GlClearFlags } from "./constants";
+import { GlClearFlags, GlError } from "./constants";
 
 export class GlContext {
     private _handle: WebGLRenderingContext;
@@ -28,5 +28,12 @@ export class GlContext {
             this._handle.clearColor(r,g,b,a);
         
         this._handle.clear(flags);
+    }
+
+    checkErrors(){
+        const error = <GlError>this._handle.getError();
+        if(error !== GlError.NO_ERROR){
+            throw GlError[error];
+        }
     }
 }

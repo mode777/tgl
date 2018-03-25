@@ -1,21 +1,48 @@
 import { GlContext } from "./gl-context";
-import { GlShaderType, GlTexture, GlTextureBindType } from "./constants";
-import { UniformValue } from "./options";
+import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam } from "./constants";
+
+export type UniformValue = WebGLTexture | number | number[] | Float32Array; 
+
+export interface ShaderOptions {
+    vertexSource: string,
+    fragmentSource: string
+}
 
 export class Shader {
 
-    private _handle: WebGLProgram;
-    private _uniforms: {[name: string]: WebGLUniformLocation} = {};
-    private _attributes: {[name: string]: number} = {};
+    static async fromFiles(gl: WebGLRenderingContext, vertexUrl: string, fragmentUrl: string){
+        const strings = await Promise.all((
+            await Promise.all([fetch(vertexUrl), fetch(fragmentUrl)]))
+                .map(x => x.text()));
 
-    constructor(protected _gl: WebGLRenderingContext, vertex: string, pixel: string) {
+        return new Shader(gl, {
+            vertexSource: strings[0],
+            fragmentSource: strings[1]
+        });
+    }
+
+    private _handle: WebGLProgram;
+    private _uniformLocations: {[name: string]: WebGLUniformLocation} = {};
+    private _uniformValues: {[loc: number]: any};
+    private _attributes: {[name: string]: number} = {};
+    
+    constructor(protected _gl: WebGLRenderingContext, options: ShaderOptions) {
+        if(!options || !options.fragmentSource || !options.vertexSource)
+            throw 'Source files are missing';
+
         const vertexShader = this._gl.createShader(GlShaderType.VERTEX_SHADER);
-        this._gl.shaderSource(vertexShader, vertex);
+        this._gl.shaderSource(vertexShader, options.vertexSource);
         this._gl.compileShader(vertexShader);
+        if(!this._gl.getShaderParameter(vertexShader, GlShaderParam.COMPILE_STATUS)){
+            throw this._gl.getShaderInfoLog(vertexShader);
+        }
 
         const fragmentShader = this._gl.createShader(GlShaderType.FRAGMENT_SHADER);
-        this._gl.shaderSource(fragmentShader, pixel);
+        this._gl.shaderSource(fragmentShader, options.fragmentSource);
         this._gl.compileShader(fragmentShader);
+        if(!this._gl.getShaderParameter(fragmentShader, GlShaderParam.COMPILE_STATUS)){
+            throw this._gl.getShaderInfoLog(fragmentShader);
+        }
 
         const program = this._gl.createProgram();
         this._gl.attachShader(program, vertexShader);
@@ -46,10 +73,10 @@ export class Shader {
     }
 
     private getUniformLocationInternal(name: string) {
-        if(!this._uniforms[name]){
-            this._uniforms[name] = this._gl.getUniformLocation(this._handle, name);
+        if(!this._uniformLocations[name]){
+            this._uniformLocations[name] = this._gl.getUniformLocation(this._handle, name);
         }
-        return this._uniforms[name];
+        return this._uniformLocations[name];
     }
 
     getAttributeLocation(name: string) {
@@ -64,30 +91,53 @@ export class Shader {
         return this._attributes[name];
     }
 
-    setTexture(name: string, texture: WebGLTexture, unit: GlTexture) {
+    setTexture(nameOrLoc: string | number, texture: WebGLTexture, unit: GlTexture) {
         this.use();
-        const location = this.getUniformLocationInternal(name);
-        this._gl.uniform1i(location, unit);
+        const location = typeof(nameOrLoc) === 'string'
+            ? this.getUniformLocationInternal(nameOrLoc)
+            : nameOrLoc;
+        
+        if(this._uniformValues[<number>location] !== texture){
+            this._gl.uniform1i(location, unit);
+        }
         this._gl.activeTexture(unit);
         this._gl.bindTexture(GlTextureBindType.TEXTURE_2D, texture);
+        
+        this._uniformValues[<number>location] = texture;
+        return location;
     }
 
-    setFloat(name: string, value: number) {
+    setFloat(nameOrLoc: string | number, value: number) {
         this.use();
-        const location = this.getUniformLocationInternal(name);
-        this._gl.uniform1f(location, value);
+        const location = typeof(nameOrLoc) === 'string' 
+            ? this.getUniformLocationInternal(nameOrLoc)
+            : nameOrLoc;
+        
+        if(this._uniformValues[<number>location] !== value){
+            this._gl.uniform1f(location, value);
+        }
+        this._uniformValues[<number>location] = value;
+        return location;
     }
 
-    setVec2(name: string, x: number, y: number) {
+    setVec2(nameOrLoc: string | number, x: number, y: number) {
         this.use();
-        const location = this.getUniformLocationInternal(name);
+        const location = typeof(nameOrLoc) === 'string' 
+            ? this.getUniformLocationInternal(nameOrLoc)
+            : nameOrLoc;
+
         this._gl.uniform2f(location, x, y);
+        return location
     }
 
-    setVec3(name: string, x: number, y: number, z: number) {
+    setVec3(nameOrLoc: string | number, x: number, y: number, z: number) {
         this.use();
-        const location = this.getUniformLocationInternal(name);
+        const location = typeof(nameOrLoc) === 'string' 
+            ? this.getUniformLocationInternal(nameOrLoc)
+            : nameOrLoc;
+
         this._gl.uniform3f(location, x, y, z);
+        return location;
     }
 
     setUniforms(values: { [key: string]: UniformValue }) {
