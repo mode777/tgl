@@ -7,7 +7,7 @@ export class GlContext {
     constructor(canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
         this._canvas = canvas;
 
-        const context = this._canvas.getContext('webgl', options); 
+        const context = this._canvas.getContext('webgl', options);         
         
         if(context !== null)
             this._handle = context; 

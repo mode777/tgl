@@ -1,6 +1,10 @@
 {
 	"compilerOptions": {
 		"target": "es5",
+		"lib": [
+			"es6",
+			"dom"
+		],
 		"module": "commonjs",
 		"sourceMap": true,
 		"importHelpers": true,
@@ -11,7 +15,8 @@
 		"emitDecoratorMetadata": true,
 		"baseUrl": ".",
 		"paths": {
-			"@tgl/core": ["./../core/src/main"]
+			"@tgl/core": ["./../core/src/main"],
+			"test": ["./src/test"]
 		}
 	}
 }

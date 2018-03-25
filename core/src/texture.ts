@@ -1,6 +1,5 @@
 import { GlContext } from "./gl-context";
 import { GlTexture, GlTextureCreateType, GlPixelFormat, GlPixelType, GlTextureParameter, GlMagType, GlMinType, GlWrapMode } from "./constants";
-import merge from 'deepmerge'
 import { TextureOptions, DefaultTextureOptions, TextureImage } from "./options";
 
 
@@ -10,7 +9,7 @@ export class Texture {
     protected _options: TextureOptions;
 
     constructor(protected _gl: WebGLRenderingContext, options: TextureOptions = {}) {
-        this._options = merge(DefaultTextureOptions, options);
+        this._options =  { ...DefaultTextureOptions, ...options };
         this._handle = this._gl.createTexture();
         
         if(this._options.source){

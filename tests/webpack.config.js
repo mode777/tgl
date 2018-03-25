@@ -1,9 +1,15 @@
-const path = require("path");
+const path = require('path');
+DiscoveryPlugin = require('./webpack/discovery-plugin');
 
 module.exports = {
     devtool: 'source-map',
-    entry: './src/index.ts',
-    plugins: [],
+    entry: './tests.ts',
+    plugins: [
+        new DiscoveryPlugin({
+            pattern: './test/**/*.ts',
+            entry: './tests.ts'
+        })
+    ],
     module: {
         rules: [
             {
@@ -16,7 +22,8 @@ module.exports = {
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
         alias: {
-            "@tgl/core$": path.resolve(__dirname, "./../core/src/main")
+            "@tgl/core$": path.resolve(__dirname, "./../core/src/main"),
+            "test$": path.resolve(__dirname, "./src/test")
         }
     },
     output: {
