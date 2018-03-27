@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn install
+  /usr/bin/node /usr/bin/yarn add @types/dot
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
@@ -20,7 +20,7 @@ npm manifest:
     "description": "",
     "main": "index.ts",
     "scripts": {
-      "start": "webpack-dev-server --open",
+      "test": "webpack-dev-server --open",
       "build": "webpack -p"
     },
     "repository": {
@@ -38,6 +38,7 @@ npm manifest:
     "author": "",
     "license": "MIT",
     "dependencies": {
+      "dot": "^1.1.2",
       "tslib": "^1.8.0"
     }
   }
@@ -865,6 +866,10 @@ Lockfile:
   domain-browser@^1.1.1:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
+  
+  dot@^1.1.2:
+    version "1.1.2"
+    resolved "https://registry.yarnpkg.com/dot/-/dot-1.1.2.tgz#c7377019fc4e550798928b2b9afeb66abfa1f2f9"
   
   ecc-jsbn@~0.1.1:
     version "0.1.1"

@@ -67,6 +67,10 @@ export class Shader {
         this._gl.useProgram(this._handle);
     }
 
+    bindAttributeLocation(index: number, name: string){
+        this._gl.bindAttribLocation(this._handle, index, name)
+    }
+
     getUniformLocation(name: string) {
         this.use();
         return this.getUniformLocationInternal(name);

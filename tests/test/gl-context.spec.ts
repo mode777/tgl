@@ -16,7 +16,9 @@ describe("GlContext", () => {
         canvas.height = 240;
 
         const context = new GlContext(canvas);
-        context.clear(GlClearFlags.COLOR_BUFFER_BIT, 1, 0, 0, 1);
+        context.clearColor = [1,0,0,1];
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        
         await expect(context.handle).toLookLike('./assets/ref.png', 100);
     });
 

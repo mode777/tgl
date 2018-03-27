@@ -1,4 +1,19 @@
 import { Suite, Spec } from 'test';
+const mainTemplate = require('./../templates/main.html');
+
+class Template {
+
+    
+
+    constructor(private _template: string){
+
+    }
+
+}
+
+
+
+console.log(mainTemplate);
 
 export default class Reporter {
     

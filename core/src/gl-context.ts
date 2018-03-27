@@ -1,4 +1,4 @@
-import { GlClearFlags, GlError } from "./constants";
+import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature } from "./constants";
 
 export class GlContext {
     private _handle: WebGLRenderingContext;
@@ -23,12 +23,56 @@ export class GlContext {
         return this._canvas;
     }
 
-    clear(flags = GlClearFlags.COLOR_BUFFER_BIT, r?: number, g = 0, b = 0, a = 1){
-        if(r != undefined)
-            this._handle.clearColor(r,g,b,a);
-        
+    clear(flags = GlClearFlags.COLOR_BUFFER_BIT){
         this._handle.clear(flags);
     }
+
+    get clearColor() { return this._handle.getParameter(GlParam.COLOR_CLEAR_VALUE); }
+    set clearColor(value: [number, number, number, number]) { this._handle.clearColor(value[0],value[1],value[2],value[3]);  }
+
+    get activeTexture(){ return this._handle.getParameter(GlParam.ACTIVE_TEXTURE); }
+    set activeTexture(value: number){ this._handle.activeTexture(value); }
+
+    get blendColor() { return this._handle.getParameter(GlParam.BLEND_COLOR); }
+    set blendColor(value: [number, number, number, number]) { this._handle.blendColor(value[0],value[1],value[2],value[3]);  }
+
+    get blendEquation() { return this._handle.getParameter(GlParam.BLEND_EQUATION); }
+    set blendEquation(value: GlBlendEquation) { this._handle.blendEquation(value); }
+
+    get blendEquationRgb() { return this._handle.getParameter(GlParam.BLEND_EQUATION_RGB); }
+    set blendEquationRgb(value: GlBlendEquation) { this._handle.blendEquationSeparate(value, this.blendEquationAlpha);  }
+    
+    get blendEquationAlpha() { return this._handle.getParameter(GlParam.BLEND_EQUATION_ALPHA); }
+    set blendEquationAlpha(value: GlBlendEquation) { this._handle.blendEquationSeparate(this.blendEquationRgb, value);  }
+
+    // TODO: Blend func
+
+    get blendingEnabled() { return this._handle.isEnabled(GlFeature.BLEND);  }
+    set blendingEnabled(value: boolean) { value ? this._handle.enable(GlFeature.BLEND) : this._handle.disable(GlFeature.BLEND);  }
+    
+    get faceCullingEnabled() { return this._handle.isEnabled(GlFeature.CULL_FACE);  }
+    set faceCullingEnabled(value: boolean) { value ? this._handle.enable(GlFeature.CULL_FACE) : this._handle.disable(GlFeature.CULL_FACE);  }
+    
+    get depthTestEnabled() { return this._handle.isEnabled(GlFeature.DEPTH_TEST);  }
+    set depthTestEnabled(value: boolean) { value ? this._handle.enable(GlFeature.DEPTH_TEST) : this._handle.disable(GlFeature.DEPTH_TEST);  }
+    
+    get ditherEnabled() { return this._handle.isEnabled(GlFeature.DITHER);  }
+    set ditherEnabled(value: boolean) { value ? this._handle.enable(GlFeature.DITHER) : this._handle.disable(GlFeature.DITHER);  }
+    
+    get polygonOffsetFillEnabled() { return this._handle.isEnabled(GlFeature.POLYGON_OFFSET_FILL);  }
+    set polygonOffsetFillEnabled(value: boolean) { value ? this._handle.enable(GlFeature.POLYGON_OFFSET_FILL) : this._handle.disable(GlFeature.POLYGON_OFFSET_FILL);  }
+    
+    get sampleAlphaToCoverageEnabled() { return this._handle.isEnabled(GlFeature.SAMPLE_ALPHA_TO_COVERAGE);  }
+    set sampleAlphaToCoverageEnabled(value: boolean) { value ? this._handle.enable(GlFeature.SAMPLE_ALPHA_TO_COVERAGE) : this._handle.disable(GlFeature.SAMPLE_ALPHA_TO_COVERAGE);  }
+    
+    get sampleCoverageEnabled() { return this._handle.isEnabled(GlFeature.SAMPLE_COVERAGE);  }
+    set sampleCoverageEnabled(value: boolean) { value ? this._handle.enable(GlFeature.SAMPLE_COVERAGE) : this._handle.disable(GlFeature.SAMPLE_COVERAGE);  }
+    
+    get scissorTestEnabled() { return this._handle.isEnabled(GlFeature.SCISSOR_TEST);  }
+    set scissorTestEnabled(value: boolean) { value ? this._handle.enable(GlFeature.SCISSOR_TEST) : this._handle.disable(GlFeature.SCISSOR_TEST);  }
+    
+    get stencilTestEnabled() { return this._handle.isEnabled(GlFeature.STENCIL_TEST);  }
+    set stencilTestEnabled(value: boolean) { value ? this._handle.enable(GlFeature.STENCIL_TEST) : this._handle.disable(GlFeature.STENCIL_TEST);  }  
 
     checkErrors(){
         const error = <GlError>this._handle.getError();
