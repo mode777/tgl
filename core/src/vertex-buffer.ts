@@ -25,6 +25,8 @@ export interface Attribute {
 
 export class VertexBuffer {
     
+    private static _current: WebGLBuffer;   
+
     private _handle: WebGLBuffer;
     private _vertexSize: number;
     
@@ -36,7 +38,7 @@ export class VertexBuffer {
             : _options.data;
 
         this._handle = _gl.createBuffer();
-        this._gl.bindBuffer(GlBufferType.ARRAY_BUFFER, this._handle);
+        this.bind();
         this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>data, _options.usage);
 
         let offset = 0;
@@ -75,10 +77,22 @@ export class VertexBuffer {
     }
 
     public bind(){
-        this._gl.bindBuffer(GlBufferType.ARRAY_BUFFER, this._handle);        
+        if(VertexBuffer._current !== this._handle){
+            this._gl.bindBuffer(GlBufferType.ARRAY_BUFFER, this._handle);
+            VertexBuffer._current = this._handle;
+        }
     }
 
     public get vertexSize(){
         return this._vertexSize;
+    }
+
+    public subData(offset: number, data: ArrayBufferView | ArrayBuffer){
+        this.bind();
+        this._gl.bufferSubData(GlBufferType.ARRAY_BUFFER, offset, data);
+    }
+
+    public delete(){
+        this._gl.deleteBuffer(this._handle);
     }
 }

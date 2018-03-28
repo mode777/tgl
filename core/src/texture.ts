@@ -1,5 +1,6 @@
 import { GlContext } from "./gl-context";
-import { GlTexture, GlTextureCreateType, GlPixelFormat, GlPixelType, GlTextureParameter, GlMagType, GlMinType, GlWrapMode } from "./constants";
+import { GlTexture, GlTextureCreateType, GlPixelFormat, GlPixelType, GlTextureParameter, GlMagType, GlMinType, GlWrapMode, GlTextureBindType } from "./constants";
+import { Framebuffer } from "./framebuffer";
 
 export interface TextureOptions {
     lod?: number,
@@ -29,6 +30,14 @@ const DefaultTextureOptions: TextureOptions = {
 }
 
 export class Texture {
+
+    private static _current: WebGLTexture;
+
+    // public static fromFramebuffer(framebuffer: Framebuffer, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
+    //     // TODO: Implement
+    //     framebuffer.bind();
+    //     this._gl.copyTexImage2D(GlTextureBindType.TEXTURE_2D, level, texture.format, x, y, width, height, 0);
+    // }
 
     private _handle: WebGLTexture;
     protected _options: TextureOptions;
@@ -70,8 +79,23 @@ export class Texture {
         return this._handle;
     }
 
+    get format() {
+        return this._options.format;
+    }
+
+    get width(){
+        return this._options.width;
+    }
+
+    get height(){
+        return this._options.height;
+    }
+
     public bind() {
-        this._gl.bindTexture(GlTextureCreateType.TEXTURE_2D, this._handle);
+        if(this._handle !== Texture._current){
+            this._gl.bindTexture(GlTextureCreateType.TEXTURE_2D, this._handle);
+            Texture._current = this._handle;
+        }
     }
 
     public setFilter(min: GlMinType, mag: GlMagType) {
@@ -96,6 +120,8 @@ export class Texture {
             this._options.pixelType,
             data);
     }
+
+    
 
     public setData(data: ArrayBufferView, width?: number, height?: number) {
         width = width || this._options.width;

@@ -1,8 +1,10 @@
-import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature } from "./constants";
+import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature, GlBufferType, GlCullMode } from "./constants";
 
 export class GlContext {
+        
     private _handle: WebGLRenderingContext;
     private _canvas: HTMLCanvasElement;
+    private _elementArrayBuffer: WebGLBuffer;
 
     constructor(canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
         this._canvas = canvas;
@@ -21,7 +23,7 @@ export class GlContext {
 
     get canvas(){
         return this._canvas;
-    }
+    }    
 
     clear(flags = GlClearFlags.COLOR_BUFFER_BIT){
         this._handle.clear(flags);
@@ -36,6 +38,9 @@ export class GlContext {
     get blendColor() { return this._handle.getParameter(GlParam.BLEND_COLOR); }
     set blendColor(value: [number, number, number, number]) { this._handle.blendColor(value[0],value[1],value[2],value[3]);  }
 
+    get colorMask() { return this._handle.getParameter(GlParam.COLOR_WRITEMASK); }
+    set colorMask(value: [boolean, boolean, boolean, boolean]) { this._handle.colorMask(value[0],value[1],value[2],value[3]);  }
+
     get blendEquation() { return this._handle.getParameter(GlParam.BLEND_EQUATION); }
     set blendEquation(value: GlBlendEquation) { this._handle.blendEquation(value); }
 
@@ -44,6 +49,15 @@ export class GlContext {
     
     get blendEquationAlpha() { return this._handle.getParameter(GlParam.BLEND_EQUATION_ALPHA); }
     set blendEquationAlpha(value: GlBlendEquation) { this._handle.blendEquationSeparate(this.blendEquationRgb, value);  }
+
+    get clearDepth() { return this._handle.getParameter(GlParam.DEPTH_CLEAR_VALUE); }
+    set clearDepth(value: number) { this._handle.clearDepth(value); }
+    
+    get clearStencil() { return this._handle.getParameter(GlParam.STENCIL_CLEAR_VALUE); }
+    set clearStencil(value: number) { this._handle.clearStencil(value); }
+
+    get cullFaceMode() { return this._handle.getParameter(GlParam.CULL_FACE_MODE); }
+    set cullFaceMode(value: GlCullMode) { this._handle.cullFace(value); } 
 
     // TODO: Blend func
 

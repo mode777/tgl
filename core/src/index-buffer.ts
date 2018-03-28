@@ -1,6 +1,8 @@
 import { GlBufferType, GlBufferUsage } from './constants';
 
 export class IndexBuffer {
+
+    private static _current: WebGLBuffer;
     
     private _handle: WebGLBuffer;
     private _length: number;
@@ -9,7 +11,7 @@ export class IndexBuffer {
         const data = _data instanceof Uint16Array ? _data : new Uint16Array(_data);
         this._length = data.length;
         this._handle = _gl.createBuffer();
-        this._gl.bindBuffer(GlBufferType.ELEMENT_ARRAY_BUFFER, this._handle);
+        this.bind();
         this._gl.bufferData(GlBufferType.ELEMENT_ARRAY_BUFFER, data, GlBufferUsage.STATIC_DRAW);
     }
     
@@ -22,6 +24,13 @@ export class IndexBuffer {
     }
     
     public bind(){
-        this._gl.bindBuffer(GlBufferType.ELEMENT_ARRAY_BUFFER, this._handle);        
+        if(this._handle !== IndexBuffer._current){
+            this._gl.bindBuffer(GlBufferType.ELEMENT_ARRAY_BUFFER, this._handle);        
+            IndexBuffer._current = this._handle;
+        }
+    }
+
+    public delete(){
+        this._gl.deleteBuffer(this._handle);
     }
 }
