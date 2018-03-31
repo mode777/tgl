@@ -1,6 +1,6 @@
 import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature, GlBufferType, GlCullMode } from "./constants";
 
-export class GlContext {
+export class Renderer {
         
     private _handle: WebGLRenderingContext;
     private _canvas: HTMLCanvasElement;
