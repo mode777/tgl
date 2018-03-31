@@ -1,4 +1,4 @@
-import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam, GlProgramParam } from "./constants";
+import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
 
 export type UniformValue = WebGLTexture | number | number[] | Float32Array; 
 
@@ -94,16 +94,33 @@ export class Shader {
     }
 
     setUniform(name: string, value: number | Float32Array | number[]){
-        const info = this._uniforms[this._uniformLocations[name]];
+        const loc = this._uniformLocations[name];
+        const info = this._uniforms[loc];
         
-        // TODO: Continue
         switch (info.type) {
-            case value:
-                
+            case GlUniformType.FLOAT:
+                this.setFloat(loc, <number>value);
                 break;
-        
+            case GlUniformType.FLOAT_VEC2:
+                this.setVec2(loc, <number[]>value);
+                break;
+            case GlUniformType.FLOAT_VEC3:
+                this.setVec3(loc, <number[]>value);
+                break;
+            case GlUniformType.FLOAT_VEC4:
+                this.setVec4(loc, <number[]>value);        
+                break;
+            case GlUniformType.FLOAT_MAT2:
+                this.setMat2(loc, <number[]>value);        
+                break;
+            case GlUniformType.FLOAT_MAT3:
+                this.setMat3(loc, <number[]>value);        
+                break;
+            case GlUniformType.FLOAT_MAT4:                
+                this.setMat4(loc, <number[]>value);        
+                break;
             default:
-                break;
+                throw `Setting data type ${GlUniformType[info.type]} not yet supported.`;
         }
     }
 
@@ -123,15 +140,15 @@ export class Shader {
         this._gl.uniform4fv(loc, arr);
     }
 
-    setMatrix2(loc: number, arr: Float32Array | number[]){
+    setMat2(loc: number, arr: Float32Array | number[]){
         this._gl.uniformMatrix2fv(loc, false, arr);
     }
 
-    setMatrix3(loc: number, arr: Float32Array | number[]){
+    setMat3(loc: number, arr: Float32Array | number[]){
         this._gl.uniformMatrix3fv(loc, false, arr);
     }
 
-    setMatrix4(loc: number, arr: Float32Array | number[]){
+    setMat4(loc: number, arr: Float32Array | number[]){
         this._gl.uniformMatrix4fv(loc, false, arr);
     }
 

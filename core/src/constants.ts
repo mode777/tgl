@@ -351,6 +351,10 @@ export enum GlTexture {
 }
 
 export enum GlUniformType {
+    BYTE = 0x1400, 
+    SHORT = 0x1402, 
+    INT = 0x1404, 
+    FLOAT = 0x1406, 
     FLOAT_VEC2 = 0x8B50, 
     FLOAT_VEC3 = 0x8B51, 
     FLOAT_VEC4 = 0x8B52, 
