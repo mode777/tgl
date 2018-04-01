@@ -2,15 +2,16 @@ import { GlBufferType, GlDataType, GlBufferUsage } from './constants';
 
 export interface BufferOptions {
     usage?: GlBufferUsage,
-    data: number[] | Float32Array | ArrayBuffer
+    data: number[] | Float32Array | ArrayBuffer,
+    size?: number,
     attributes?: AttributeOptions[],
-    attribute?: string
+    attribute?: AttributeOptions
 }
 
 export interface AttributeOptions {
-    name?: string;
+    name: string;
     components: number,
-    type: GlDataType,
+    type?: GlDataType,
     normalized?: boolean,
 }
 

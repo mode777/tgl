@@ -1,4 +1,3 @@
-import { GlContext } from "./gl-context";
 import { GlTexture, GlTextureCreateType, GlPixelFormat, GlPixelType, GlTextureParameter, GlMagType, GlMinType, GlWrapMode, GlTextureBindType } from "./constants";
 import { Framebuffer } from "./framebuffer";
 
@@ -12,7 +11,8 @@ export interface TextureOptions {
     wrapY?: GlWrapMode,
     width?: number,
     height?: number,
-    source?: TextureImage | string | ArrayBufferView
+    source?: TextureImage | string | ArrayBufferView,
+    generateMipmaps?: boolean
 }
 
 export type TextureImage = ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap
@@ -26,7 +26,8 @@ const DefaultTextureOptions: TextureOptions = {
     wrapX: GlWrapMode.REPEAT,
     wrapY: GlWrapMode.REPEAT,
     width: 1,
-    height: 1
+    height: 1,
+    generateMipmaps: true
 }
 
 export class Texture {

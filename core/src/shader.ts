@@ -1,24 +1,27 @@
 import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
 
-export type UniformValue = WebGLTexture | number | number[] | Float32Array; 
+export type UniformValue = number | number[] | Float32Array; 
+export type UniformCollection = {[name: string]: UniformValue};
 
 export interface ShaderOptions {
     vertexSource: string,
-    fragmentSource: string
+    fragmentSource: string,
+    uniforms?: UniformCollection;
 }
 
 export class Shader {
 
     private static _current: WebGLTexture;
     
-    static async fromFiles(gl: WebGLRenderingContext, vertexUrl: string, fragmentUrl: string){
+    static async fromFiles(gl: WebGLRenderingContext, vertexUrl: string, fragmentUrl: string, uniforms?: UniformCollection){
         const strings = await Promise.all((
             await Promise.all([fetch(vertexUrl), fetch(fragmentUrl)]))
                 .map(x => x.text()));
 
         return new Shader(gl, {
             vertexSource: strings[0],
-            fragmentSource: strings[1]
+            fragmentSource: strings[1],
+            uniforms: uniforms
         });
     }
 
@@ -93,7 +96,22 @@ export class Shader {
         this._gl.getProgramParameter(this._handle, param)
     }
 
-    setUniform(name: string, value: number | Float32Array | number[]){
+    enableAttributes(){
+        for (let i = 0; i < this._attributes.length; i++) {
+            this._gl.enableVertexAttribArray(i);         
+        }
+    }
+
+    setUniforms(uniforms: UniformCollection)
+    {
+        for (const name in uniforms) {
+            if (uniforms.hasOwnProperty(name)) {
+                this.setUniform(name, uniforms[name]);                
+            }
+        }
+    }
+
+    setUniform(name: string, value: UniformValue){
         const loc = this._uniformLocations[name];
         const info = this._uniforms[loc];
         
@@ -118,6 +136,9 @@ export class Shader {
                 break;
             case GlUniformType.FLOAT_MAT4:                
                 this.setMat4(loc, <number[]>value);        
+                break;
+            case GlUniformType.SAMPLER_2D:
+                this.setTextureUnit(loc, <number>value);
                 break;
             default:
                 throw `Setting data type ${GlUniformType[info.type]} not yet supported.`;
@@ -150,6 +171,14 @@ export class Shader {
 
     setMat4(loc: number, arr: Float32Array | number[]){
         this._gl.uniformMatrix4fv(loc, false, arr);
+    }
+
+    setTextureUnit(loc: number, unit: GlTexture){
+        this._gl.uniform1i(loc, unit);
+    }
+
+    delete(){
+        this._gl.deleteProgram(this._handle);
     }
 
     private collectUniformInformation(){
