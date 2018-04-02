@@ -1,12 +1,12 @@
 import { describe, it, expect } from "test";
-import { GlContext, GlClearFlags } from '@tgl/core';
+import { Renderer, GlClearFlags } from '@tgl/core';
 
 describe("GlContext", () => {
     
     
     it('should create a rendering context', () => {
         const canvas = document.createElement('canvas');
-        const context = new GlContext(canvas);
+        const context = new Renderer(canvas);
         expect(context.handle).toBeInstanceOf(WebGLRenderingContext);
     });
     
@@ -15,7 +15,7 @@ describe("GlContext", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new GlContext(canvas);
+        const context = new Renderer(canvas);
         context.clearColor = [1,0,0,1];
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         

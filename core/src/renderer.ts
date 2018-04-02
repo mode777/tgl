@@ -88,6 +88,11 @@ export class Renderer {
     get stencilTestEnabled() { return this._handle.isEnabled(GlFeature.STENCIL_TEST);  }
     set stencilTestEnabled(value: boolean) { value ? this._handle.enable(GlFeature.STENCIL_TEST) : this._handle.disable(GlFeature.STENCIL_TEST);  }  
 
+    draw(){
+
+        
+    }
+
     checkErrors(){
         const error = <GlError>this._handle.getError();
         if(error !== GlError.NO_ERROR){

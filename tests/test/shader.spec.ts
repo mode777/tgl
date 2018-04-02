@@ -1,6 +1,5 @@
 import { describe, it, expect } from "test";
-import { GlContext, Shader } from '@tgl/core';
-
+import { Renderer, Shader } from '@tgl/core';
 const vertex =
 `attribute vec3 coordinates;
 	
@@ -20,7 +19,7 @@ const fragment =
 describe("Shader", () => {
 
     it('should have a WebGlProgram', () => {
-        const context = new GlContext(document.createElement('canvas'));
+        const context = new Renderer(document.createElement('canvas'));
         const gl = context.handle;
         
         const shader = new Shader(gl, {
@@ -33,7 +32,7 @@ describe("Shader", () => {
     });
     
     it('should load shaders from files', async () => {
-        const context = new GlContext(document.createElement('canvas'));
+        const context = new Renderer(document.createElement('canvas'));
         const gl = context.handle;
         
         const shader = await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl');        
@@ -43,7 +42,7 @@ describe("Shader", () => {
     });
 
     it('should throw a compile error',() => {
-        const context = new GlContext(document.createElement('canvas'));
+        const context = new Renderer(document.createElement('canvas'));
         const gl = context.handle;
         
         expect(() => new Shader(gl, {

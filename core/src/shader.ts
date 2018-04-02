@@ -1,4 +1,5 @@
 import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
+import { VertexBuffer } from "./vertex-buffer";
 
 export type UniformValue = number | number[] | Float32Array; 
 export type UniformCollection = {[name: string]: UniformValue};
@@ -93,13 +94,23 @@ export class Shader {
     }
 
     getParameter(param: GlProgramParam){
-        this._gl.getProgramParameter(this._handle, param)
+        return this._gl.getProgramParameter(this._handle, param)
     }
 
-    enableAttributes(){
-        for (let i = 0; i < this._attributes.length; i++) {
-            this._gl.enableVertexAttribArray(i);         
-        }
+    enableAttributes(buffer: VertexBuffer){
+        buffer.bind();
+        this.use();
+
+        buffer.attributes.forEach(a => {
+            this._gl.enableVertexAttribArray(this._attributeLocations[a.name]);
+            this._gl.vertexAttribPointer(
+                this._attributeLocations[a.name],
+                a.components,
+                a.dataType,
+                a.normalized,
+                buffer.vertexSize,
+                a.offset);
+        });
     }
 
     setUniforms(uniforms: UniformCollection)
@@ -146,37 +157,45 @@ export class Shader {
     }
 
     setFloat(loc: number, value: number){
+        this.use();
         this._gl.uniform1f(loc, value);
     }
-
+    
     setVec2(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniform2fv(loc, arr);
     }
-
+    
     setVec3(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniform3fv(loc, arr);
     }
-
+    
     setVec4(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniform4fv(loc, arr);
     }
-
+    
     setMat2(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniformMatrix2fv(loc, false, arr);
     }
-
+    
     setMat3(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniformMatrix3fv(loc, false, arr);
     }
-
+    
     setMat4(loc: number, arr: Float32Array | number[]){
+        this.use();
         this._gl.uniformMatrix4fv(loc, false, arr);
     }
-
+    
     setTextureUnit(loc: number, unit: GlTexture){
+        this.use();
         this._gl.uniform1i(loc, unit);
     }
-
+    
     delete(){
         this._gl.deleteProgram(this._handle);
     }

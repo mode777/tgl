@@ -3,20 +3,19 @@ import { GlBufferType, GlDataType, GlBufferUsage } from './constants';
 export interface BufferOptions {
     usage?: GlBufferUsage,
     data: number[] | Float32Array | ArrayBuffer,
-    size?: number,
     attributes?: AttributeOptions[],
     attribute?: AttributeOptions
 }
 
 export interface AttributeOptions {
     name: string;
-    components: number,
+    components: 1 | 2 | 3 | 4,
     type?: GlDataType,
     normalized?: boolean,
 }
 
 
-export interface Attribute {
+export interface AttributeInfo {
     name: string,
     components: number,
     dataType: GlDataType,
@@ -31,16 +30,23 @@ export class VertexBuffer {
     private _handle: WebGLBuffer;
     private _vertexSize: number;
     
-    public attributes: Attribute[];
+    public attributes: AttributeInfo[];
 
     constructor(protected _gl: WebGLRenderingContext, private _options: BufferOptions){
         const data = Object.prototype.toString.call(_options.data) === '[object Array]'
             ? new Float32Array(_options.data)
             : _options.data;
 
+        if(_options.attribute && !_options.attributes){
+            _options.attributes = [_options.attribute];
+        }
+    
+        _options.usage = _options.usage || GlBufferUsage.STATIC_DRAW;
+
         this._handle = _gl.createBuffer();
         this.bind();
         this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>data, _options.usage);
+
 
         let offset = 0;
         this.attributes = _options.attributes.map(x => {
@@ -51,7 +57,7 @@ export class VertexBuffer {
                 normalized: x.normalized,
                 offset: offset
             };
-            offset += this.getSize(this.getSize(attr.dataType) * attr.components);
+            offset += this.getSize(attr.dataType) * attr.components;
             return attr;
         })
         this._vertexSize = offset;

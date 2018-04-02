@@ -1,4 +1,3 @@
-import { GlContext } from './gl-context';
 import { BufferOptions } from './vertex-buffer';
 import { GlBufferType, GlBufferUsage, GlDataType } from './constants';
 import { Shader } from './main';

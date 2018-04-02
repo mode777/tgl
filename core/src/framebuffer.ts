@@ -19,7 +19,7 @@ export class Framebuffer {
     }
 
     checkStatus(): GlFramebufferStatus {
-
+        throw "Not implemented"
     }
 
     

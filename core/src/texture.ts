@@ -120,9 +120,7 @@ export class Texture {
             this._options.format,
             this._options.pixelType,
             data);
-    }
-
-    
+    }    
 
     public setData(data: ArrayBufferView, width?: number, height?: number) {
         width = width || this._options.width;
