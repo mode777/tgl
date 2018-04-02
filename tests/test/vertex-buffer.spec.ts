@@ -54,7 +54,8 @@ describe("VertexBuffer", () => {
                 {
                     components: 4,
                     name: "aColor",
-                    type: GlDataType.UNSIGNED_BYTE
+                    type: GlDataType.UNSIGNED_BYTE,
+                    normalized: true
                 }
             ]
         });
