@@ -1,5 +1,15 @@
 import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature, GlBufferType, GlCullMode } from "./constants";
 
+const defaultOptions: WebGLContextAttributes = {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    failIfMajorPerformanceCaveat: true,
+    premultipliedAlpha: false,
+    stencil: false,
+    preserveDrawingBuffer: false
+}
+
 export class Renderer {
         
     private _handle: WebGLRenderingContext;
@@ -9,7 +19,7 @@ export class Renderer {
     constructor(canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
         this._canvas = canvas;
 
-        const context = this._canvas.getContext('webgl', options);         
+        const context = this._canvas.getContext('webgl', Object.assign({}, defaultOptions, options));         
         
         if(context !== null)
             this._handle = context; 

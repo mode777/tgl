@@ -204,22 +204,33 @@ export class Expected<T> {
         gl.readPixels(0, 0, canvas.width, canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
 
         const canvasCompare = typeof(src) === 'string' ? (await this.canvasFromImage(src)) : src;
-        const pixelData = canvasCompare.getContext('2d').getImageData(0, 0, canvasCompare.width, canvasCompare.height).data;
-            
+        const cvs = canvasCompare.getContext('2d');
+        cvs.fillStyle = 'rgba(255,0,0,128)';
+        
+        const pixelData = cvs.getImageData(0, 0, canvasCompare.width, canvasCompare.height).data;
+        
         let ctr = 0;
         
         if(pixelData.length !== buffer.length)
-            throw 'Rendered and reference image are of differen size';
-
+        throw 'Rendered and reference image are of different size';
+        
+            
         for (let i = 0; i < pixelData.length; i+=4) {
-            if (buffer[i] === pixelData[i] &&
-                buffer[i+1] === pixelData[i+1] &&
-                buffer[i+2] === pixelData[i+2] &&
-                buffer[i+3] === pixelData[i+3]){
-                    ctr++;
-                }
-        }
+            const p = Math.floor(i / 4);
+            const x = p%320;
+            const y = Math.floor(p / 320);
+            const j = (((239 - y) * 320) + x) * 4;
 
+            if (buffer[i] === pixelData[j] &&
+                buffer[i+1] === pixelData[j+1] &&
+                buffer[i+2] === pixelData[j+2] &&
+                buffer[i+3] === pixelData[j+3]){
+                    ctr++;
+            } else {
+                cvs.fillRect(x, 239-y, 1, 1);
+            }
+        }
+        
         const percentResult = (ctr / (pixelData.length/4)) * 100; 
         if(percentResult < percent)
             throw new ImageError(
