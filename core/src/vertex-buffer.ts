@@ -3,8 +3,7 @@ import { GlBufferType, GlDataType, GlBufferUsage } from './constants';
 export interface BufferOptions {
     usage?: GlBufferUsage,
     data: number[] | Float32Array | ArrayBuffer,
-    attributes?: AttributeOptions[],
-    attribute?: AttributeOptions
+    attributes: AttributeOptions[]
 }
 
 export interface AttributeOptions {
@@ -14,7 +13,6 @@ export interface AttributeOptions {
     normalized?: boolean,
 }
 
-
 export interface AttributeInfo {
     name: string,
     components: number,
@@ -23,46 +21,53 @@ export interface AttributeInfo {
     offset: number
 }
 
+const bufferDefaults = {
+    usage: GlBufferUsage.STATIC_DRAW,
+    attributes: []
+}
+
+const attributeDefaults = {
+    type: GlDataType.FLOAT,
+    normalized: false
+}
+
 export class VertexBuffer {
     
     private static _current: WebGLBuffer;   
 
     private _handle: WebGLBuffer;
     private _vertexSize: number;
+    private _options: BufferOptions;
     
     public attributes: AttributeInfo[];
 
-    constructor(protected _gl: WebGLRenderingContext, private _options: BufferOptions){
-        const data = Object.prototype.toString.call(_options.data) === '[object Array]'
-            ? new Float32Array(_options.data)
-            : _options.data;
+    constructor(protected _gl: WebGLRenderingContext, options: BufferOptions){
+        options.data = Object.prototype.toString.call(options.data) === '[object Array]'
+            ? new Float32Array(options.data)
+            : options.data;
 
-        if(_options.attribute && !_options.attributes){
-            _options.attributes = [_options.attribute];
-        }
-    
-        _options.usage = _options.usage || GlBufferUsage.STATIC_DRAW;
+        this._options =  { ...bufferDefaults, ...options };
+        
+        let offset = 0;
+        this.attributes = this._options.attributes
+            .map(x => ({ ...attributeDefaults, ...x }))
+            .map(x => {
+                const attr = {
+                    name: x.name,
+                    components: x.components,
+                    dataType: x.type,
+                    normalized: x.normalized,
+                    offset: offset
+                };                
+                offset += this.getSize(attr.dataType) * attr.components;
+                return attr;
+            });
+        this._vertexSize = offset;
 
         this._handle = _gl.createBuffer();
         this.bind();
-        this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>data, _options.usage);
-
-
-        let offset = 0;
-        this.attributes = _options.attributes.map(x => {
-            const attr = {
-                name: x.name,
-                components: x.components,
-                dataType: x.type,
-                normalized: x.normalized,
-                offset: offset
-            };
-            offset += this.getSize(attr.dataType) * attr.components;
-            return attr;
-        })
-        this._vertexSize = offset;
+        this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>this._options.data, this._options.usage);
     }
-
 
     private getSize(type: GlDataType){
         switch (type) {

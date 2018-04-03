@@ -34,9 +34,10 @@ void main(void) {
 
 describe("VertexBuffer", () => {
 
-    it('should calculate vertex size', async () => {
-        const context = new Renderer(document.createElement('canvas'));
-        const gl = context.handle;
+    const context = new Renderer(document.createElement('canvas'));
+    const gl = context.handle;
+
+    it('should calculate vertex size', async () => {   
 
         const buffer = new VertexBuffer(gl, {
             usage: GlBufferUsage.STATIC_DRAW,
@@ -60,6 +61,8 @@ describe("VertexBuffer", () => {
             ]
         });
 
+        console.log(buffer.handle);
+
         expect(buffer.attributes[1].offset).toBe(8);
         expect(buffer.vertexSize).toBe(12);
     });
@@ -80,11 +83,11 @@ describe("VertexBuffer", () => {
         const buffer = new VertexBuffer(gl, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: [-0.5, -0.5, 0.5, -0.5, 0, 0.5],
-            attribute: {
+            attributes: [{
                 components: 2,
                 name: "aPosition",
                 type: GlDataType.FLOAT
-            }
+            }]
         });
 
         shader.enableAttributes(buffer);
@@ -140,7 +143,5 @@ describe("VertexBuffer", () => {
 
         await expect(gl).toLookLike('./assets/reference/vertex-triangle-color.png', 100)
     });
-
-
 
 });
