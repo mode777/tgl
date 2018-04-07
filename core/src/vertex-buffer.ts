@@ -37,6 +37,7 @@ export class VertexBuffer {
 
     private _handle: WebGLBuffer;
     private _vertexSize: number;
+    private _size: number;
     private _options: BufferOptions;
     
     public attributes: AttributeInfo[];
@@ -64,6 +65,9 @@ export class VertexBuffer {
             });
         this._vertexSize = offset;
 
+        const data: any = this._options.data;
+        this._size = data.buffer ? data.buffer.byteLength : data.byteLength;
+        
         this._handle = _gl.createBuffer();
         this.bind();
         this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>this._options.data, this._options.usage);
@@ -99,7 +103,15 @@ export class VertexBuffer {
         return this._vertexSize;
     }
 
-    public subData(offset: number, data: ArrayBufferView | ArrayBuffer){
+    public get size(){
+        return this._size;
+    }
+
+    public get vertexCount(){
+        return this._size / this._vertexSize;
+    }
+
+    public subData(offset: number, data: ArrayBuffer){
         this.bind();
         this._gl.bufferSubData(GlBufferType.ARRAY_BUFFER, offset, data);
     }

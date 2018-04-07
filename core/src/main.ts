@@ -1,6 +1,6 @@
 export * from './constants';
 export * from './framebuffer';
-export * from './geometry';
+export * from './drawable';
 export * from './index-buffer';
 export * from './renderbuffer';
 export * from './renderer';

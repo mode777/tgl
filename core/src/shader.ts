@@ -1,13 +1,18 @@
-import { GlShaderType, GlTexture, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
+import { GlShaderType, GlTextureUnit, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
 import { VertexBuffer } from "./vertex-buffer";
 
-export type UniformValue = number | number[] | Float32Array; 
+export type UniformValue = number | number[] | Float32Array | GlTextureUnit; 
 export type UniformCollection = {[name: string]: UniformValue};
 
 export interface ShaderOptions {
     vertexSource: string,
     fragmentSource: string,
     uniforms?: UniformCollection;
+}
+
+interface UniformInfo {
+    info: WebGLActiveInfo;
+    location: WebGLUniformLocation;
 }
 
 export class Shader {
@@ -28,8 +33,7 @@ export class Shader {
 
     private _handle: WebGLProgram;
     
-    private _uniforms: WebGLActiveInfo[] = [];
-    private _uniformLocations: {[name: string]: number} = {};
+    private _uniforms: {[name: string]: UniformInfo} = {};
     
     private _attributes: WebGLActiveInfo[] = [];
     private _attributeLocations: {[name: string]: number} = {};
@@ -86,7 +90,7 @@ export class Shader {
     // }
 
     getUniformLocation(name: string) {
-        return this._uniformLocations[name];
+        return this._uniforms[name].location;
     }
 
     getAttributeLocation(name: string) {
@@ -123,77 +127,79 @@ export class Shader {
     }
 
     setUniform(name: string, value: UniformValue){
-        const loc = this._uniformLocations[name];
-        const info = this._uniforms[loc];
+        const uniform = this._uniforms[name];
+        if(uniform === undefined)
+            throw `Unknown uniform: "${name}"`;
         
-        switch (info.type) {
+        switch (uniform.info.type) {
             case GlUniformType.FLOAT:
-                this.setFloat(loc, <number>value);
+                this.setFloat(uniform.location, <number>value);
                 break;
             case GlUniformType.FLOAT_VEC2:
-                this.setVec2(loc, <number[]>value);
+                this.setVec2(uniform.location, <number[]>value);
                 break;
             case GlUniformType.FLOAT_VEC3:
-                this.setVec3(loc, <number[]>value);
+                this.setVec3(uniform.location, <number[]>value);
                 break;
             case GlUniformType.FLOAT_VEC4:
-                this.setVec4(loc, <number[]>value);        
+                this.setVec4(uniform.location, <number[]>value);        
                 break;
             case GlUniformType.FLOAT_MAT2:
-                this.setMat2(loc, <number[]>value);        
+                this.setMat2(uniform.location, <number[]>value);        
                 break;
             case GlUniformType.FLOAT_MAT3:
-                this.setMat3(loc, <number[]>value);        
+                this.setMat3(uniform.location, <number[]>value);        
                 break;
             case GlUniformType.FLOAT_MAT4:                
-                this.setMat4(loc, <number[]>value);        
+                this.setMat4(uniform.location, <number[]>value);        
                 break;
             case GlUniformType.SAMPLER_2D:
-                this.setTextureUnit(loc, <number>value);
+                this.setTextureUnit(uniform.location, <number>value);
                 break;
             default:
-                throw `Setting data type ${GlUniformType[info.type]} not yet supported.`;
+                throw `Setting data type ${GlUniformType[uniform.info.type]} not yet supported.`;
         }
     }
 
-    setFloat(loc: number, value: number){
+    setFloat(loc: WebGLUniformLocation, value: number){
         this.use();
         this._gl.uniform1f(loc, value);
     }
     
-    setVec2(loc: number, arr: Float32Array | number[]){
+    setVec2(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniform2fv(loc, arr);
     }
     
-    setVec3(loc: number, arr: Float32Array | number[]){
+    setVec3(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniform3fv(loc, arr);
     }
     
-    setVec4(loc: number, arr: Float32Array | number[]){
+    setVec4(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniform4fv(loc, arr);
     }
     
-    setMat2(loc: number, arr: Float32Array | number[]){
+    setMat2(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniformMatrix2fv(loc, false, arr);
     }
     
-    setMat3(loc: number, arr: Float32Array | number[]){
+    setMat3(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniformMatrix3fv(loc, false, arr);
     }
     
-    setMat4(loc: number, arr: Float32Array | number[]){
+    setMat4(loc: WebGLUniformLocation, arr: Float32Array | number[]){
         this.use();
         this._gl.uniformMatrix4fv(loc, false, arr);
     }
     
-    setTextureUnit(loc: number, unit: GlTexture){
+    setTextureUnit(loc: WebGLUniformLocation, unit: GlTextureUnit){
         this.use();
-        this._gl.uniform1i(loc, unit);
+        console.log(unit - GlTextureUnit.TEXTURE0);
+        this._gl.uniform1i(loc, unit - GlTextureUnit.TEXTURE0);
     }
     
     delete(){
@@ -205,8 +211,11 @@ export class Shader {
 
         for (let i = 0; i < uniforms; i++) {
             const info = this._gl.getActiveUniform(this._handle, i);
-            this._uniformLocations[info.name] = i;
-            this._uniforms.push(info);
+            const loc = this._gl.getUniformLocation(this._handle, info.name);
+            this._uniforms[info.name] = {
+                info: info,
+                location: loc
+            };
         }
     }
 

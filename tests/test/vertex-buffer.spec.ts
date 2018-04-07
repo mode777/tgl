@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { Renderer, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags } from '@tgl/core';
+import { Renderer, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer } from '@tgl/core';
 
 const vertex1 = `attribute vec2 aPosition;
 	
@@ -65,6 +65,8 @@ describe("VertexBuffer", () => {
 
         expect(buffer.attributes[1].offset).toBe(8);
         expect(buffer.vertexSize).toBe(12);
+        expect(buffer.size).toBe(3 * 12);
+        expect(buffer.vertexCount).toBe(3);
     });
 
     it('should render triangle', async () => {
@@ -142,6 +144,40 @@ describe("VertexBuffer", () => {
         gl.drawArrays(GlPrimitiveType.TRIANGLES, 0, 3);
 
         await expect(gl).toLookLike('./assets/reference/vertex-triangle-color.png', 100)
+    });
+
+    it('should render with index buffer', async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+
+        const context = new Renderer(canvas);
+        const gl = context.handle;
+
+        const shader = new Shader(gl, {
+            fragmentSource: fragment1,
+            vertexSource: vertex1
+        });
+
+        const buffer = new VertexBuffer(gl, {
+            usage: GlBufferUsage.STATIC_DRAW,
+            data: [-0.5,-0.5, 0.5,-0.5, 0.5,0.5, -0.5,0.5],
+            attributes: [{
+                components: 2,
+                name: "aPosition",
+                type: GlDataType.FLOAT
+            }]
+        });
+
+        const indices = new IndexBuffer(gl, [3, 0, 1, 3, 1, 2]);
+
+        shader.enableAttributes(buffer);
+
+        context.clearColor = [0, 0, 0, 1];
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        gl.drawElements(GlPrimitiveType.TRIANGLES, indices.length, indices.type, 0);
+
+        await expect(gl).toLookLike('./assets/reference/vertex-box.png', 100)
     });
 
 });

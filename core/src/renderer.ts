@@ -1,4 +1,4 @@
-import { GlClearFlags, GlError, GlTexture, GlParam, GlBlendEquation, GlFeature, GlBufferType, GlCullMode } from "./constants";
+import { GlClearFlags, GlError, GlTextureUnit, GlParam, GlBlendEquation, GlFeature, GlBufferType, GlCullMode } from "./constants";
 
 const defaultOptions: WebGLContextAttributes = {
     alpha: false,

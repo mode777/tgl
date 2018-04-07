@@ -315,7 +315,7 @@ export enum GlTextureCreateType {
     TEXTURE_CUBE_MAP_NEGATIVE_Z = 0x851A, 
 }
 
-export enum GlTexture {
+export enum GlTextureUnit {
     TEXTURE0 = 0x84C0,
     TEXTURE1 = 0x84C1,
     TEXTURE2 = 0x84C2,

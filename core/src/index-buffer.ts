@@ -1,4 +1,4 @@
-import { GlBufferType, GlBufferUsage } from './constants';
+import { GlBufferType, GlBufferUsage, GlDataType } from './constants';
 
 export class IndexBuffer {
 
@@ -7,7 +7,7 @@ export class IndexBuffer {
     private _handle: WebGLBuffer;
     private _length: number;
     
-    constructor(protected _gl: WebGLRenderingContext, _data: Uint16Array | number){
+    constructor(protected _gl: WebGLRenderingContext, _data: Uint16Array | number[]){
         const data = _data instanceof Uint16Array ? _data : new Uint16Array(_data);
         this._length = data.length;
         this._handle = _gl.createBuffer();
@@ -17,6 +17,10 @@ export class IndexBuffer {
     
     public get handle() {
         return this._handle;
+    }
+
+    public get type(){
+        return GlDataType.UNSIGNED_SHORT;
     }
     
     public get length(){
