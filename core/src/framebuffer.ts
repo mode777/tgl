@@ -1,5 +1,5 @@
-import { GlFramebufferStatus, GlTextureBindType, GlFramebufferType } from "./main";
 import { Texture } from "./texture";
+import { GlFramebufferType, GlFramebufferStatus, GlTextureBindType } from "./constants";
 
 export class Framebuffer {
     

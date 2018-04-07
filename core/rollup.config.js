@@ -2,7 +2,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
-
+import uglify from 'rollup-plugin-uglify';
 
 export default [
 	// browser-friendly UMD build
@@ -16,7 +16,8 @@ export default [
 		plugins: [
 			resolve(),
             commonjs(),
-            typescript() 
+            typescript(),
+            uglify()
 		]
 	},
 
@@ -30,7 +31,8 @@ export default [
 		input: 'src/main.ts',
 		//external: ['ms'],
         plugins: [
-            typescript() 
+            typescript(),
+            uglify() 
 		],
         output: [
 			{ file: pkg.main, format: 'cjs' },

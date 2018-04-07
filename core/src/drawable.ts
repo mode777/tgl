@@ -1,7 +1,8 @@
 import { BufferOptions, VertexBuffer } from './vertex-buffer';
 import { GlBufferType, GlBufferUsage, GlDataType, GlTextureUnit, GlPrimitiveType } from './constants';
-import { Shader, IndexBuffer, ShaderOptions, UniformValue } from './main';
 import { Texture, TextureOptions } from './texture';
+import { Shader, ShaderOptions, UniformValue } from './shader';
+import { IndexBuffer } from './index-buffer';
 
 export interface DrawableOptions {
     buffers: (VertexBuffer | BufferOptions)[],

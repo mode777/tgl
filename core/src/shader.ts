@@ -198,7 +198,6 @@ export class Shader {
     
     setTextureUnit(loc: WebGLUniformLocation, unit: GlTextureUnit){
         this.use();
-        console.log(unit - GlTextureUnit.TEXTURE0);
         this._gl.uniform1i(loc, unit - GlTextureUnit.TEXTURE0);
     }
     
