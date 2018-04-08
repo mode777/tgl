@@ -15,7 +15,7 @@ export class IndexBuffer {
         this._gl.bufferData(GlBufferType.ELEMENT_ARRAY_BUFFER, data, GlBufferUsage.STATIC_DRAW);
     }
     
-    public get handle() {
+    public get webGlBuffer() {
         return this._handle;
     }
 

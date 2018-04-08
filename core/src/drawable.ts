@@ -35,7 +35,7 @@ export class Drawable {
                 ? _options.indices
                 : new IndexBuffer(_gl, _options.indices)) 
             : null;
-        Object.keys(_options.textures).forEach(name => {
+        Object.keys(_options.textures || {}).forEach(name => {
             const tex = _options.textures[name];
             this._textures[name] = _options.textures[name] instanceof Texture 
                 ? <Texture>_options.textures[name]

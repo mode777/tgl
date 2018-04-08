@@ -10,7 +10,7 @@ const defaultOptions: WebGLContextAttributes = {
     preserveDrawingBuffer: false
 }
 
-export class Renderer {
+export class TglContext {
         
     private _handle: WebGLRenderingContext;
     private _canvas: HTMLCanvasElement;
@@ -27,7 +27,7 @@ export class Renderer {
             throw 'Unable to initialize WebGLRenderingContext';
     }
 
-    get handle(){
+    get webGlRenderingContext(){
         return this._handle;
     }
 
@@ -97,11 +97,6 @@ export class Renderer {
     
     get stencilTestEnabled() { return this._handle.isEnabled(GlFeature.STENCIL_TEST);  }
     set stencilTestEnabled(value: boolean) { value ? this._handle.enable(GlFeature.STENCIL_TEST) : this._handle.disable(GlFeature.STENCIL_TEST);  }  
-
-    draw(){
-
-        
-    }
 
     checkErrors(){
         const error = <GlError>this._handle.getError();

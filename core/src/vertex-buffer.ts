@@ -88,7 +88,7 @@ export class VertexBuffer {
         }
     }
     
-    public get handle() {
+    public get webGlBuffer() {
         return this._handle;
     }
 

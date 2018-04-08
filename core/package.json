@@ -1,13 +1,20 @@
 {
-  "name": "tgl-core",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@tgl/core",
+  "version": "0.1.2",
+  "description": "A small webgl library for typescript",
+  "private": false,
+  "keywords": [
+    "webgl",
+    "typescript"
+  ],
   "main": "dist/tgl-core.cjs.js",
   "module": "dist/tgl-core.esm.js",
   "browser": "dist/tgl-core.umd.js",
+  "types": "dist/main.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "publish": "npm publish --access=public"
   },
   "author": "Alexander Klingenbeck",
   "license": "MIT",
@@ -20,6 +27,6 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
-    "deepmerge": "^2.1.0"
+    "tslib": "^1.9.0"
   }
 }

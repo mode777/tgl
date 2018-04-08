@@ -88,7 +88,7 @@ export class Texture {
         this.setWrapping(this._options.wrapX, this._options.wrapY);
     }
 
-    get handle() {
+    get webGlTexture() {
         return this._handle;
     }
 

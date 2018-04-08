@@ -1,0 +1,27 @@
+{
+  "name": "@tgl/examples",
+  "version": "0.1.0",
+  "description": "A small webgl library for typescript",
+  "private": false,
+  "keywords": [
+    "webgl",
+    "typescript"
+  ],
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --mode=development"
+  },
+  "author": "Alexander Klingenbeck",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-loader": "^4.2.0",
+    "typescript": "^2.7.2",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3"
+  },
+  "dependencies": {
+    "@tgl/core": "0.1.2",
+    "tslib": "^1.9.0"
+  }
+}

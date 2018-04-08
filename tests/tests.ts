@@ -1,6 +1,4 @@
 import './test/drawable.spec.ts';
-import './test/geometry.spec.ts';
-import './test/index-buffer.spec.ts';
 import './test/renderer.spec.ts';
 import './test/shader.spec.ts';
 import './test/texture.spec.ts';

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { Renderer, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer, Drawable, GlMagType, Texture, BufferOptions } from '@tgl/core';
+import { TglContext, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer, Drawable, GlMagType, Texture, BufferOptions } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
 attribute vec2 aTexcoord;
@@ -21,8 +21,8 @@ void main(void) {
 
 describe("Drawable", () => {
 
-    const context = new Renderer(document.createElement('canvas'));
-    const gl = context.handle;
+    const context = new TglContext(document.createElement('canvas'));
+    const gl = context.webGlRenderingContext;
     const checker = new Uint8Array([
         0,0,255,255, 
         255,255,0,255,
@@ -63,8 +63,8 @@ describe("Drawable", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
             buffers: [bufferOptions],
@@ -88,8 +88,8 @@ describe("Drawable", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
             buffers: [new VertexBuffer(gl, bufferOptions)],
@@ -113,8 +113,8 @@ describe("Drawable", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
             buffers: [{
@@ -147,6 +147,30 @@ describe("Drawable", () => {
         drawable.draw();
 
         await expect(gl).toLookLike('./assets/reference/texture-checker.png', 100)
+    });
+
+    it('should render a simple triangle', async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
+
+        const drawable = new Drawable(gl, {
+            buffers: [{
+                data: [-0.5,-0.5, 0.5,-0.5,0, 0.5],
+                attributes: [{ name: 'aPosition', components: 2 }]
+            }],
+            shader: await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl')
+        });
+
+        context.clearColor = [0, 0, 0, 1];
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+
+        drawable.draw();
+
+        await expect(gl).toLookLike('./assets/reference/vertex-triangle.png', 100)
     });
 
 });

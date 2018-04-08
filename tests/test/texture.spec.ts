@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { Renderer, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlTextureUnit, GlMagType } from '@tgl/core';
+import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlTextureUnit, GlMagType } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
 attribute vec2 aTexcoord;
@@ -21,8 +21,8 @@ void main(void) {
 
 describe("Texture", () => {
 
-    const context = new Renderer(document.createElement('canvas'));
-    const gl = context.handle;
+    const context = new TglContext(document.createElement('canvas'));
+    const gl = context.webGlRenderingContext;
     const checker = new Uint8Array([
         0,0,255,255, 
         255,255,0,255,
@@ -39,14 +39,14 @@ describe("Texture", () => {
         });
         
         context.checkErrors();
-        expect(texture.handle).toBeInstanceOf(WebGLTexture);
+        expect(texture.webGlTexture).toBeInstanceOf(WebGLTexture);
     });
 
     it('should load texture', async () => {        
         const texture = await Texture.fromFile(gl, './assets/grid.png');
         
         context.checkErrors();
-        expect(texture.handle).toBeInstanceOf(WebGLTexture);
+        expect(texture.webGlTexture).toBeInstanceOf(WebGLTexture);
         expect(texture.width).toBe(256);
         expect(texture.height).toBe(256);
     });
@@ -69,8 +69,8 @@ describe("Texture", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
             fragmentSource: fragment,

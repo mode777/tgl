@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { Renderer, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer } from '@tgl/core';
+import { TglContext, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer } from '@tgl/core';
 
 const vertex1 = `attribute vec2 aPosition;
 	
@@ -34,8 +34,8 @@ void main(void) {
 
 describe("VertexBuffer", () => {
 
-    const context = new Renderer(document.createElement('canvas'));
-    const gl = context.handle;
+    const context = new TglContext(document.createElement('canvas'));
+    const gl = context.webGlRenderingContext;
 
     it('should calculate vertex size', async () => {   
 
@@ -61,7 +61,7 @@ describe("VertexBuffer", () => {
             ]
         });
 
-        console.log(buffer.handle);
+        console.log(buffer.webGlBuffer);
 
         expect(buffer.attributes[1].offset).toBe(8);
         expect(buffer.vertexSize).toBe(12);
@@ -74,8 +74,8 @@ describe("VertexBuffer", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
             fragmentSource: fragment1,
@@ -106,8 +106,8 @@ describe("VertexBuffer", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
             fragmentSource: fragment2,
@@ -151,8 +151,8 @@ describe("VertexBuffer", () => {
         canvas.width = 320;
         canvas.height = 240;
 
-        const context = new Renderer(canvas);
-        const gl = context.handle;
+        const context = new TglContext(canvas);
+        const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
             fragmentSource: fragment1,

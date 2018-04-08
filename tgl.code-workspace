@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "tests"
+		},
+		{
+			"path": "examples"
 		}
 	],
 	"settings": {

@@ -18,6 +18,10 @@ export class Framebuffer {
         }
     }
 
+    webGlFramebuffer(){
+        return this._handle;
+    }
+
     checkStatus(): GlFramebufferStatus {
         throw "Not implemented"
     }
