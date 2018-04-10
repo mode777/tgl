@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { TglContext, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer, Drawable, GlMagType, Texture, BufferOptions } from '@tgl/core';
+import { TglContext, Shader, VertexBuffer, IndexBuffer, Drawable, Texture, BufferOptions, GlBufferUsage, GlMagType, GlClearFlags } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
 attribute vec2 aTexcoord;

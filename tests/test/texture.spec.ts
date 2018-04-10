@@ -1,5 +1,5 @@
 import { describe, it, expect } from "test";
-import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlTextureUnit, GlMagType } from '@tgl/core';
+import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlMagType } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
 attribute vec2 aTexcoord;
@@ -100,8 +100,9 @@ describe("Texture", () => {
 
         const indices = new IndexBuffer(gl, [3, 0, 1, 3, 1, 2]);
 
-        shader.enableAttributes(buffer);
-        shader.setUniform("uTexture", GlTextureUnit.TEXTURE0);
+        buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
+        buffer.enableAttribute('aTexcoord', shader.getAttributeLocation('aTexcoord'));
+        shader.setUniform("uTexture", 0);
 
         context.clearColor = [0, 0, 0, 1];
 

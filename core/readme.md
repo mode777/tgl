@@ -11,12 +11,13 @@ TGL aims to provide...
 * ...sensible defaults to reduce verbosity and prevent errors.
 
 ## Features
-* Zero dependencies (except tslib), 8k gziped.
 * Classes for OpenGl primitives like buffers, textures and shaders.
-* A Drawable class to orchestrate all primitives together to render an image. 
-* Options based initialization for WebGL primitive which sensible default values.
-* Grouped enumerations for all of WebGL constants - no more "Invalid enum" errors.
-* Potential performance boosts through WebGL state caching.
+* No interdependencies: You can use each class as a standalone.
+* Options based initialization for WebGL primitives which sensible default values.
+* Grouped enumerations for WebGL constants - no more 'Invalid enum' errors.
+* A 'Drawable' class to orchestrate all primitives together and render an image. 
+* Performance boosts through WebGL state caching.
+* Zero dependencies (except tslib), 5k gziped, tree-shaking support.
 
 ## Installation
 

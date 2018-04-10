@@ -87,12 +87,11 @@ describe("VertexBuffer", () => {
             data: [-0.5, -0.5, 0.5, -0.5, 0, 0.5],
             attributes: [{
                 components: 2,
-                name: "aPosition",
-                type: GlDataType.FLOAT
+                name: 'aPosition'
             }]
         });
 
-        shader.enableAttributes(buffer);
+        buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
 
         context.clearColor = [0, 0, 0, 1];
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
@@ -137,7 +136,8 @@ describe("VertexBuffer", () => {
 
         expect(buffer.vertexSize).toBe(20);
 
-        shader.enableAttributes(buffer);
+        buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
+        buffer.enableAttribute('aColor', shader.getAttributeLocation('aColor'));
 
         context.clearColor = [0, 0, 0, 1];
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
@@ -171,8 +171,8 @@ describe("VertexBuffer", () => {
 
         const indices = new IndexBuffer(gl, [3, 0, 1, 3, 1, 2]);
 
-        shader.enableAttributes(buffer);
-
+        buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
+        
         context.clearColor = [0, 0, 0, 1];
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawElements(GlPrimitiveType.TRIANGLES, indices.length, indices.type, 0);

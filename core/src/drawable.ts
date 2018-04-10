@@ -1,8 +1,8 @@
 import { BufferOptions, VertexBuffer } from './vertex-buffer';
-import { GlBufferType, GlBufferUsage, GlDataType, GlTextureUnit, GlPrimitiveType } from './constants';
 import { Texture, TextureOptions } from './texture';
 import { Shader, ShaderOptions, UniformValue } from './shader';
 import { IndexBuffer } from './index-buffer';
+import { GlPrimitiveType } from './constants/gl-primitive-type';
 
 export interface DrawableOptions {
     buffers: (VertexBuffer | BufferOptions)[],
@@ -46,12 +46,14 @@ export class Drawable {
     
     draw(mode: GlPrimitiveType = GlPrimitiveType.TRIANGLES, start: number = 0, end: number = -1){
         this._shader.use();
-        this._buffers.forEach(x => this._shader.enableAttributes(x));
+        this._buffers.forEach(x => 
+            x.attributes.forEach(y => 
+                x.enableAttribute(y.name, this._shader.getAttributeLocation(y.name))));
         
         let i = 0;
         for (const name in this._textures) {
             if  (this._textures.hasOwnProperty(name)) {
-                const unit = this._textures[name].bind(i + GlTextureUnit.TEXTURE0);
+                const unit = this._textures[name].bind(i);
                 this._shader.setUniform(name, unit);
                 i++;
             }

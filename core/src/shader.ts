@@ -1,7 +1,4 @@
-import { GlShaderType, GlTextureUnit, GlTextureBindType, GlShaderParam, GlProgramParam, GlUniformType } from "./constants";
-import { VertexBuffer } from "./vertex-buffer";
-
-export type UniformValue = number | number[] | Float32Array | GlTextureUnit; 
+export type UniformValue = number | number[] | Float32Array; 
 export type UniformCollection = {[name: string]: UniformValue};
 
 export interface ShaderOptions {
@@ -42,17 +39,17 @@ export class Shader {
         if(!options || !options.fragmentSource || !options.vertexSource)
             throw 'Source files are missing';
 
-        const vertexShader = this._gl.createShader(GlShaderType.VERTEX_SHADER);
+        const vertexShader = this._gl.createShader(_gl.VERTEX_SHADER);
         this._gl.shaderSource(vertexShader, options.vertexSource);
         this._gl.compileShader(vertexShader);
-        if(!this._gl.getShaderParameter(vertexShader, GlShaderParam.COMPILE_STATUS)){
+        if(!this._gl.getShaderParameter(vertexShader, _gl.COMPILE_STATUS)){
             throw this._gl.getShaderInfoLog(vertexShader);
         }
 
-        const fragmentShader = this._gl.createShader(GlShaderType.FRAGMENT_SHADER);
+        const fragmentShader = this._gl.createShader(_gl.FRAGMENT_SHADER);
         this._gl.shaderSource(fragmentShader, options.fragmentSource);
         this._gl.compileShader(fragmentShader);
-        if(!this._gl.getShaderParameter(fragmentShader, GlShaderParam.COMPILE_STATUS)){
+        if(!this._gl.getShaderParameter(fragmentShader, _gl.COMPILE_STATUS)){
             throw this._gl.getShaderInfoLog(fragmentShader);
         }
 
@@ -85,10 +82,6 @@ export class Shader {
         }
     }
 
-    // bindAttributeLocation(index: number, name: string){
-    //     this._gl.bindAttribLocation(this._handle, index, name)
-    // }
-
     getUniformLocation(name: string) {
         return this._uniforms[name].location;
     }
@@ -96,27 +89,7 @@ export class Shader {
     getAttributeLocation(name: string) {
         return this._attributeLocations[name];
     }
-
-    getParameter(param: GlProgramParam){
-        return this._gl.getProgramParameter(this._handle, param)
-    }
-
-    enableAttributes(buffer: VertexBuffer){
-        buffer.bind();
-        this.use();
-
-        buffer.attributes.forEach(a => {
-            this._gl.enableVertexAttribArray(this._attributeLocations[a.name]);
-            this._gl.vertexAttribPointer(
-                this._attributeLocations[a.name],
-                a.components,
-                a.dataType,
-                a.normalized,
-                buffer.vertexSize,
-                a.offset);
-        });
-    }
-
+    
     setUniforms(uniforms: UniformCollection)
     {
         for (const name in uniforms) {
@@ -130,34 +103,34 @@ export class Shader {
         const uniform = this._uniforms[name];
         if(uniform === undefined)
             throw `Unknown uniform: "${name}"`;
-        
+            
         switch (uniform.info.type) {
-            case GlUniformType.FLOAT:
-                this.setFloat(uniform.location, <number>value);
+            case this._gl.FLOAT:
+            this.setFloat(uniform.location, <number>value);
                 break;
-            case GlUniformType.FLOAT_VEC2:
+                case this._gl.FLOAT_VEC2:
                 this.setVec2(uniform.location, <number[]>value);
                 break;
-            case GlUniformType.FLOAT_VEC3:
-                this.setVec3(uniform.location, <number[]>value);
+            case this._gl.FLOAT_VEC3:
+            this.setVec3(uniform.location, <number[]>value);
                 break;
-            case GlUniformType.FLOAT_VEC4:
+                case this._gl.FLOAT_VEC4:
                 this.setVec4(uniform.location, <number[]>value);        
                 break;
-            case GlUniformType.FLOAT_MAT2:
+                case this._gl.FLOAT_MAT2:
                 this.setMat2(uniform.location, <number[]>value);        
                 break;
-            case GlUniformType.FLOAT_MAT3:
-                this.setMat3(uniform.location, <number[]>value);        
-                break;
-            case GlUniformType.FLOAT_MAT4:                
+            case this._gl.FLOAT_MAT3:
+            this.setMat3(uniform.location, <number[]>value);        
+            break;
+            case this._gl.FLOAT_MAT4:                
                 this.setMat4(uniform.location, <number[]>value);        
                 break;
-            case GlUniformType.SAMPLER_2D:
+                case this._gl.SAMPLER_2D:
                 this.setTextureUnit(uniform.location, <number>value);
                 break;
             default:
-                throw `Setting data type ${GlUniformType[uniform.info.type]} not yet supported.`;
+            throw `Unsupported data type for uniform: ${uniform.info.name}.`;
         }
     }
 
@@ -196,18 +169,22 @@ export class Shader {
         this._gl.uniformMatrix4fv(loc, false, arr);
     }
     
-    setTextureUnit(loc: WebGLUniformLocation, unit: GlTextureUnit){
+    setTextureUnit(loc: WebGLUniformLocation, unit: number){
         this.use();
-        this._gl.uniform1i(loc, unit - GlTextureUnit.TEXTURE0);
+        this._gl.uniform1i(loc, unit);
     }
     
     delete(){
         this._gl.deleteProgram(this._handle);
     }
+    
+    private getParameter(param: number){
+        return this._gl.getProgramParameter(this._handle, param)
+    }
 
     private collectUniformInformation(){
-        const uniforms = <any>this.getParameter(GlProgramParam.ACTIVE_UNIFORMS);
-
+        const uniforms = <any>this.getParameter(this._gl.ACTIVE_UNIFORMS);
+        
         for (let i = 0; i < uniforms; i++) {
             const info = this._gl.getActiveUniform(this._handle, i);
             const loc = this._gl.getUniformLocation(this._handle, info.name);
@@ -219,8 +196,8 @@ export class Shader {
     }
 
     private collectAttributeInformation(){
-        const attributes = <any>this.getParameter(GlProgramParam.ACTIVE_ATTRIBUTES);
-
+        const attributes = <any>this.getParameter(this._gl.ACTIVE_ATTRIBUTES);
+        
         for (let i = 0; i < attributes; i++) {
             const info = this._gl.getActiveAttrib(this._handle, i);
             this._attributeLocations[info.name] = i;

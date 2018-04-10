@@ -1,4 +1,5 @@
-import { GlBufferType, GlDataType, GlBufferUsage } from './constants';
+import { GlBufferUsage } from './constants/gl-buffer-usage';
+import { GlDataType } from './constants/gl-data-type';
 
 export interface BufferOptions {
     usage?: GlBufferUsage,
@@ -39,7 +40,8 @@ export class VertexBuffer {
     private _vertexSize: number;
     private _size: number;
     private _options: BufferOptions;
-    
+    private _attributesByName: {[key:string]:AttributeInfo} = {};
+
     public attributes: AttributeInfo[];
 
     constructor(protected _gl: WebGLRenderingContext, options: BufferOptions){
@@ -61,6 +63,7 @@ export class VertexBuffer {
                     offset: offset
                 };                
                 offset += this.getSize(attr.dataType) * attr.components;
+                this._attributesByName[x.name] = attr;
                 return attr;
             });
         this._vertexSize = offset;
@@ -70,7 +73,7 @@ export class VertexBuffer {
         
         this._handle = _gl.createBuffer();
         this.bind();
-        this._gl.bufferData(GlBufferType.ARRAY_BUFFER, <any>this._options.data, this._options.usage);
+        this._gl.bufferData(_gl.ARRAY_BUFFER, <any>this._options.data, this._options.usage);
     }
 
     private getSize(type: GlDataType){
@@ -94,7 +97,7 @@ export class VertexBuffer {
 
     public bind(){
         if(VertexBuffer._current !== this._handle){
-            this._gl.bindBuffer(GlBufferType.ARRAY_BUFFER, this._handle);
+            this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._handle);
             VertexBuffer._current = this._handle;
         }
     }
@@ -113,7 +116,21 @@ export class VertexBuffer {
 
     public subData(offset: number, data: ArrayBuffer){
         this.bind();
-        this._gl.bufferSubData(GlBufferType.ARRAY_BUFFER, offset, data);
+        this._gl.bufferSubData(this._gl.ARRAY_BUFFER, offset, data);
+    }
+    
+    public enableAttribute(name:string, location:number){
+        this.bind();
+        const a = this._attributesByName[name];
+        
+        this._gl.enableVertexAttribArray(location);
+        this._gl.vertexAttribPointer(
+            location,
+            a.components,
+            a.dataType,
+            a.normalized,
+            this._vertexSize,
+            a.offset);
     }
 
     public delete(){

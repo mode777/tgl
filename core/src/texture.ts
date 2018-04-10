@@ -1,5 +1,8 @@
-import { GlTextureUnit, GlTextureCreateType, GlPixelFormat, GlPixelType, GlTextureParameter, GlMagType, GlMinType, GlWrapMode, GlTextureBindType, GlParam } from "./constants";
-import { Framebuffer } from "./framebuffer";
+import { GlMinType } from './constants/gl-min-type';
+import { GlMagType } from './constants/gl-mag-type';
+import { GlWrapMode } from './constants/gl-wrap-mode';
+import { GlPixelFormat } from './constants/gl-pixel-format';
+import { GlPixelType } from './constants/gl-pixel-type';
 
 export interface TextureOptions {
     source: TextureImage | ArrayBufferView,
@@ -36,12 +39,6 @@ export class Texture {
     private static _active = 0;
     private static _maxUnits = -1;
     
-    // public static fromFramebuffer(framebuffer: Framebuffer, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
-    //     // TODO: Implement
-    //     framebuffer.bind();
-    //     this._gl.copyTexImage2D(GlTextureBindType.TEXTURE_2D, level, texture.format, x, y, width, height, 0);
-    // }
-
     public static async fromFile(gl: WebGLRenderingContext, url: string, options: Partial<TextureOptions> = {}){
         return new Promise<Texture>((res, rej) => {
             const img = new Image();            
@@ -62,7 +59,7 @@ export class Texture {
 
     constructor(protected _gl: WebGLRenderingContext, options: TextureOptions) {
         if(Texture._maxUnits === -1)
-            Texture._maxUnits = _gl.getParameter(GlParam.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+            Texture._maxUnits = _gl.getParameter(_gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
         
         this._options =  { ...DefaultTextureOptions, ...options };
         this._handle = this._gl.createTexture();
@@ -82,7 +79,7 @@ export class Texture {
         
         this.bind();
         if(this._options.generateMipmaps){
-            _gl.generateMipmap(GlTextureBindType.TEXTURE_2D);
+            _gl.generateMipmap(_gl.TEXTURE_2D);
         }
         this.setFilter(this._options.filterMin, this._options.filterMag);
         this.setWrapping(this._options.wrapX, this._options.wrapY);
@@ -104,39 +101,37 @@ export class Texture {
         return this._height;
     }
 
-    public bind(unit?: GlTextureUnit) {
+    public bind(unit?: number) {
 
         if(unit !== undefined){
-            const idx = unit - GlTextureUnit.TEXTURE0;
-    
-            if(idx >= Texture._maxUnits){
-                throw `${GlTextureUnit[unit]} is not available on this system`;
+            if(unit >= Texture._maxUnits){
+                throw `Cannot bind texture unit ${unit}. System maximum is ${Texture._maxUnits-1}.`;
             }
     
-            if(idx != Texture._active){
-                this._gl.activeTexture(unit);
-                Texture._active = idx;
+            if(unit != Texture._active){
+                this._gl.activeTexture(unit + this._gl.TEXTURE0);
+                Texture._active = unit;
             }
         }
 
         if(this._handle !== Texture._bound[Texture._active]){
-            this._gl.bindTexture(GlTextureCreateType.TEXTURE_2D, this._handle);
+            this._gl.bindTexture(this._gl.TEXTURE_2D, this._handle);
             Texture._bound[Texture._active] = this._handle;
         }
 
-        return <GlTextureUnit>(Texture._active + GlTextureUnit.TEXTURE0)
+        return Texture._active;
     }
 
     public setFilter(min: GlMinType, mag: GlMagType) {
         this.bind();
-        this._gl.texParameteri(GlTextureCreateType.TEXTURE_2D, GlTextureParameter.TEXTURE_MIN_FILTER, min);
-        this._gl.texParameteri(GlTextureCreateType.TEXTURE_2D, GlTextureParameter.TEXTURE_MAG_FILTER, mag);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, min);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, mag);
     }
 
     public setWrapping(s: GlWrapMode, t: GlWrapMode) {
         this.bind();
-        this._gl.texParameteri(GlTextureCreateType.TEXTURE_2D, GlTextureParameter.TEXTURE_WRAP_S, s);
-        this._gl.texParameteri(GlTextureCreateType.TEXTURE_2D, GlTextureParameter.TEXTURE_WRAP_T, t);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, s);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, t);
     }
     
     private createFromImage(data: TextureImage) {
@@ -146,7 +141,7 @@ export class Texture {
         this.bind();
         
         this._gl.texImage2D(
-            GlTextureCreateType.TEXTURE_2D,
+            this._gl.TEXTURE_2D,
             this._options.lod,
             this._options.format,
             this._options.format,
@@ -160,7 +155,7 @@ export class Texture {
 
         this.bind();
         this._gl.texImage2D(
-            GlTextureCreateType.TEXTURE_2D, 
+            this._gl.TEXTURE_2D, 
             this._options.lod, 
             this._options.format, 
             this._width, 

@@ -1,5 +1,4 @@
-import { Texture } from "./texture";
-import { GlFramebufferType, GlFramebufferStatus, GlTextureBindType } from "./constants";
+import { GlFramebufferStatus } from './constants/gl-framebuffer-status';
 
 export class Framebuffer {
     
@@ -13,7 +12,7 @@ export class Framebuffer {
 
     bind(){
         if(this._handle !== Framebuffer._current){
-            this._gl.bindFramebuffer(GlFramebufferType.FRAMEBUFFER, this._handle);
+            this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._handle);
             Framebuffer._current = this._handle;
         }
     }
@@ -25,15 +24,14 @@ export class Framebuffer {
     checkStatus(): GlFramebufferStatus {
         throw "Not implemented"
     }
-
     
-    copyToTexture(texture: Texture, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
-        this.bind();
-        this._gl.copyTexImage2D(GlTextureBindType.TEXTURE_2D, level, texture.format, x, y, width, height, 0);
-    }
+    // copyToTexture(texture: Texture, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
+    //     this.bind();
+    //     this._gl.copyTexImage2D(GlTextureBindType.TEXTURE_2D, level, texture.format, x, y, width, height, 0);
+    // }
 
-    copyToSubTexture(texture: Texture, xoffset = 0, yoffset = 0, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
-        this.bind();
-        this._gl.copyTexSubImage2D(GlTextureBindType.TEXTURE_2D, level, xoffset, yoffset, x, y, width, height);
-    }
+    // copyToSubTexture(texture: Texture, xoffset = 0, yoffset = 0, x = 0, y = 0, width = texture.width, height = texture.height, level = 0){
+    //     this.bind();
+    //     this._gl.copyTexSubImage2D(GlTextureBindType.TEXTURE_2D, level, xoffset, yoffset, x, y, width, height);
+    // }
 }

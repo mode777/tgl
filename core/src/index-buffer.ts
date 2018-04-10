@@ -1,5 +1,3 @@
-import { GlBufferType, GlBufferUsage, GlDataType } from './constants';
-
 export class IndexBuffer {
 
     private static _current: WebGLBuffer;
@@ -12,7 +10,7 @@ export class IndexBuffer {
         this._length = data.length;
         this._handle = _gl.createBuffer();
         this.bind();
-        this._gl.bufferData(GlBufferType.ELEMENT_ARRAY_BUFFER, data, GlBufferUsage.STATIC_DRAW);
+        this._gl.bufferData(_gl.ELEMENT_ARRAY_BUFFER, data, _gl.STATIC_DRAW);
     }
     
     public get webGlBuffer() {
@@ -20,7 +18,7 @@ export class IndexBuffer {
     }
 
     public get type(){
-        return GlDataType.UNSIGNED_SHORT;
+        return this._gl.UNSIGNED_SHORT;
     }
     
     public get length(){
@@ -29,7 +27,7 @@ export class IndexBuffer {
     
     public bind(){
         if(this._handle !== IndexBuffer._current){
-            this._gl.bindBuffer(GlBufferType.ELEMENT_ARRAY_BUFFER, this._handle);        
+            this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._handle);        
             IndexBuffer._current = this._handle;
         }
     }
