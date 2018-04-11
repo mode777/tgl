@@ -17,7 +17,8 @@
   "types": "dist/main.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "docs": "typedoc --target es6 --mode file --out ./../docs src/main.ts"
   },
   "author": "Alexander Klingenbeck",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-typescript2": "^0.12.0",
     "rollup-plugin-uglify": "^3.0.0",
+    "typedoc": "^0.11.1",
     "typescript": "^2.7.2"
   },
   "dependencies": {

@@ -4,22 +4,40 @@ import { Shader, ShaderOptions, UniformValue } from './shader';
 import { IndexBuffer } from './index-buffer';
 import { GlPrimitiveType } from './constants/gl-primitive-type';
 
+/** Options to initialize a drawable with */
 export interface DrawableOptions {
+    /** An array of either {@link VertexBuffer} or {@link BufferOptions}. 
+     * If options are supplied, new instances are created */
     buffers: (VertexBuffer | BufferOptions)[],
+    /** Either a {@link Shader} or {@link ShaderOptions}
+     * If options are supplied, a new instance is created */
     shader: Shader | ShaderOptions
+    /** An array of of vertex indices, which can be supplied a number array, UInt16Array or {@link IndexBuffer}.
+     * If no indices are supplied, each three vertices are interpreted as a new triangle. */
     indices?: IndexBuffer | number[] | Uint16Array;
+    /** An object which contains either a {@link Texture} or a {@link TextureOptions}.
+     * If options are supplied, new instances are created.
+     * The keys of the object should correspond with the sampler2D uniforms in the shader. */
     textures?: {[key:string]: Texture | TextureOptions }
+    /** An object containing uniform values to be sent to the shader.
+     * The keys of the object should correspond with the uniforms in the shader.
+     * For sampler2D uniforms you should use the 'textures' option. */
     uniforms?: {[key:string]: UniformValue }
 }
 
+/** Represents a set of WebGL primitives, which can be utilized to draw an image. */
 export class Drawable {
-
     private _buffers: VertexBuffer[] = [];
     private _shader: Shader;
     private _indices: IndexBuffer = null;
     private _textures: {[key:string]: Texture } = {};
     private _uniforms: {[key:string]: UniformValue};
 
+    /**
+     * Creates a new drawable instance
+     * @param _gl A WebGL rendering context
+     * @param _options Options object to initialize drawable with. 
+     */
     constructor(protected _gl: WebGLRenderingContext, private _options: DrawableOptions){
         if(_options.buffers.length === 0)
             throw 'You need at least one buffer to draw.';
@@ -44,6 +62,13 @@ export class Drawable {
         this._uniforms = this._options.uniforms ? {..._options.uniforms} : {};
     }
     
+    /**
+     * Draw to the current framebuffer.
+     * Automatically sets up attributes, uniforms, buffer etc..
+     * @param mode Type of rendering primitives to draw. Default = TRIANGLES
+     * @param start First vertex to draw. Default = 0
+     * @param end Last vertex to draw. Default = -1 (all)
+     */
     draw(mode: GlPrimitiveType = GlPrimitiveType.TRIANGLES, start: number = 0, end: number = -1){
         this._shader.use();
         this._buffers.forEach(x => 
