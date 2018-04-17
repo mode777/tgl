@@ -29,7 +29,11 @@ If you are using yarn
 yarn add @tgl/core
 ```
 
-## Usage
+## Documentation
+
+Typedoc documentation is available on [GitHub Pages](https://mode777.github.io/tgl/).
+
+## Getting started
 
 Drawing a simple triangle:
 

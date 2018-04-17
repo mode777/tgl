@@ -19,6 +19,10 @@ TGL aims to provide...
 * Performance boosts through WebGL state caching.
 * Zero dependencies (except tslib), 5k gziped, tree-shaking support.
 
+## Documentation
+
+Typedoc documentation is available on [GitHub Pages](https://mode777.github.io/tgl/).
+
 ## Installation
 
 ```

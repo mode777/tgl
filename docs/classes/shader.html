@@ -66,6 +66,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Describes a shader programm, which can be used for drawing.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -87,18 +94,18 @@
 						<section class="tsd-index-section tsd-is-private-protected tsd-is-external">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#_attributelocations" class="tsd-kind-icon">_attribute<wbr>Locations</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#_attributes" class="tsd-kind-icon">_attributes</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-external"><a href="shader.html#_gl" class="tsd-kind-icon">_gl</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#_handle" class="tsd-kind-icon">_handle</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#_uniforms" class="tsd-kind-icon">_uniforms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#attributelocations" class="tsd-kind-icon">attribute<wbr>Locations</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#attributes" class="tsd-kind-icon">attributes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-external"><a href="shader.html#gl" class="tsd-kind-icon">gl</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#handle" class="tsd-kind-icon">handle</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="shader.html#uniforms" class="tsd-kind-icon">uniforms</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static tsd-is-external"><a href="shader.html#_current" class="tsd-kind-icon">_current</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-external"><a href="shader.html#handle" class="tsd-kind-icon">handle</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-external"><a href="shader.html#webglprogram" class="tsd-kind-icon">web<wbr>GlProgram</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-external">
@@ -133,22 +140,37 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Shader<span class="tsd-signature-symbol">(</span>_gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/shaderoptions.html" class="tsd-signature-type">ShaderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="shader.html" class="tsd-signature-type">Shader</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Shader<span class="tsd-signature-symbol">(</span>gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/shaderoptions.html" class="tsd-signature-type">ShaderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="shader.html" class="tsd-signature-type">Shader</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L36">shader.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L46">shader.ts:46</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a new Shader</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>_gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
+									<h5>gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Rendering context</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>options: <a href="../interfaces/shaderoptions.html" class="tsd-signature-type">ShaderOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Options to initialize the shader with. See <a href="../interfaces/shaderoptions.html">ShaderOptions</a>.</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="shader.html" class="tsd-signature-type">Shader</a></h4>
@@ -159,12 +181,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected tsd-is-external">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-					<a name="_attributelocations" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _attribute<wbr>Locations</h3>
-					<div class="tsd-signature tsd-kind-icon">_attribute<wbr>Locations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<a name="attributelocations" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> attribute<wbr>Locations</h3>
+					<div class="tsd-signature tsd-kind-icon">attribute<wbr>Locations<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L36">shader.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L46">shader.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -177,42 +199,47 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-					<a name="_attributes" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _attributes</h3>
-					<div class="tsd-signature tsd-kind-icon">_attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLActiveInfo</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<a name="attributes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> attributes</h3>
+					<div class="tsd-signature tsd-kind-icon">attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLActiveInfo</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L35">shader.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L45">shader.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-external">
-					<a name="_gl" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _gl</h3>
-					<div class="tsd-signature tsd-kind-icon">_gl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLRenderingContext</span></div>
+					<a name="gl" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> gl</h3>
+					<div class="tsd-signature tsd-kind-icon">gl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLRenderingContext</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L38">shader.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L51">shader.ts:51</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Rendering context</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+					<a name="handle" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> handle</h3>
+					<div class="tsd-signature tsd-kind-icon">handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLProgram</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L43">shader.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-					<a name="_handle" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _handle</h3>
-					<div class="tsd-signature tsd-kind-icon">_handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLProgram</span></div>
+					<a name="uniforms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> uniforms</h3>
+					<div class="tsd-signature tsd-kind-icon">uniforms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L31">shader.ts:31</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-					<a name="_uniforms" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _uniforms</h3>
-					<div class="tsd-signature tsd-kind-icon">_uniforms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L33">shader.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L44">shader.ts:44</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -230,7 +257,7 @@
 					<div class="tsd-signature tsd-kind-icon">_current<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLTexture</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L17">shader.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L23">shader.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -238,18 +265,23 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
-					<a name="handle" class="tsd-anchor"></a>
-					<h3>handle</h3>
+					<a name="webglprogram" class="tsd-anchor"></a>
+					<h3>web<wbr>GlProgram</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> handle<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLProgram</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> webGlProgram<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLProgram</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L74">shader.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L91">shader.ts:91</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Handle to the native WebGL program.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">WebGLProgram</span></h4>
 						</li>
 					</ul>
@@ -267,7 +299,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L198">shader.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L250">shader.ts:250</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -284,7 +316,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L185">shader.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L237">shader.ts:237</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -301,9 +333,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L177">shader.ts:177</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L229">shader.ts:229</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Delete the underlying WebGLProgramm</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -318,9 +355,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L89">shader.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L111">shader.ts:111</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the attribute index for a attribute variable name in the shader.
+									Calling this method has no performance caveat.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -341,7 +384,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L181">shader.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L233">shader.ts:233</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -364,9 +407,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L85">shader.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L105">shader.ts:105</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the WebGLUniformLocation for a uniform variable name in the shader.
+									Calling this method has no performance caveat.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -387,16 +436,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L137">shader.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L167">shader.ts:167</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a float to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>value: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>value to send</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -413,16 +473,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L157">shader.ts:157</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L199">shader.ts:199</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a 2x2 Matrix to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Array representing the matrix</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -439,16 +510,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L162">shader.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L207">shader.ts:207</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a 3x3 Matrix to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Array representing the matrix</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -465,16 +547,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L167">shader.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L215">shader.ts:215</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a 4x4 Matrix to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Array representing the matrix</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -491,16 +584,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L172">shader.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L223">shader.ts:223</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Bind a texture unit to a Sampler2D variable,</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>unit: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Index of Texture unit (zero-based)</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -517,16 +621,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L102">shader.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L129">shader.ts:129</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set a single uniform by name.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Name of the uniform variable in the shader</p>
+									</div>
 								</li>
 								<li>
 									<h5>value: <a href="../globals.html#uniformvalue" class="tsd-signature-type">UniformValue</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Value to set</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -543,13 +658,21 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L93">shader.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L117">shader.ts:117</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set multiple uniforms from a <a href="../globals.html#uniformcollection">UniformCollection</a></p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>uniforms: <a href="../globals.html#uniformcollection" class="tsd-signature-type">UniformCollection</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Key is the uniform name, value the uniform value to set.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -566,16 +689,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L142">shader.ts:142</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L175">shader.ts:175</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a Vector2 to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Vector as an array</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -592,16 +726,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L147">shader.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L183">shader.ts:183</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a Vector3 to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Vector as an array</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -618,16 +763,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L152">shader.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L191">shader.ts:191</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a Vector4 to the shader.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>loc: <span class="tsd-signature-type">WebGLUniformLocation</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>WebGLUniformLocation of the variable.</p>
+									</div>
 								</li>
 								<li>
 									<h5>arr: <span class="tsd-signature-type">Float32Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Vector as an array</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -644,9 +800,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L78">shader.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L96">shader.ts:96</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Use this shader if it is not currently in use.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -655,28 +816,46 @@
 					<a name="fromfiles" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Files</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static tsd-is-external">
-						<li class="tsd-signature tsd-kind-icon">from<wbr>Files<span class="tsd-signature-symbol">(</span>gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span>, vertexUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fragmentUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, uniforms<span class="tsd-signature-symbol">?: </span><a href="../globals.html#uniformcollection" class="tsd-signature-type">UniformCollection</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="shader.html" class="tsd-signature-type">Shader</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">from<wbr>Files<span class="tsd-signature-symbol">(</span>gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span>, vertexUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fragmentUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/shaderoptions.html" class="tsd-signature-type">ShaderOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="shader.html" class="tsd-signature-type">Shader</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/shader.ts#L19">shader.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/shader.ts#L31">shader.ts:31</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Loads shader sources from files via the fetch API
+									and initializes the shader with them.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Rendering context.</p>
+									</div>
 								</li>
 								<li>
 									<h5>vertexUrl: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Url to the vertex shader file.</p>
+									</div>
 								</li>
 								<li>
 									<h5>fragmentUrl: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Url to the fragment shader file.</p>
+									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> uniforms: <a href="../globals.html#uniformcollection" class="tsd-signature-type">UniformCollection</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/shaderoptions.html" class="tsd-signature-type">ShaderOptions</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Additional shader options.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="shader.html" class="tsd-signature-type">Shader</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -746,25 +925,25 @@
 								<a href="shader.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-								<a href="shader.html#_attributelocations" class="tsd-kind-icon">_attribute<wbr>Locations</a>
+								<a href="shader.html#attributelocations" class="tsd-kind-icon">attribute<wbr>Locations</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-								<a href="shader.html#_attributes" class="tsd-kind-icon">_attributes</a>
+								<a href="shader.html#attributes" class="tsd-kind-icon">attributes</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-external">
-								<a href="shader.html#_gl" class="tsd-kind-icon">_gl</a>
+								<a href="shader.html#gl" class="tsd-kind-icon">gl</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-								<a href="shader.html#_handle" class="tsd-kind-icon">_handle</a>
+								<a href="shader.html#handle" class="tsd-kind-icon">handle</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
-								<a href="shader.html#_uniforms" class="tsd-kind-icon">_uniforms</a>
+								<a href="shader.html#uniforms" class="tsd-kind-icon">uniforms</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static tsd-is-external">
 								<a href="shader.html#_current" class="tsd-kind-icon">_current</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
-								<a href="shader.html#handle" class="tsd-kind-icon">handle</a>
+								<a href="shader.html#webglprogram" class="tsd-kind-icon">web<wbr>GlProgram</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-external">
 								<a href="shader.html#collectattributeinformation" class="tsd-kind-icon">collect<wbr>Attribute<wbr>Information</a>

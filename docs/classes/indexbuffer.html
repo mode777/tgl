@@ -66,6 +66,17 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Represents an index that is used to determine the
+							order in which vertices are used to draw primitives.
+							For example, if you have four vertices describing
+							a rectangle in a clockwise order, you could describe
+						it&#39;s two triangles as <code>[0,3,2, 0,2,1]</code>.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -123,16 +134,32 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L6">index-buffer.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L11">index-buffer.ts:11</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a new index buffer instance</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>_gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>A rendering context</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>_data: <span class="tsd-signature-type">Uint16Array</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>If a normal array is passed in, it gets converted to an Uint16Array.
+											Uint8 Arrays are not supported, as they come with performance caveats.</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="indexbuffer.html" class="tsd-signature-type">IndexBuffer</a></h4>
@@ -148,9 +175,14 @@
 					<div class="tsd-signature tsd-kind-icon">_gl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLRenderingContext</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L8">index-buffer.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L17">index-buffer.ts:17</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A rendering context</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
 					<a name="_handle" class="tsd-anchor"></a>
@@ -158,7 +190,7 @@
 					<div class="tsd-signature tsd-kind-icon">_handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLBuffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L5">index-buffer.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L10">index-buffer.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -168,7 +200,7 @@
 					<div class="tsd-signature tsd-kind-icon">_length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L6">index-buffer.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L11">index-buffer.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -178,7 +210,7 @@
 					<div class="tsd-signature tsd-kind-icon">_current<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLBuffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L3">index-buffer.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L8">index-buffer.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -195,9 +227,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L24">index-buffer.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L36">index-buffer.ts:36</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Number of indices in the buffer</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
@@ -212,9 +249,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L20">index-buffer.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L31">index-buffer.ts:31</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The GL data type of the buffer. Always returns UNSIGNED_SHORT</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
@@ -229,9 +271,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L16">index-buffer.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L26">index-buffer.ts:26</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets the native WebGlBuffer object</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">WebGLBuffer</span></h4>
 						</li>
 					</ul>
@@ -249,9 +296,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L28">index-buffer.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L41">index-buffer.ts:41</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Binds the buffer, if it is not currently bound</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -266,9 +318,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mode777/tgl/blob/a569291/core/src/index-buffer.ts#L35">index-buffer.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/mode777/tgl/blob/d1421f6/core/src/index-buffer.ts#L49">index-buffer.ts:49</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deletes the buffer</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>

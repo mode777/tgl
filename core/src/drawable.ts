@@ -27,39 +27,39 @@ export interface DrawableOptions {
 
 /** Represents a set of WebGL primitives, which can be utilized to draw an image. */
 export class Drawable {
-    private _buffers: VertexBuffer[] = [];
-    private _shader: Shader;
-    private _indices: IndexBuffer = null;
-    private _textures: {[key:string]: Texture } = {};
-    private _uniforms: {[key:string]: UniformValue};
+    private buffers: VertexBuffer[] = [];
+    private shader: Shader;
+    private indices: IndexBuffer = null;
+    private textures: {[key:string]: Texture } = {};
+    private uniforms: {[key:string]: UniformValue};
 
     /**
      * Creates a new drawable instance
-     * @param _gl A WebGL rendering context
-     * @param _options Options object to initialize drawable with. 
+     * @param gl A WebGL rendering context
+     * @param options Options object to initialize drawable with. 
      */
-    constructor(protected _gl: WebGLRenderingContext, private _options: DrawableOptions){
-        if(_options.buffers.length === 0)
+    constructor(protected gl: WebGLRenderingContext, private options: DrawableOptions){
+        if(options.buffers.length === 0)
             throw 'You need at least one buffer to draw.';
 
-        this._buffers = _options.buffers.map(x => x instanceof VertexBuffer 
+        this.buffers = options.buffers.map(x => x instanceof VertexBuffer 
             ? x 
-            : new VertexBuffer(_gl, x));
-        this._shader = _options.shader instanceof Shader 
-            ? _options.shader 
-            : new Shader(_gl, _options.shader);
-        this._indices = _options.indices !== undefined 
-            ? (_options.indices instanceof IndexBuffer 
-                ? _options.indices
-                : new IndexBuffer(_gl, _options.indices)) 
+            : new VertexBuffer(gl, x));
+        this.shader = options.shader instanceof Shader 
+            ? options.shader 
+            : new Shader(gl, options.shader);
+        this.indices = options.indices !== undefined 
+            ? (options.indices instanceof IndexBuffer 
+                ? options.indices
+                : new IndexBuffer(gl, options.indices)) 
             : null;
-        Object.keys(_options.textures || {}).forEach(name => {
-            const tex = _options.textures[name];
-            this._textures[name] = _options.textures[name] instanceof Texture 
-                ? <Texture>_options.textures[name]
-                : new Texture(_gl, <TextureOptions>_options.textures[name])
+        Object.keys(options.textures || {}).forEach(name => {
+            const tex = options.textures[name];
+            this.textures[name] = options.textures[name] instanceof Texture 
+                ? <Texture>options.textures[name]
+                : new Texture(gl, <TextureOptions>options.textures[name])
         });
-        this._uniforms = this._options.uniforms ? {..._options.uniforms} : {};
+        this.uniforms = this.options.uniforms ? {...options.uniforms} : {};
     }
     
     /**
@@ -70,34 +70,34 @@ export class Drawable {
      * @param end Last vertex to draw. Default = -1 (all)
      */
     draw(mode: GlPrimitiveType = GlPrimitiveType.TRIANGLES, start: number = 0, end: number = -1){
-        this._shader.use();
-        this._buffers.forEach(x => 
+        this.shader.use();
+        this.buffers.forEach(x => 
             x.attributes.forEach(y => 
-                x.enableAttribute(y.name, this._shader.getAttributeLocation(y.name))));
+                x.enableAttribute(y.name, this.shader.getAttributeLocation(y.name))));
         
         let i = 0;
-        for (const name in this._textures) {
-            if  (this._textures.hasOwnProperty(name)) {
-                const unit = this._textures[name].bind(i);
-                this._shader.setUniform(name, unit);
+        for (const name in this.textures) {
+            if  (this.textures.hasOwnProperty(name)) {
+                const unit = this.textures[name].bind(i);
+                this.shader.setUniform(name, unit);
                 i++;
             }
         }
-        this._shader.setUniforms(this._uniforms);
+        this.shader.setUniforms(this.uniforms);
     
-        if(this._indices !== null){
-            this._indices.bind();
-            this._gl.drawElements(
+        if(this.indices !== null){
+            this.indices.bind();
+            this.gl.drawElements(
                 mode, 
-                end != -1 ? end - start : this._indices.length - start, 
-                this._indices.type, 
+                end != -1 ? end - start : this.indices.length - start, 
+                this.indices.type, 
                 start);
         }
         else {
-            this._gl.drawArrays(
+            this.gl.drawArrays(
                 mode, 
                 start, 
-                end != -1 ? end - start : this._buffers[0].vertexCount - start);
+                end != -1 ? end - start : this.buffers[0].vertexCount - start);
         }
     }
 }
