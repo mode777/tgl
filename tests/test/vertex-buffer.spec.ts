@@ -143,7 +143,7 @@ describe("VertexBuffer", () => {
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawArrays(GlPrimitiveType.TRIANGLES, 0, 3);
 
-        await expect(gl).toLookLike('./assets/reference/vertex-triangle-color.png', 100)
+        await expect(gl).toLookLike('./assets/reference/vertex-triangle-color.png', 99)
     });
 
     it('should render with index buffer', async () => {

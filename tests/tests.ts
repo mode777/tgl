@@ -1,4 +1,5 @@
 import './test/drawable.spec.ts';
+import './test/framebuffer.spec.ts';
 import './test/renderer.spec.ts';
 import './test/shader.spec.ts';
 import './test/texture.spec.ts';

@@ -38,6 +38,26 @@ export class Texture {
     private static _bound: WebGLTexture[] = [];
     private static _active = 0;
     private static _maxUnits = -1;
+
+    public static bind(gl: WebGLRenderingContext, texture: WebGLTexture, unit?: number){
+        if(unit !== undefined){
+            if(unit >= Texture._maxUnits){
+                throw `Cannot bind texture unit ${unit}. System maximum is ${Texture._maxUnits-1}.`;
+            }
+    
+            if(unit != Texture._active){
+                gl.activeTexture(unit + gl.TEXTURE0);
+                Texture._active = unit;
+            }
+        }
+
+        if(texture !== Texture._bound[Texture._active]){
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            Texture._bound[Texture._active] = texture;
+        }
+
+        return Texture._active;
+    }
     
     public static async fromFile(gl: WebGLRenderingContext, url: string, options: Partial<TextureOptions> = {}){
         return new Promise<Texture>((res, rej) => {
@@ -171,6 +191,7 @@ export class Texture {
     }
 
     createEmpty(width: number, height: number) {
+        console.log(width, height)
         this.bind();
         this._gl.texImage2D(
             this._gl.TEXTURE_2D, 

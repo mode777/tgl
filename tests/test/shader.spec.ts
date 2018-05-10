@@ -16,7 +16,7 @@ const fragment =
   }`;
 
 
-describe("Shader", () => {
+describe('Shader', () => {
 
     it('should have a WebGlProgram', () => {
         const context = new TglContext(document.createElement('canvas'));
@@ -28,7 +28,7 @@ describe("Shader", () => {
         });
         
         context.checkErrors();
-        expect(shader.handle).toBeInstanceOf(WebGLProgram);
+        expect(shader.webGlProgram).toBeInstanceOf(WebGLProgram);
     });
     
     it('should load shaders from files', async () => {
@@ -38,7 +38,7 @@ describe("Shader", () => {
         const shader = await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl');        
 
         context.checkErrors();
-        expect(shader.handle).toBeInstanceOf(WebGLProgram);
+        expect(shader.webGlProgram).toBeInstanceOf(WebGLProgram);
     });
 
     it('should throw a compile error',() => {
