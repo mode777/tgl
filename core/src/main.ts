@@ -1,4 +1,4 @@
-//export * from './framebuffer';
+export * from './framebuffer';
 export * from './tgl-context';
 export * from './index-buffer';
 //export * from './renderbuffer';

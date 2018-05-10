@@ -5,7 +5,7 @@ import { GlPixelFormat } from './constants/gl-pixel-format';
 import { GlPixelType } from './constants/gl-pixel-type';
 
 export interface TextureOptions {
-    source: TextureImage | ArrayBufferView,
+    source?: TextureImage | ArrayBufferView,
     lod?: number,
     format?: GlPixelFormat,
     pixelType?: GlPixelType,
@@ -75,6 +75,10 @@ export class Texture {
             else if(this._options.source) {
                 this.createFromImage(<TextureImage>this._options.source)
             }
+        }
+        else {
+            // no data
+            this.createEmpty(this._options.width, this._options.height);
         }
         
         this.bind();
@@ -164,5 +168,19 @@ export class Texture {
             this._options.format, 
             this._options.pixelType, 
             data);
+    }
+
+    createEmpty(width: number, height: number) {
+        this.bind();
+        this._gl.texImage2D(
+            this._gl.TEXTURE_2D, 
+            this._options.lod, 
+            this._options.format, 
+            this._width, 
+            this._height, 
+            0, 
+            this._options.format, 
+            this._options.pixelType, 
+            null);
     }
 }
