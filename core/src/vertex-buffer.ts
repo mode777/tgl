@@ -1,5 +1,6 @@
 import { GlBufferUsage } from './constants/gl-buffer-usage';
 import { GlDataType } from './constants/gl-data-type';
+import { TglState } from './tgl-state';
 
 export interface BufferOptions {
     usage?: GlBufferUsage,
@@ -34,25 +35,24 @@ const attributeDefaults = {
 
 export class VertexBuffer {
     
-    private static _current: WebGLBuffer;   
+    private handle: WebGLBuffer;
+    private options: BufferOptions;
+    private attributesByName: {[key:string]:AttributeInfo} = {};
+    private state = TglState.getCurrent(this.gl);
 
-    private _handle: WebGLBuffer;
-    private _vertexSize: number;
-    private _size: number;
-    private _options: BufferOptions;
-    private _attributesByName: {[key:string]:AttributeInfo} = {};
+    public readonly vertexSize: number;
+    public readonly size: number;
+    public readonly attributes: AttributeInfo[];
 
-    public attributes: AttributeInfo[];
-
-    constructor(protected _gl: WebGLRenderingContext, options: BufferOptions){
+    constructor(protected gl: WebGLRenderingContext, options: BufferOptions){
         options.data = Object.prototype.toString.call(options.data) === '[object Array]'
             ? new Float32Array(options.data)
             : options.data;
 
-        this._options =  { ...bufferDefaults, ...options };
+        this.options =  { ...bufferDefaults, ...options };
         
         let offset = 0;
-        this.attributes = this._options.attributes
+        this.attributes = this.options.attributes
             .map(x => ({ ...attributeDefaults, ...x }))
             .map(x => {
                 const attr = {
@@ -63,17 +63,17 @@ export class VertexBuffer {
                     offset: offset
                 };                
                 offset += this.getSize(attr.dataType) * attr.components;
-                this._attributesByName[x.name] = attr;
+                this.attributesByName[x.name] = attr;
                 return attr;
             });
-        this._vertexSize = offset;
+        this.vertexSize = offset;
 
-        const data: any = this._options.data;
-        this._size = data.buffer ? data.buffer.byteLength : data.byteLength;
+        const data: any = this.options.data;
+        this.size = data.buffer ? data.buffer.byteLength : data.byteLength;
         
-        this._handle = _gl.createBuffer();
+        this.handle = gl.createBuffer();
         this.bind();
-        this._gl.bufferData(_gl.ARRAY_BUFFER, <any>this._options.data, this._options.usage);
+        this.gl.bufferData(gl.ARRAY_BUFFER, <any>this.options.data, this.options.usage);
     }
 
     private getSize(type: GlDataType){
@@ -92,48 +92,37 @@ export class VertexBuffer {
     }
     
     public get webGlBuffer() {
-        return this._handle;
+        return this.handle;
     }
 
     public bind(){
-        if(VertexBuffer._current !== this._handle){
-            this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._handle);
-            VertexBuffer._current = this._handle;
-        }
-    }
-
-    public get vertexSize(){
-        return this._vertexSize;
-    }
-
-    public get size(){
-        return this._size;
+        this.state.vertexBuffer(this.handle);
     }
 
     public get vertexCount(){
-        return this._size / this._vertexSize;
+        return this.size / this.vertexSize;
     }
 
     public subData(offset: number, data: ArrayBuffer){
         this.bind();
-        this._gl.bufferSubData(this._gl.ARRAY_BUFFER, offset, data);
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, offset, data);
     }
     
     public enableAttribute(name:string, location:number){
         this.bind();
-        const a = this._attributesByName[name];
+        const a = this.attributesByName[name];
         
-        this._gl.enableVertexAttribArray(location);
-        this._gl.vertexAttribPointer(
+        this.gl.enableVertexAttribArray(location);
+        this.gl.vertexAttribPointer(
             location,
             a.components,
             a.dataType,
             a.normalized,
-            this._vertexSize,
+            this.vertexSize,
             a.offset);
     }
 
     public delete(){
-        this._gl.deleteBuffer(this._handle);
+        this.gl.deleteBuffer(this.handle);
     }
 }

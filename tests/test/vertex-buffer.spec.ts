@@ -93,7 +93,7 @@ describe("VertexBuffer", () => {
 
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawArrays(GlPrimitiveType.TRIANGLES, 0, 3);
 
@@ -139,7 +139,7 @@ describe("VertexBuffer", () => {
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
         buffer.enableAttribute('aColor', shader.getAttributeLocation('aColor'));
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawArrays(GlPrimitiveType.TRIANGLES, 0, 3);
 
@@ -173,7 +173,7 @@ describe("VertexBuffer", () => {
 
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
         
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawElements(GlPrimitiveType.TRIANGLES, indices.length, indices.type, 0);
 

@@ -4,6 +4,7 @@ import { Shader, ShaderOptions, UniformValue } from './shader';
 import { IndexBuffer } from './index-buffer';
 import { GlPrimitiveType } from './constants/gl-primitive-type';
 import { FramebufferOptions, Framebuffer } from './framebuffer';
+import { TglState } from './tgl-state';
 
 /** Options to initialize a drawable with */
 export interface DrawableOptions {
@@ -31,6 +32,7 @@ export interface DrawableOptions {
 
 /** Represents a set of WebGL primitives, which can be utilized to draw an image. */
 export class Drawable {
+    private state = TglState.getCurrent(this.gl);
     private buffers: VertexBuffer[] = [];
     private shader: Shader;
     private framebuffer: Framebuffer;
@@ -82,7 +84,7 @@ export class Drawable {
         if(this.framebuffer)
             this.framebuffer.bind();
         else
-            Framebuffer.bindDefaultFramebuffer(this.gl);
+            this.state.framebuffer(null);
 
         this.buffers.forEach(x => 
             x.attributes.forEach(y => 

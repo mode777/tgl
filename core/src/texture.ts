@@ -3,6 +3,7 @@ import { GlMagType } from './constants/gl-mag-type';
 import { GlWrapMode } from './constants/gl-wrap-mode';
 import { GlPixelFormat } from './constants/gl-pixel-format';
 import { GlPixelType } from './constants/gl-pixel-type';
+import { TglState } from './tgl-state';
 
 export interface TextureOptions {
     source?: TextureImage | ArrayBufferView,
@@ -34,30 +35,6 @@ const DefaultTextureOptions = {
 }
 
 export class Texture {
-
-    private static _bound: WebGLTexture[] = [];
-    private static _active = 0;
-    private static _maxUnits = -1;
-
-    public static bind(gl: WebGLRenderingContext, texture: WebGLTexture, unit?: number){
-        if(unit !== undefined){
-            if(unit >= Texture._maxUnits){
-                throw `Cannot bind texture unit ${unit}. System maximum is ${Texture._maxUnits-1}.`;
-            }
-    
-            if(unit != Texture._active){
-                gl.activeTexture(unit + gl.TEXTURE0);
-                Texture._active = unit;
-            }
-        }
-
-        if(texture !== Texture._bound[Texture._active]){
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            Texture._bound[Texture._active] = texture;
-        }
-
-        return Texture._active;
-    }
     
     public static async fromFile(gl: WebGLRenderingContext, url: string, options: Partial<TextureOptions> = {}){
         return new Promise<Texture>((res, rej) => {
@@ -70,138 +47,119 @@ export class Texture {
         });
     }
 
-    private _handle: WebGLTexture;
-    private _ref: number;
-    private _width: number;
-    private _height: number;
-    protected _options: TextureOptions;
+    private handle: WebGLTexture;
+    private state = TglState.getCurrent(this.gl);
 
-
-    constructor(protected _gl: WebGLRenderingContext, options: TextureOptions) {
-        if(Texture._maxUnits === -1)
-            Texture._maxUnits = _gl.getParameter(_gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+    protected options: TextureOptions;
+    
+    public readonly width: number;
+    public readonly height: number;
+    
+    constructor(protected gl: WebGLRenderingContext, options: TextureOptions) {
         
-        this._options =  { ...DefaultTextureOptions, ...options };
-        this._handle = this._gl.createTexture();
+        this.options =  { ...DefaultTextureOptions, ...options };
+        this.handle = this.gl.createTexture();
         
-        if(this._options.source){
+        if(this.options.source){
             // is typed array
-            if(this._options.source['buffer']){
-                if(!this._options.width || !this._options.height)
+            if(this.options.source['buffer']){
+                if(!this.options.width || !this.options.height)
                     throw 'If source is a typed array, you have to supply "width" and "height"';
-                this.createFromData(<ArrayBufferView>this._options.source, this._options.width, this._options.height);
+                
+                this.width = this.options.width;
+                this.height = this.options.height;
+                this.createFromData(<ArrayBufferView>this.options.source);
+                
             }
             // is HtmlImageElement
-            else if(this._options.source) {
-                this.createFromImage(<TextureImage>this._options.source)
+            else if(this.options.source) {
+                const img = <TextureImage>this.options.source;
+                this.width = img.width;
+                this.height = img.height;
+                this.createFromImage(img);
             }
         }
         else {
             // no data
-            this.createEmpty(this._options.width, this._options.height);
+            this.width = this.options.width;
+            this.height = this.options.height;
+            this.createEmpty();
         }
         
         this.bind();
-        if(this._options.generateMipmaps){
-            _gl.generateMipmap(_gl.TEXTURE_2D);
+        if(this.options.generateMipmaps){
+            gl.generateMipmap(gl.TEXTURE_2D);
         }
-        this.setFilter(this._options.filterMin, this._options.filterMag);
-        this.setWrapping(this._options.wrapX, this._options.wrapY);
+        this.setFilter(this.options.filterMin, this.options.filterMag);
+        this.setWrapping(this.options.wrapX, this.options.wrapY);
     }
 
     get webGlTexture() {
-        return this._handle;
+        return this.handle;
     }
 
     get format() {
-        return this._options.format;
-    }
-
-    get width(){
-        return this._width;
-    }
-
-    get height(){
-        return this._height;
+        return this.options.format;
     }
 
     public bind(unit?: number) {
-
-        if(unit !== undefined){
-            if(unit >= Texture._maxUnits){
-                throw `Cannot bind texture unit ${unit}. System maximum is ${Texture._maxUnits-1}.`;
-            }
-    
-            if(unit != Texture._active){
-                this._gl.activeTexture(unit + this._gl.TEXTURE0);
-                Texture._active = unit;
-            }
-        }
-
-        if(this._handle !== Texture._bound[Texture._active]){
-            this._gl.bindTexture(this._gl.TEXTURE_2D, this._handle);
-            Texture._bound[Texture._active] = this._handle;
-        }
-
-        return Texture._active;
+        if(unit !== undefined)
+            this.state.activeTexture(unit);
+        
+        this.state.texture(this.handle);
+        
+        return this.state.activeTexture();
     }
 
     public setFilter(min: GlMinType, mag: GlMagType) {
         this.bind();
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, min);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, mag);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, min);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, mag);
     }
 
     public setWrapping(s: GlWrapMode, t: GlWrapMode) {
         this.bind();
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, s);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, t);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, s);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, t);
     }
     
-    private createFromImage(data: TextureImage) {
-        this._width = data.width;
-        this._height = data.height;
-        
+    private createFromImage(data: TextureImage) {       
         this.bind();
         
-        this._gl.texImage2D(
-            this._gl.TEXTURE_2D,
-            this._options.lod,
-            this._options.format,
-            this._options.format,
-            this._options.pixelType,
+        this.gl.texImage2D(
+            this.gl.TEXTURE_2D,
+            this.options.lod,
+            this.options.format,
+            this.options.format,
+            this.options.pixelType,
             data);
     }    
     
-    private createFromData(data: ArrayBufferView, width?: number, height?: number) {
-        this._width = width || this._options.width;
-        this._height = height || this._options.height;
-
+    private createFromData(data: ArrayBufferView) {
         this.bind();
-        this._gl.texImage2D(
-            this._gl.TEXTURE_2D, 
-            this._options.lod, 
-            this._options.format, 
-            this._width, 
-            this._height, 
+        this.gl.texImage2D(
+            this.gl.TEXTURE_2D, 
+            this.options.lod, 
+            this.options.format, 
+            this.width, 
+            this.height, 
             0, 
-            this._options.format, 
-            this._options.pixelType, 
+            this.options.format, 
+            this.options.pixelType, 
             data);
     }
 
-    createEmpty(width: number, height: number) {
-        console.log(width, height)
+    createEmpty() {
         this.bind();
-        this._gl.texImage2D(
-            this._gl.TEXTURE_2D, 
-            this._options.lod, 
-            this._options.format, 
-            this._width, 
-            this._height, 
+        this.gl.texImage2D(
+            this.gl.TEXTURE_2D, 
+            this.options.lod, 
+            this.options.format, 
+            this.width, 
+            this.height, 
             0, 
-            this._options.format, 
-            this._options.pixelType, 
+            this.options.format, 
+            this.options.pixelType, 
             null);
     }
 }

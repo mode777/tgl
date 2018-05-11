@@ -104,7 +104,7 @@ describe("Texture", () => {
         buffer.enableAttribute('aTexcoord', shader.getAttributeLocation('aTexcoord'));
         shader.setUniform("uTexture", 0);
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
 
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         gl.drawElements(GlPrimitiveType.TRIANGLES, indices.length, indices.type, 0);

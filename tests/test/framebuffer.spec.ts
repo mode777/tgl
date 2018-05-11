@@ -45,11 +45,8 @@ describe('Framebuffer', () => {
             width: 64,
             height: 64,
             filterMag: GlMagType.NEAREST,
-            filterMin: GlMinType.NEAREST,
-            wrapX: GlWrapMode.CLAMP_TO_EDGE,
-            wrapY: GlWrapMode.CLAMP_TO_EDGE
         });
-
+                
         // set up drawable and render to the framebuffer
         const fbDrawable = new Drawable(gl, {
             buffers: [{
@@ -64,7 +61,8 @@ describe('Framebuffer', () => {
                 colorAttachment: fbTexture.webGlTexture
             }
         });
-        context.clearColor = [0, 0, 1, 1];
+        gl.viewport(0,0,64,64);
+        context.state.clearColor([0, 0, 1, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         fbDrawable.draw();
         console.log('Framebuffer drawn')
@@ -80,8 +78,8 @@ describe('Framebuffer', () => {
                 usage: GlBufferUsage.STATIC_DRAW,
                 data: [
                     -1,-1, 0, 0, 
-                     1,-1, 1, 0,
-                     1, 1, 1, 1,
+                    1,-1, 1, 0,
+                    1, 1, 1, 1,
                     -1, 1, 0, 1
                 ],
                 attributes: [
@@ -94,13 +92,14 @@ describe('Framebuffer', () => {
                 'uTexture': fbTexture
             }
         })
-
-        //Framebuffer.bindDefaultFramebuffer(gl);
-        //context.clearColor = [0, 0, 0, 1];
-        //context.clear(GlClearFlags.COLOR_BUFFER_BIT);
-        //drawable.draw()
-
-        await expect(gl).toLookLike('./assets/reference/texture-checker.png', 100)
+        
+        context.state.framebuffer(null);
+        gl.viewport(0,0,320,240);
+        context.state.clearColor([0, 0, 0, 1]);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        drawable.draw()
+        
+        await expect(gl).toLookLike('./assets/reference/framebuffer.png', 100)
     });
 
 });

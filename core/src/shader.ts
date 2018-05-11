@@ -1,3 +1,5 @@
+import { TglState } from './tgl-state';
+
 /** Represents a valid value for an uniform in TGL */
 export type UniformValue = number | number[] | Float32Array; 
 /** An uniform object, where the keys correspond to uniform values in the shader */
@@ -20,7 +22,7 @@ interface UniformInfo {
 /** Describes a shader programm, which can be used for drawing. */
 export class Shader {
 
-    private static _current: WebGLTexture;
+    private state = TglState.getCurrent(this.gl);
     
     /** Loads shader sources from files via the fetch API
      * and initializes the shader with them.
@@ -94,10 +96,7 @@ export class Shader {
 
     /** Use this shader if it is not currently in use. */
     use() {
-        if(Shader._current !== this.handle){
-            this.gl.useProgram(this.handle);
-            Shader._current = this.handle;
-        }
+        this.state.program(this.handle);
     }
 
     /** Returns the WebGLUniformLocation for a uniform variable name in the shader.

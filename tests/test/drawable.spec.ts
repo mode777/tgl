@@ -75,7 +75,7 @@ describe("Drawable", () => {
             }
         });
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
         drawable.draw();
@@ -100,7 +100,7 @@ describe("Drawable", () => {
             }
         });
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
         drawable.draw();
@@ -141,7 +141,7 @@ describe("Drawable", () => {
             }
         });
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
         drawable.draw();
@@ -165,7 +165,7 @@ describe("Drawable", () => {
             shader: await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl')
         });
 
-        context.clearColor = [0, 0, 0, 1];
+        context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
         drawable.draw();

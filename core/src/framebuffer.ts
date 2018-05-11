@@ -1,4 +1,5 @@
 import { GlFramebufferStatus } from './constants/gl-framebuffer-status';
+import { TglState } from './tgl-state';
 
 export interface FramebufferOptions {
     colorAttachment?: WebGLTexture | WebGLRenderbuffer,
@@ -8,15 +9,7 @@ export interface FramebufferOptions {
 
 export class Framebuffer {
     
-    private static _current: WebGLFramebuffer;
-
-    public static bindDefaultFramebuffer(gl: WebGLRenderingContext){
-        if(Framebuffer._current){
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            Framebuffer._current = null;
-        }
-    }
-
+    private state = TglState.getCurrent(this.gl);
     private handle: WebGLFramebuffer;
     
     constructor(protected gl: WebGLRenderingContext, options: FramebufferOptions = {}){
@@ -58,10 +51,7 @@ export class Framebuffer {
     }
 
     bind(){
-        if(this.handle !== Framebuffer._current){
-            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.handle);
-            Framebuffer._current = this.handle;
-        }
+        this.state.framebuffer(this.handle);
     }
 
     webGlFramebuffer(){
