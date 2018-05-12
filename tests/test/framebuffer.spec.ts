@@ -33,6 +33,29 @@ void main(void) {
 
 describe('Framebuffer', () => {
 
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 240;
+    const context = new TglContext(canvas);
+    const gl = context.webGlRenderingContext;
+
+    it('should have a color attachment', async () => {
+        // create a framebuffer texture
+        const fbTexture = new Texture(gl, {
+            width: 64,
+            height: 64,
+            filterMag: GlMagType.NEAREST,
+        });
+
+        const framebuffer = new Framebuffer(gl, {
+            width: fbTexture.width,
+            height: fbTexture.height,
+            colorAttachment: fbTexture.webGlTexture
+        });
+
+        expect(framebuffer.colorAttachment).toBe(fbTexture.webGlTexture);
+    });
+
     it('should render triangle to framebuffer', async () => {        
         const canvas = document.createElement('canvas');
         canvas.width = 320;
@@ -46,6 +69,12 @@ describe('Framebuffer', () => {
             height: 64,
             filterMag: GlMagType.NEAREST,
         });
+
+        const framebuffer = new Framebuffer(gl, {
+            width: fbTexture.width,
+            height: fbTexture.height,
+            colorAttachment: fbTexture.webGlTexture
+        })
                 
         // set up drawable and render to the framebuffer
         const fbDrawable = new Drawable(gl, {
@@ -56,16 +85,14 @@ describe('Framebuffer', () => {
             shader: {
                 vertexSource: vertex1,
                 fragmentSource: fragment1 
-            },
-            framebuffer: {
-                colorAttachment: fbTexture.webGlTexture
             }
         });
-        gl.viewport(0,0,64,64);
-        context.state.clearColor([0, 0, 1, 1]);
-        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
-        fbDrawable.draw();
-        console.log('Framebuffer drawn')
+
+        framebuffer.render(() => {
+            context.state.clearColor([0, 0, 1, 1]);
+            context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+            fbDrawable.draw();
+        });
         
         //draw framebuffer texture as a fullscreen quad
 
@@ -93,8 +120,6 @@ describe('Framebuffer', () => {
             }
         })
         
-        context.state.framebuffer(null);
-        gl.viewport(0,0,320,240);
         context.state.clearColor([0, 0, 0, 1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         drawable.draw()

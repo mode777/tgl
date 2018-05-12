@@ -31,6 +31,7 @@ export class TglContext {
             throw 'Unable to initialize WebGLRenderingContext';  
             
         this.state = TglState.getCurrent(this.gl);
+        this.state.viewport([0,0,canvas.width, canvas.height]);
     }
 
     get webGlRenderingContext(){

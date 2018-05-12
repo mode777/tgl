@@ -24,21 +24,18 @@ export interface DrawableOptions {
     /** An object containing uniform values to be sent to the shader.
      * The keys of the object should correspond with the uniforms in the shader.
      * For sampler2D uniforms you should use the 'textures' option. */
-    uniforms?: {[key:string]: UniformValue },
-    /** Either a {@link Framebuffer} or {@link FramebufferOptions}
-     * If options are supplied, a new instance is created */
-    framebuffer?: Framebuffer | FramebufferOptions
+    uniforms?: {[key:string]: UniformValue }
 }
 
 /** Represents a set of WebGL primitives, which can be utilized to draw an image. */
 export class Drawable {
     private state = TglState.getCurrent(this.gl);
-    private buffers: VertexBuffer[] = [];
-    private shader: Shader;
-    private framebuffer: Framebuffer;
     private indices: IndexBuffer = null;
-    private textures: {[key:string]: Texture } = {};
-    private uniforms: {[key:string]: UniformValue};
+    
+    public readonly textures: {[key:string]: Texture } = {};
+    public readonly uniforms: {[key:string]: UniformValue} = {};
+    public readonly buffers: VertexBuffer[] = [];
+    public readonly shader: Shader;
 
     /** Creates a new drawable instance
      * @param gl A WebGL rendering context
@@ -58,11 +55,6 @@ export class Drawable {
                 ? options.indices
                 : new IndexBuffer(gl, options.indices)) 
             : null;
-        this.framebuffer = options.framebuffer !== undefined
-            ? (options.indices instanceof Framebuffer
-                ? <Framebuffer>options.framebuffer
-                : new Framebuffer(gl, <FramebufferOptions>options.framebuffer))
-            : null;
 
         Object.keys(options.textures || {}).forEach(name => {
             const tex = options.textures[name];
@@ -80,11 +72,6 @@ export class Drawable {
      * @param end Last vertex to draw. Default = -1 (all) */
     draw(mode: GlPrimitiveType = GlPrimitiveType.TRIANGLES, start: number = 0, end: number = -1){
         this.shader.use();
-
-        if(this.framebuffer)
-            this.framebuffer.bind();
-        else
-            this.state.framebuffer(null);
 
         this.buffers.forEach(x => 
             x.attributes.forEach(y => 

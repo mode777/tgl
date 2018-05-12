@@ -49,7 +49,7 @@ export class TglState {
     
     readonly clearColor = createAccessor<[number,number,number,number]>(
         this.gl.getParameter(this.gl.COLOR_CLEAR_VALUE),
-        (value) => console.log(value, this.gl) || this.gl.clearColor(value[0], value[1], value[2], value[3]),
+        (value) => this.gl.clearColor(value[0], value[1], value[2], value[3]),
         arrayComparer);
 
     readonly blendColor = createAccessor<[number,number,number,number]>(
@@ -146,6 +146,10 @@ export class TglState {
     readonly program = createAccessor<WebGLProgram>(
         null,
         (value) => this.gl.useProgram(value));
+
+    readonly renderbuffer = createAccessor<WebGLRenderbuffer>(
+        null,
+        (value) => this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, value));
 
     getState(){
         return {

@@ -1,17 +1,20 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn add @tgl/core@0.1.2
+  /usr/bin/node /home/aklingenbeck/.yarn/bin/yarn.js add gl-matrix
 
 PATH: 
-  /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /home/aklingenbeck/.yarn/bin:/home/aklingenbeck/.config/yarn/global/node_modules/.bin:/home/aklingenbeck/.yarn/bin:/home/aklingenbeck/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
-  1.5.1
+  1.6.0
 
 Node version: 
   8.11.1
 
 Platform: 
   linux x64
+
+Trace: 
+  Error: EACCES: permission denied, unlink '/home/aklingenbeck/repos/tgl/examples/node_modules/.bin/acorn'
 
 npm manifest: 
   {
@@ -37,7 +40,6 @@ npm manifest:
       "webpack-dev-server": "^3.1.3"
     },
     "dependencies": {
-      "@tgl/core": "^0.1.1",
       "tslib": "^1.9.0"
     }
   }
@@ -54,9 +56,9 @@ Lockfile:
     version "0.7.0"
     resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
   
-  "@tgl/core@^0.1.1":
-    version "0.1.1"
-    resolved "https://registry.yarnpkg.com/@tgl/core/-/core-0.1.1.tgz#98440518da757b3475b19c23ba634e3f78f1466f"
+  "@tgl/core@0.1.2":
+    version "0.1.2"
+    resolved "https://registry.yarnpkg.com/@tgl/core/-/core-0.1.2.tgz#bcce2fe307f15f95d917e19aa38de2e20eb4afe3"
     dependencies:
       tslib "^1.9.0"
   
@@ -5564,6 +5566,3 @@ Lockfile:
       text-table "^0.2.0"
       through2 "^2.0.0"
       yeoman-environment "^2.0.5"
-
-Trace: 
-  Error: EACCES: permission denied, unlink '/home/aklingenbeck/repos/tgl/examples/node_modules/.bin/acorn'

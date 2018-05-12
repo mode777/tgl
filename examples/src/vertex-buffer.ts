@@ -50,7 +50,7 @@ const drawable = new Drawable(gl, {
 });
 
 // clear the screen black
-context.clearColor = [0, 0, 0, 1];
+context.state.clearColor([0, 0, 0, 1]);
 context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
 // draw the triangle

@@ -59,7 +59,9 @@ export class Texture {
         
         this.options =  { ...DefaultTextureOptions, ...options };
         this.handle = this.gl.createTexture();
-        
+        this.bind();
+        this.gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+
         if(this.options.source){
             // is typed array
             if(this.options.source['buffer']){

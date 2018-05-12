@@ -12,5 +12,9 @@
 		"importHelpers": true,
 		"noImplicitAny": false,
 		"noImplicitThis": false,
+		"baseUrl": ".",
+		"paths": {
+			"@tgl/core": ["./../core/src/main"]
+		}
 	}
 }
