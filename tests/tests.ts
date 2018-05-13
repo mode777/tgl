@@ -1,9 +1,10 @@
-import './test/drawable.spec.ts';
-import './test/framebuffer.spec.ts';
-import './test/renderer.spec.ts';
-import './test/shader.spec.ts';
-import './test/texture.spec.ts';
-import './test/vertex-buffer.spec.ts';
+import './test/core/drawable.spec.ts';
+import './test/core/framebuffer.spec.ts';
+import './test/core/renderer.spec.ts';
+import './test/core/shader.spec.ts';
+import './test/core/texture.spec.ts';
+import './test/core/vertex-buffer.spec.ts';
+import './test/gltf/loader.spec.ts';
 import { getTests } from 'test';
 import Reporter from './src/reporter';
 new Reporter(getTests()).run();

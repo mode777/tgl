@@ -15,6 +15,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@tgl/core": ["./../core/src/main"],
+			"@tgl/gltf": ["./../gltf/src/main"],
 			"test": ["./src/test"]
 		}
 	}

@@ -1,0 +1,39 @@
+{
+  "name": "@tgl/gltf",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mode777/tgl"
+  },
+  "description": "A gltf loader",
+  "private": false,
+  "keywords": [
+    "webgl",
+    "typescript"
+  ],
+  "main": "dist/tgl-gltf.cjs.js",
+  "module": "dist/tgl-gltf.esm.js",
+  "browser": "dist/tgl-gltf.umd.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "generate": "gltf-typescript-generator ./src/gltf.ts https://raw.githubusercontent.com/KhronosGroup/glTF/master/specification/2.0/schema/glTF.schema.json",
+    "docs": "typedoc --target es6 --mode file --out ./../docs src/main.ts"
+  },
+  "author": "Alexander Klingenbeck",
+  "license": "MIT",
+  "devDependencies": {
+    "gltf-typescript-generator": "^0.0.3",
+    "rollup": "^0.57.1",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-typescript2": "^0.12.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}
