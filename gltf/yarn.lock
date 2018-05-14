@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@tgl/core@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@tgl/core/-/core-0.2.3.tgz#c383c3771f21777429df8f0a4d5b7c5ef8527697"
+  dependencies:
+    tslib "^1.9.0"
+
 "@types/acorn@^4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/acorn/-/acorn-4.0.3.tgz#d1f3e738dde52536f9aad3d3380d14e448820afd"
