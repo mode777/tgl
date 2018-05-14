@@ -94,7 +94,7 @@ var fieldOfViewRadians = degToRad(60);
 var modelXRotationRadians = degToRad(45);
 var modelYRotationRadians = degToRad(45);
 
-const projectionMatrix = mat4.perspective(mat4.create(), fieldOfViewRadians, 1, 0.1, 100);
+const projectionMatrix = mat4.perspective(mat4.create(), fieldOfViewRadians, 1, 1, 2000);
 const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, 3], [0, 0, 0], [0, 1, 0]);
 const viewProjectionMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
 // filled at runtime

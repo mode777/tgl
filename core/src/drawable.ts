@@ -85,7 +85,12 @@ export class Drawable {
                 i++;
             }
         }
+
+        // set uniforms and clear after set
         this.shader.setUniforms(this.uniforms);
+        for (var key in this.uniforms) {
+            delete this.uniforms[key];
+        }
     
         if(this.indices !== null){
             this.indices.bind();
