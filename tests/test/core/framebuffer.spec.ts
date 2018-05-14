@@ -31,7 +31,7 @@ void main(void) {
     gl_FragColor = texture2D(uTexture, vTexcoord);
  }`;
 
-describe('Framebuffer', () => {
+describe('Core.Framebuffer', () => {
 
     const canvas = document.createElement('canvas');
     canvas.width = 320;

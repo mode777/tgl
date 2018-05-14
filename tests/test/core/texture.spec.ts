@@ -19,7 +19,7 @@ void main(void) {
     gl_FragColor = texture2D(uTexture, vTexcoord);
  }`;
 
-describe("Texture", () => {
+describe("Core.Texture", () => {
 
     const context = new TglContext(document.createElement('canvas'));
     const gl = context.webGlRenderingContext;

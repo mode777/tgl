@@ -16,7 +16,7 @@ const fragment =
   }`;
 
 
-describe('Shader', () => {
+describe('Core.Shader', () => {
 
     it('should have a WebGlProgram', () => {
         const context = new TglContext(document.createElement('canvas'));

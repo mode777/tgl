@@ -32,7 +32,7 @@ void main(void) {
  }`;
 
 
-describe("VertexBuffer", () => {
+describe("Core.VertexBuffer", () => {
 
     const context = new TglContext(document.createElement('canvas'));
     const gl = context.webGlRenderingContext;

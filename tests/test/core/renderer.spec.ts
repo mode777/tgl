@@ -1,7 +1,7 @@
 import { describe, it, expect } from "test";
 import { TglContext, GlClearFlags } from '@tgl/core';
 
-describe("GlContext", () => {
+describe("Core.GlContext", () => {
     
     
     it('should create a rendering context', () => {
