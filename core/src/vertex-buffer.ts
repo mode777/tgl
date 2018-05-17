@@ -4,7 +4,7 @@ import { TglState } from './tgl-state';
 
 export interface BufferOptions {
     usage?: GlBufferUsage,
-    data: number[] | Float32Array | ArrayBuffer,
+    data: number[] | Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array,
     attributes: AttributeOptions[]
 }
 
@@ -13,6 +13,7 @@ export interface AttributeOptions {
     components: 1 | 2 | 3 | 4,
     type?: GlDataType,
     normalized?: boolean,
+    offset?: number
 }
 
 export interface AttributeInfo {
@@ -60,7 +61,7 @@ export class VertexBuffer {
                     components: x.components,
                     dataType: x.type,
                     normalized: x.normalized,
-                    offset: offset
+                    offset: x.offset !== undefined ? x.offset : offset,
                 };                
                 offset += this.getSize(attr.dataType) * attr.components;
                 this.attributesByName[x.name] = attr;

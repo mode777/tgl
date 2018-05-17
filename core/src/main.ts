@@ -19,4 +19,5 @@ export * from './constants/gl-wrap-mode';
 export * from './constants/gl-pixel-format';
 export * from './constants/gl-pixel-type';
 export * from './constants/gl-buffer-usage';
+export * from './constants/gl-buffer-type';
 export * from './constants/gl-data-type';
