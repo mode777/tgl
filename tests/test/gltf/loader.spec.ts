@@ -1,11 +1,48 @@
 import { describe, it, expect } from "test";
-import { loadGltf } from '@tgl/gltf';
+import { GltfLoader } from '@tgl/gltf';
+import { TglContext, Shader, Drawable, GlClearFlags } from '@tgl/core';
+
+const vertex1 = `attribute vec4 POSITION;
+	
+void main(void) {
+    gl_Position = POSITION;
+}`;
+
+const fragment1 = `precision mediump float;
+
+void main(void) {
+    gl_FragColor = vec4(1, 1, 1, 1);
+ }`;
 
 describe("Gltf.Loader", () => {
     
     it('should load file', async () => {
-        const gltf = await loadGltf('./../assets/gltf/minimal.json');
-        expect(gltf.asset.version).toBe('2.0');
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+        const context = new TglContext(canvas);
+
+        const gltf = new GltfLoader(context.webGlRenderingContext, './../assets/gltf/minimal.json');
+        await gltf.load();
+        
+        const primitive = gltf.meshes[0].primitives[0];
+
+        const drawable = new Drawable(context.webGlRenderingContext, {
+            indices: primitive.indexBuffer,
+            buffers: primitive.vertexBuffers,
+            shader: {
+                fragmentSource: fragment1,
+                vertexSource: vertex1
+            }
+        });
+
+        context.state.clearColor([0,0,0,1]);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+
+        drawable.draw();
+
+        await expect(context.webGlRenderingContext).toLookLike('./../assets/reference/gltf-simple.png', 100)
     });
     
 });

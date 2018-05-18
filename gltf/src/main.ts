@@ -1,2 +1,2 @@
-export * from './gltf';
+//export * from './gltf';
 export * from './loader';

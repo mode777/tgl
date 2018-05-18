@@ -1,5 +1,5 @@
 import { GlTf as IGltf, Mesh as IMesh, Scene as IScene, Node as INode, Buffer as IBuffer, BufferView as IBufferView, Accessor as IAccessor, GlTf } from './gltf';
-import { GlDataType, GlBufferType, IndexBuffer, VertexBuffer, BufferOptions, GlBufferUsage } from '@tgl/core'
+import { GlDataType, GlBufferType, IndexBuffer, VertexBuffer, BufferOptions, GlBufferUsage, Shader, Drawable } from '@tgl/core'
 
 export class Scene {
     constructor(public readonly nodes: Node[]){
@@ -55,19 +55,20 @@ export class Mesh {
 }
 
 export interface MeshPrimitiveOptions {
-    vertexBuffer: VertexBuffer;
+    vertexBuffers: VertexBuffer[];
     indexBuffer?: IndexBuffer;
 }
 
 export class MeshPrimitive {
 
-    public readonly vertexBuffer: VertexBuffer;
+    public readonly vertexBuffers: VertexBuffer[];
     public readonly indexBuffer: IndexBuffer;
 
-    constructor(options: MeshPrimitiveOptions){
-        this.vertexBuffer = options.vertexBuffer;
+    constructor(protected gl: WebGLRenderingContext, options: MeshPrimitiveOptions){
+        this.vertexBuffers = options.vertexBuffers;
         this.indexBuffer = options.indexBuffer;
     }
+
 }
 
 export class Camera {
@@ -79,18 +80,18 @@ export class Buffer {
 }
 
 
-export class Gltf {
+export class GltfLoader {
     
     private scenes: Scene[] = [];
     private nodes: Node[] = [];
-    private meshes: Mesh[] = [];
+    meshes: Mesh[] = [];
     private buffers: ArrayBuffer[] = [];
     
-    constructor(private url: string){
+    constructor(private gl: WebGLRenderingContext, private url: string){
         
     }
     
-    async load(gl: WebGLRenderingContext) {
+    async load() {
         const gltf = <GlTf> await(await fetch(this.url)).json();
         
         await Promise.all(gltf.buffers.map(async (b, i) => this.buffers[i] = await this.loadBuffer(b)));
@@ -104,10 +105,10 @@ export class Gltf {
                     const view = gltf.bufferViews[accessor.bufferView];
                     const buffer = this.buffers[view.buffer];
 
-                    indexBuffer = new IndexBuffer(gl, new Uint16Array(buffer, view.byteOffset, view.byteLength));
+                    indexBuffer = new IndexBuffer(this.gl, new Uint16Array(buffer, view.byteOffset, view.byteLength));
                 }
 
-                Object.keys(p.attributes).reduce<{[key: string]: BufferOptions}>((agg,name) => {
+                const attributeMap = Object.keys(p.attributes).reduce<{[key: string]: BufferOptions}>((agg,name) => {
                     const accessor = gltf.accessors[p.attributes[name]];
                     const view = gltf.bufferViews[accessor.bufferView];
                     const buffer = this.buffers[view.buffer];
@@ -127,16 +128,16 @@ export class Gltf {
                     });
                     
                     return agg;
-                },{})
+                },{})               
                 
-                return new MeshPrimitive({
-                    
+                return new MeshPrimitive(this.gl, {
+                    vertexBuffers: Object.keys(attributeMap).map(x => new VertexBuffer(this.gl, attributeMap[x])),
+                    indexBuffer: indexBuffer
                 });
-            }
+            });
 
-            return new Mesh({ primitives: primitives }); 
-            
-        })
+            return new Mesh({ primitives: primitives });             
+        });
     }
 
     private async loadBuffer(buffer: IBuffer){
@@ -160,9 +161,8 @@ export class Gltf {
         
 }
 
-const dataUrlRegex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
 function isDataUri(s: string) {
-    return !!s.match(dataUrlRegex);
+    return s.startsWith('data:')
 }
 
 

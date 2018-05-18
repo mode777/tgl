@@ -70,7 +70,7 @@ export class VertexBuffer {
         this.vertexSize = offset;
 
         const data: any = this.options.data;
-        this.size = data.buffer ? data.buffer.byteLength : data.byteLength;
+        this.size = data.byteLength;
         
         this.handle = gl.createBuffer();
         this.bind();
