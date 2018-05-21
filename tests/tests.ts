@@ -1,3 +1,4 @@
+import './test/2d/shader.spec.ts';
 import './test/2d/transform.spec.ts';
 import './test/core/drawable.spec.ts';
 import './test/core/framebuffer.spec.ts';

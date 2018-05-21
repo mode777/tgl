@@ -46,14 +46,15 @@ export class Transform2d {
     private _enableRotation;
     private _enableOrigin;
     private _enableScale;
-    
 
     constructor(options: Transform2dCreateOptions = {}){
-        this._enableOrigin = !!options.enableOrigin;
-        this._enableRotation = !!options.enableRotation;
-        this._enableScale = !!options.enableScale;
-        this._enableTranslation = !!options.enableTranslation;
-        this.reset(options)
+        const opt = { ...defaultOptions, ...options };
+
+        this._enableOrigin = opt.enableOrigin;
+        this._enableRotation = opt.enableRotation;
+        this._enableScale = opt.enableScale;
+        this._enableTranslation = opt.enableTranslation;
+        this.resetInternal(opt)
     }
 
     public set x(value: number){ this._translation[6] = value; this._dirty = true; }
@@ -88,26 +89,39 @@ export class Transform2d {
 
     public reset(options: Transform2dOptions = {}){
         const opt = { ...defaultOptions, ...options };
+        this.resetInternal(opt);
+    }
 
-        this._translation = mat3.fromTranslation(this._translation, [opt.x,opt.y])
-        this._origin = mat3.fromTranslation(this._origin, [-opt.originX,-opt.originY])
-        this._rotation = mat3.fromRotation(this._rotation, opt.rotation);
+    public transform(out: vec2, vector: vec2 | number[]){
+        vec2.transformMat3(out, vector, this.matrix)
+    }
+
+    private resetInternal(opt: Transform2dOptions){
+        if(this._enableOrigin)
+            this._origin = mat3.fromTranslation(this._origin, [-opt.originX,-opt.originY])
+        if(this._enableScale)
         this._scale = mat3.fromScaling(this._scale, [opt.scaleX,opt.scaleY]);
-
-        this._rotationValue = opt.rotation;
+        if(this._enableRotation) {
+            this._rotation = mat3.fromRotation(this._rotation, opt.rotation);
+            this._rotationValue = opt.rotation;
+        }
+        if(this._enableTranslation)
+            this._translation = mat3.fromTranslation(this._translation, [opt.x,opt.y])
 
         this._dirty = true;
     }
 
     private buildMatrix(){
         mat3.identity(this._matrix)
-        mat3.multiply(this._matrix, this._matrix, this._origin);
-        mat3.multiply(this._matrix, this._matrix, this._rotation);
-        mat3.multiply(this._matrix, this._matrix, this._scale);
-        mat3.multiply(this._matrix, this._matrix, this._translation);
+        if(this._enableTranslation)
+            mat3.multiply(this._matrix, this._matrix, this._translation);
+        if(this._enableRotation)
+            mat3.multiply(this._matrix, this._matrix, this._rotation);
+        if(this._enableScale)
+           mat3.multiply(this._matrix, this._matrix, this._scale);
+        if(this._enableOrigin)        
+            mat3.multiply(this._matrix, this._matrix, this._origin);
     }
 
-    public transform(out: vec2, vector: vec2 | number[]){
-        vec2.transformMat3(out, vector, this.matrix)
-    }
+
 }

@@ -4,7 +4,7 @@ import { TglState } from './tgl-state';
 
 export interface BufferOptions {
     usage?: GlBufferUsage,
-    data: number[] | Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array,
+    data: number[] | Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array
     attributes: AttributeOptions[]
 }
 
