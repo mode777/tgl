@@ -6,6 +6,10 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@types/dot/-/dot-1.1.2.tgz#dd9f794c74f4e26076273e45f55b8b036f3aaf5d"
 
+"@types/gl-matrix@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@types/gl-matrix/-/gl-matrix-2.4.0.tgz#a27affbaf3a849894817f648bf68ac710dedf4a3"
+
 "@types/node@^8.0.8":
   version "8.9.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.9.5.tgz#162b864bc70be077e6db212b322754917929e976"
@@ -1296,6 +1300,10 @@ getpass@^0.1.1:
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
   dependencies:
     assert-plus "^1.0.0"
+
+gl-matrix@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-2.6.1.tgz#1bc7f7b396f4ae80abdb4db9a98cd07d170b9004"
 
 glob-base@^0.3.0:
   version "0.3.0"

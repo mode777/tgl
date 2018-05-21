@@ -29,6 +29,7 @@ module.exports = {
         alias: {
             "@tgl/core$": path.resolve(__dirname, "./../core/src/main"),
             "@tgl/gltf$": path.resolve(__dirname, "./../gltf/src/main"),
+            "@tgl/2d$": path.resolve(__dirname, "./../2d/src/main"),
             "test$": path.resolve(__dirname, "./src/test")
         }
     },

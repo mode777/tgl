@@ -16,6 +16,7 @@
 		"paths": {
 			"@tgl/core": ["./../core/src/main"],
 			"@tgl/gltf": ["./../gltf/src/main"],
+			"@tgl/2d": ["./../2d/src/main"],
 			"test": ["./src/test"]
 		}
 	}

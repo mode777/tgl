@@ -1,0 +1,43 @@
+{
+  "name": "@tgl/2d",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mode777/tgl"
+  },
+  "description": "2d tools for tgl",
+  "private": false,
+  "keywords": [
+    "webgl",
+    "typescript"
+  ],
+  "main": "dist/tgl-2d.cjs.js",
+  "module": "dist/tgl-2d.esm.js",
+  "browser": "dist/tgl-2d.umd.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "docs": "typedoc --target es6 --mode file --out ./../docs src/main.ts"
+  },
+  "author": "Alexander Klingenbeck",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/gl-matrix": "^2.4.0",
+    "gltf-typescript-generator": "^0.0.3",
+    "rollup": "^0.57.1",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-typescript2": "^0.12.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "gl-matrix": "^2.6.1",
+    "tslib": "^1.9.0"
+  },
+  "peerDependencies": {
+    "@tgl/core": "^0.2.3"
+  }
+}
