@@ -22,7 +22,7 @@ export class Shader2d extends Shader {
 
 const vertexShader = `
 attribute vec2 aPosition;
-//attribute vec2 aTexcoord;
+attribute vec2 aTexcoord;
 
 uniform vec2 uCanvasSize;
 uniform vec2 uTextureSize;
@@ -30,11 +30,8 @@ uniform vec2 uTextureSize;
 varying vec2 vTexcoord;
 	
 void main(void) {
-    //vec2 transformed = (aPosition / (uCanvasSize / 2.0)) - vec2(-1.0,-1.0);
-    vec2 transformed = aPosition / vec2(160.0, 120.0) - vec2(1.0, 1.0);
-    //vec2 transformed = aPosition;
-    //vTexcoord = aTexcoord / uTextureSize;
-    //vTexcoord = aTexcoord;
+    vec2 transformed = ((aPosition / (uCanvasSize / 2.0)) * vec2(1.0, -1.0)) + vec2(-1.0,1.0);
+    vTexcoord = aTexcoord / uTextureSize;
     gl_Position = vec4(transformed, 1.0, 1.0);
 }
 `;
@@ -42,12 +39,11 @@ void main(void) {
 const fragmentShader = `
 precision mediump float;
 
-//uniform sampler2D uTexture;
+uniform sampler2D uTexture;
 
-//varying vec2 vTexcoord;
+varying vec2 vTexcoord;
 
 void main(void) {
-    gl_FragColor = vec4(1.0,1.0,1.0,1.0);
-    //gl_FragColor = texture2D(uTexture, vTexcoord);
- }
+    gl_FragColor = texture2D(uTexture, vTexcoord);
+}
 `;
