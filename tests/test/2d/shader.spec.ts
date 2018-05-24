@@ -67,7 +67,7 @@ describe("2d.Shader", () => {
 
         drawable.draw();
 
-        await expect(gl).toLookLike('./assets/reference/2d-shader.png', 100)
+        await expect(gl).toLookLike('./assets/reference/2d-shader.png', 99)
     });
    
     

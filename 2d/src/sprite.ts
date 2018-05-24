@@ -1,5 +1,5 @@
 import { Transform2dCreateOptions, Transform2d } from './transform-2d';
-import { Texture, VertexBuffer, Shader, Drawable } from '@tgl/core';
+import { Texture, VertexBuffer, Shader, Drawable, GlDataType } from '@tgl/core';
 import { Frame } from './frame';
 import { Shader2d } from './main';
 import { TglState } from '../../core/src/tgl-state';
@@ -57,14 +57,14 @@ export class Sprite {
             ],
             data: new Int16Array([
                 0, 0, frame.x, frame.y,
-                frame.w, frame.h, frame.x + frame.w,
-                frame.w, 0, frame.y + frame.h, frame.x + frame.w,
-                0, frame.h, frame.y, frame.x, frame.y + frame.h
+                frame.w, frame.h, frame.x + frame.w, frame.y + frame.h,
+                frame.w, 0, frame.x + frame.w, frame.y,
+                0, frame.h, frame.x, frame.y + frame.h
             ])
         })
     }
 
-    private draw(){
+    public draw(){
         this.drawable.uniforms['uProject'] = Shader2d.getProjectionMatrix(this.state.viewport());
         this.drawable.uniforms['uTransform'] = this.transform.matrix;
 
