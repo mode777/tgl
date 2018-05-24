@@ -1,6 +1,25 @@
 import { Shader } from '@tgl/core';
+import { mat3 } from 'gl-matrix';
 
 export class Shader2d extends Shader {
+
+    private static lastViewport = [0,0,0,0]
+    private static projection = mat3.identity(mat3.create());
+
+    public static getProjectionMatrix(viewport: [number, number, number, number]) {
+        if(viewport[0] !== this.lastViewport[0] || 
+            viewport[1] !== this.lastViewport[1] || 
+            viewport[2] !== this.lastViewport[2] || 
+            viewport[3] !== this.lastViewport[3])
+        {
+            mat3.identity(Shader2d.projection);
+            mat3.translate(Shader2d.projection, Shader2d.projection, [-1.0, 1.0])
+            mat3.scale(Shader2d.projection, Shader2d.projection, [2.0/viewport[2],-2.0/viewport[3]])
+            
+            this.lastViewport = [...viewport];
+        }
+        return Shader2d.projection;
+    }
 
     private static _instance: Shader2d; 
 
@@ -24,15 +43,16 @@ const vertexShader = `
 attribute vec2 aPosition;
 attribute vec2 aTexcoord;
 
-uniform vec2 uCanvasSize;
 uniform vec2 uTextureSize;
+uniform mat3 uTransform;
+uniform mat3 uProject;
 
 varying vec2 vTexcoord;
 	
 void main(void) {
-    vec2 transformed = ((aPosition / (uCanvasSize / 2.0)) * vec2(1.0, -1.0)) + vec2(-1.0,1.0);
+    vec3 transformed =  uProject * uTransform * vec3(aPosition, 1.0);
     vTexcoord = aTexcoord / uTextureSize;
-    gl_Position = vec4(transformed, 1.0, 1.0);
+    gl_Position = vec4(transformed, 1.0);
 }
 `;
 

@@ -132,31 +132,31 @@ export class Shader {
             
         switch (uniform.info.type) {
             case this.gl.FLOAT:
-            this.setFloat(uniform.location, <number>value);
+                this.setFloat(uniform.location, <number>value);
                 break;
-                case this.gl.FLOAT_VEC2:
+            case this.gl.FLOAT_VEC2:
                 this.setVec2(uniform.location, <number[]>value);
                 break;
             case this.gl.FLOAT_VEC3:
-            this.setVec3(uniform.location, <number[]>value);
+                this.setVec3(uniform.location, <number[]>value);
                 break;
-                case this.gl.FLOAT_VEC4:
+            case this.gl.FLOAT_VEC4:
                 this.setVec4(uniform.location, <number[]>value);        
                 break;
-                case this.gl.FLOAT_MAT2:
+            case this.gl.FLOAT_MAT2:
                 this.setMat2(uniform.location, <number[]>value);        
                 break;
             case this.gl.FLOAT_MAT3:
-            this.setMat3(uniform.location, <number[]>value);        
-            break;
+                this.setMat3(uniform.location, <number[]>value);        
+                break;
             case this.gl.FLOAT_MAT4:                
                 this.setMat4(uniform.location, <number[]>value);        
                 break;
-                case this.gl.SAMPLER_2D:
+            case this.gl.SAMPLER_2D:
                 this.setTextureUnit(uniform.location, <number>value);
                 break;
             default:
-            throw `Unsupported data type for uniform: ${uniform.info.name}.`;
+                throw `Unsupported data type for uniform: ${uniform.info.name}.`;
         }
     }
 
