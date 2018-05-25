@@ -1,5 +1,6 @@
 import { TglContext, Drawable, GlClearFlags, Texture } from '@tgl/core'
 import { Sprite } from '@tgl/2d';
+import { mat3 } from 'gl-matrix';
 
 async function main() {
     // create a canvas
@@ -51,8 +52,7 @@ async function main() {
         const step = time / 1000;
 
         sprites.forEach((sprite, i) => 
-            //sprite.scaleTo(Math.sin(step) + 1.5, Math.sin(step) + 1.5)
-            sprite.scaleTo(0.5, 1)
+            sprite.scaleTo(Math.sin(step) + 1.5, Math.sin(step) + 1.5)
             .rotate(i % 2 == 1 ? 0.01 : -0.01)
             .draw());
 
@@ -62,4 +62,3 @@ async function main() {
     requestAnimationFrame(draw);
 }
 main();
-
