@@ -51,8 +51,8 @@ export class Transform2d {
         const opt = { ...defaultOptions, ...options };
 
         this._enableOrigin = opt.enableOrigin;
-        this._enableRotation = opt.enableRotation;
         this._enableScale = opt.enableScale;
+        this._enableRotation = opt.enableRotation;
         this._enableTranslation = opt.enableTranslation;
         this.resetInternal(opt)
     }
@@ -100,7 +100,7 @@ export class Transform2d {
         if(this._enableOrigin)
             this._origin = mat3.fromTranslation(this._origin, [-opt.originX,-opt.originY])
         if(this._enableScale)
-        this._scale = mat3.fromScaling(this._scale, [opt.scaleX,opt.scaleY]);
+            this._scale = mat3.fromScaling(this._scale, [opt.scaleX,opt.scaleY]);
         if(this._enableRotation) {
             this._rotation = mat3.fromRotation(this._rotation, opt.rotation);
             this._rotationValue = opt.rotation;
@@ -113,14 +113,10 @@ export class Transform2d {
 
     private buildMatrix(){
         mat3.identity(this._matrix)
-        if(this._enableTranslation)
-            mat3.multiply(this._matrix, this._matrix, this._translation);
-        if(this._enableRotation)
-            mat3.multiply(this._matrix, this._matrix, this._rotation);
-        if(this._enableScale)
-           mat3.multiply(this._matrix, this._matrix, this._scale);
-        if(this._enableOrigin)        
-            mat3.multiply(this._matrix, this._matrix, this._origin);
+        if(this._enableTranslation) { mat3.multiply(this._matrix, this._matrix, this._translation); }
+        if(this._enableRotation) { mat3.multiply(this._matrix, this._matrix, this._rotation); }
+        if(this._enableScale) { mat3.multiply(this._matrix, this._matrix, this._scale); }
+        if(this._enableOrigin) { mat3.multiply(this._matrix, this._matrix, this._origin); }
     }
 
 

@@ -45,7 +45,7 @@ describe("2d.Sprite", () => {
 
         const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
 
-        const sprite = new Sprite(gl, tex);
+        const sprite = new Sprite(gl, { texture: tex });
         
         context.state.clearColor([0,0,0,1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);

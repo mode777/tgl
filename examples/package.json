@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@types/gl-matrix": "^2.4.0",
-    "gl-matrix": "^2.5.1",
+    "gl-matrix": "^2.6.1",
     "tslib": "^1.9.0"
   }
 }

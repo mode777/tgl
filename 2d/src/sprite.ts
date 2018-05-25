@@ -15,31 +15,20 @@ export class Sprite {
 
     private drawable: Drawable;
     private readonly state = TglState.getCurrent(this.gl);
-    
+    private readonly frame: Frame;
+
     public readonly transform: Transform2d;
 
-    constructor(protected gl: WebGLRenderingContext, options: SpriteOptions | Texture){
-        let texture: Texture;
-        let frame: Frame;
-        let shader: Shader;
-        
-        if(options instanceof Texture){
-            texture = options;
-            frame = { x: 0, y: 0, w: options.width, h: options.height },
-            shader = Shader2d.getInstance(gl);
-            this.transform = new Transform2d();
-        }
-        else {
-            texture = options.texture;
-            frame = options.frame || { x: 0, y: 0, w: options.texture.width, h: options.texture.height };
-            shader = options.shader || Shader2d.getInstance(gl);
-            this.transform = new Transform2d(options.transform || null)
-        }
-
+    constructor(protected gl: WebGLRenderingContext, options: SpriteOptions){
+        const texture = options.texture;
+        const shader = options.shader || Shader2d.getInstance(gl);
+        this.frame = options.frame || { x: 0, y: 0, w: options.texture.width, h: options.texture.height };
+        this.transform = new Transform2d(options.transform || null)
+    
         this.drawable = new Drawable(gl, {
             shader: shader,
             textures: { 'uTexture': texture },
-            buffers: [this.createBuffer(frame)],
+            buffers: [this.createBuffer(this.frame)],
             indices: [0,1,2,0,3,1],
             uniforms: {
                 'uTextureSize': [texture.width, texture.height],
@@ -70,4 +59,55 @@ export class Sprite {
 
         this.drawable.draw();
     }
+
+    public center(x = true, y = true) {
+        if(x)
+            this.transform.originX = this.frame.w / 2;
+        if(y)
+            this.transform.originY = this.frame.h / 2;
+
+        return this;
+    }
+
+    public moveTo(x: number, y: number) {
+        this.transform.x = x;
+        this.transform.y = y;
+
+        return this;
+    }
+
+    public move(x: number, y: number) {
+        this.transform.x += x;
+        this.transform.y += y;
+
+        return this;
+    }
+
+    public rotateTo(r: number) {
+        this.transform.rotation = r;
+
+        return this;
+    }
+
+    public rotate(r: number) {
+        this.transform.rotation += r;
+
+        return this;
+    }
+
+    public scale(x: number, y: number) {
+        this.transform.scaleX *= x;
+        this.transform.scaleY *= y;
+
+        return this;
+    }
+
+    public scaleTo(x: number, y: number) {
+        this.transform.scaleX = x;
+        this.transform.scaleY = y;
+
+        return this;
+    }
+
+
 }

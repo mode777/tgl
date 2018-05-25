@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         simple: './src/simple.ts',
         vertexbuffer: './src/vertex-buffer.ts',
-        'framebuffer-tutorial': './src/framebuffer-tutorial.ts'
+        'framebuffer-tutorial': './src/framebuffer-tutorial.ts',
+        sprite: './src/sprite.ts'
     },
     module: {
         rules: [
