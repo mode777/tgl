@@ -1,6 +1,6 @@
 import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState } from '@tgl/core';
 import { Transform2dCreateOptions, Transform2d } from './transform-2d';
-import { Frame } from './common';
+import { Frame, ISprite } from './common';
 import { Shader2d } from './shader-2d';
 
 export class SpriteOptions {
@@ -10,7 +10,7 @@ export class SpriteOptions {
     shader?: Shader;
 }
 
-export class Sprite {
+export class Sprite implements ISprite {
 
     private drawable: Drawable;
     private readonly state = TglState.getCurrent(this.gl);
@@ -36,6 +36,14 @@ export class Sprite {
                 'uTransform': this.transform.matrix
             }
         })
+    }
+
+    public get boundingBox(){
+        if(this.dirty){
+            this.calculateBoundingBox();
+            this.dirty = false;
+        }
+        return this.bbox;
     }
 
     public draw(){
@@ -116,14 +124,6 @@ export class Sprite {
         this.dirty = true;
 
         return this;
-    }
-
-    public getBoundingBox(){
-        if(this.dirty){
-            this.calculateBoundingBox();
-            this.dirty = false;
-        }
-        return this.bbox;
     }
 
     private calculateBoundingBox() {

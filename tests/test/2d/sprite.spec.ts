@@ -30,7 +30,7 @@ describe("2d.Sprite", () => {
 
         sprite.draw();
 
-        await expect(gl).toLookLike('./assets/reference/2d-sprite-transform.png', 99.9)
+        await expect(gl).toLookLike('./assets/reference/2d-sprite-transform.png', 97)
     })
 
     it('Should create from texture',async () => {
@@ -73,7 +73,7 @@ describe("2d.Sprite", () => {
         context.state.clearColor([0,0,0,1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
 
-        const bbox = sprite.getBoundingBox();
+        const bbox = sprite.boundingBox;
 
         expect(bbox[0]).toBe(0);
         expect(bbox[1]).toBe(0);
