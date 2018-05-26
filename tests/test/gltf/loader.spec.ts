@@ -1,4 +1,4 @@
-import { describe, it, expect } from "test";
+import { describe, it, expect, getContext } from "test";
 import { GltfLoader } from '@tgl/gltf';
 import { TglContext, Shader, Drawable, GlClearFlags } from '@tgl/core';
 
@@ -17,12 +17,11 @@ void main(void) {
 describe("Gltf.Loader", () => {
     
     it('should load file', async () => {
-
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-        const context = new TglContext(canvas);
-
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+        
         const gltf = new GltfLoader(context.webGlRenderingContext, './../assets/gltf/minimal.json');
         await gltf.load();
         

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "test";
+import { describe, it, expect, getContext } from "test";
 import { TglContext, Shader, VertexBuffer, IndexBuffer, Drawable, Texture, BufferOptions, GlBufferUsage, GlMagType, GlClearFlags } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
@@ -20,16 +20,13 @@ void main(void) {
  }`;
 
 describe("Core.Drawable", () => {
-
-    const context = new TglContext(document.createElement('canvas'));
-    const gl = context.webGlRenderingContext;
+    
     const checker = new Uint8Array([
         0,0,255,255, 
         255,255,0,255,
         255,255,0,255,
         0, 0, 255, 255 
     ]);
-
     const bufferOptions: BufferOptions = {
         usage: GlBufferUsage.STATIC_DRAW,
         data: [
@@ -59,11 +56,9 @@ describe("Core.Drawable", () => {
     const indices = [3, 0, 1, 3, 1, 2];
 
     it('should render checkers from options', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
@@ -84,11 +79,7 @@ describe("Core.Drawable", () => {
     });
 
     it('should render checkers from objects', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
         const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
@@ -109,11 +100,7 @@ describe("Core.Drawable", () => {
     });
 
     it('should render from multiple buffers', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
         const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {
@@ -150,11 +137,9 @@ describe("Core.Drawable", () => {
     });
 
     it('should render a simple triangle', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();        
         const gl = context.webGlRenderingContext;
 
         const drawable = new Drawable(gl, {

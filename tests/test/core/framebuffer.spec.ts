@@ -1,4 +1,4 @@
-import { describe, it, expect } from "test";
+import { describe, it, expect, getContext } from "test";
 import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlMagType, Drawable, Framebuffer, GlMinType, GlWrapMode } from '@tgl/core';
 
 const vertex1 = `attribute vec2 aPosition;
@@ -32,14 +32,13 @@ void main(void) {
  }`;
 
 describe('Core.Framebuffer', () => {
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 320;
-    canvas.height = 240;
-    const context = new TglContext(canvas);
-    const gl = context.webGlRenderingContext;
-
+ 
     it('should have a color attachment', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+
         // create a framebuffer texture
         const fbTexture = new Texture(gl, {
             width: 64,
@@ -57,10 +56,9 @@ describe('Core.Framebuffer', () => {
     });
 
     it('should render triangle to framebuffer', async () => {        
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
 
         // create a framebuffer texture

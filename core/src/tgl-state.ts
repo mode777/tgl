@@ -2,6 +2,7 @@ import { GlBlendEquation } from './constants/gl-blend-equation';
 import { GlCullMode } from './constants/gl-cull-mode';
 
 export type Accessor<T> = (value?: T, cacheOnly?: boolean) => T;
+export type vec4<T> = [T,T,T,T];
 
 function createAccessor<T>(initial: T, setter: (value: T) => void, comparer?: (a: T, b: T) => boolean): Accessor<T>{
     let closure = initial;
@@ -37,6 +38,7 @@ export class TglState {
         return TglState._current[gl['ref']];
     }
     
+    private stack: any[] = [];
     private textures: WebGLTexture[] = new Array(this.gl.getParameter(this.gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 
     readonly activeTexture = createAccessor<number>(
@@ -47,22 +49,22 @@ export class TglState {
             this.gl.activeTexture(value + this.gl.TEXTURE0)
         });
     
-    readonly clearColor = createAccessor<[number,number,number,number]>(
+    readonly clearColor = createAccessor<vec4<number>>(
         this.gl.getParameter(this.gl.COLOR_CLEAR_VALUE),
         (value) => this.gl.clearColor(value[0], value[1], value[2], value[3]),
         arrayComparer);
 
-    readonly blendColor = createAccessor<[number,number,number,number]>(
+    readonly blendColor = createAccessor<vec4<number>>(
         this.gl.getParameter(this.gl.BLEND_COLOR),
         (value) => this.gl.blendColor(value[0],value[1],value[2],value[3]),
         arrayComparer);
 
-    readonly colorMask = createAccessor<[boolean,boolean,boolean,boolean]>(
+    readonly colorMask = createAccessor<vec4<boolean>>(
         this.gl.getParameter(this.gl.COLOR_WRITEMASK),
         (value) => this.gl.colorMask(value[0],value[1],value[2],value[3]),
         arrayComparer);
 
-    readonly viewport = createAccessor<[number, number, number, number]>(
+    readonly viewport = createAccessor<vec4<number>>(
         this.gl.getParameter(this.gl.VIEWPORT),
         (value) => this.gl.viewport(value[0], value[1], value[2], value[3]));
 
@@ -151,20 +153,45 @@ export class TglState {
         null,
         (value) => this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, value));
 
-    getState(){
+    private constructor(private gl: WebGLRenderingContext){
+        this.push();
+    }
+
+    public push(){
+        this.stack.push(this.get());
+    }
+
+    public pop(){
+        if(this.stack.length > 1){
+            this.set(this.stack.pop());
+        }
+        else {
+            this.set(this.stack[0]);
+        }
+    }
+
+    public reset() {
+        this.set(this.stack[0])
+    }
+
+    public set(state: Partial<TglStateSnapshot>) {
+        Object.keys(state).forEach(name => this[name](state[name]));
+    }
+
+    public get(): TglStateSnapshot {
         return {
             texture: this.texture(),
             activeTexture: this.activeTexture(),
             blendColor: this.blendColor(),
-            blendEquation: GlBlendEquation[this.blendEquation()],
-            blendEquationAlpha: GlBlendEquation[this.blendEquationAlpha()],
-            blendEquationRgb: GlBlendEquation[this.blendEquationRgb()],
+            blendEquation: this.blendEquation(),
+            blendEquationAlpha: this.blendEquationAlpha(),
+            blendEquationRgb: this.blendEquationRgb(),
             blendingEnabled: this.blendingEnabled(),
             clearColor: this.clearColor(),
             clearDepth: this.clearDepth(),
             clearStencil: this.clearStencil(),
             colorMask: this.colorMask(),
-            cullFaceMode: GlCullMode[this.cullFaceMode()],
+            cullFaceMode: this.cullFaceMode(),
             depthTestEnabled: this.depthTestEnabled(),
             faceCullingEnabled: this.faceCullingEnabled(),
             framebuffer: this.framebuffer(),
@@ -177,11 +204,34 @@ export class TglState {
             stencilTestEnabled: this.stencilTestEnabled(),
             vertexBuffer: this.vertexBuffer(),
             viewport: this.viewport(),
-            maxCombinedTextureImageUnits: this.textures.length
+            //maxCombinedTextureImageUnits: this.textures.length
         }
     }
+}
 
-    private constructor(private gl: WebGLRenderingContext){
-
-    }
+export interface TglStateSnapshot {
+    texture: WebGLTexture,
+    activeTexture: number,
+    blendColor: vec4<number>,
+    blendEquation: GlBlendEquation,
+    blendEquationAlpha: GlBlendEquation,
+    blendEquationRgb: GlBlendEquation,
+    blendingEnabled: boolean,
+    clearColor: vec4<number>,
+    clearDepth: number,
+    clearStencil: number,
+    colorMask: vec4<boolean>,
+    cullFaceMode: GlCullMode,
+    depthTestEnabled: boolean,
+    faceCullingEnabled: boolean,
+    framebuffer: WebGLFramebuffer,
+    indexBuffer: WebGLBuffer,
+    polygonOffsetFillEnabled: boolean,
+    program: WebGLProgram,
+    sampleAlphaToCoverageEnabled: boolean,
+    sampleCoverageEnabled: boolean,
+    scissorTestEnabled: boolean,
+    stencilTestEnabled: boolean,
+    vertexBuffer: WebGLBuffer,
+    viewport: vec4<number>,
 }

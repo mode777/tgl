@@ -6,16 +6,18 @@ describe("Core.GlContext", () => {
     
     it('should create a rendering context', () => {
         const canvas = document.createElement('canvas');
-        const context = new TglContext(canvas);
+        const context = new TglContext({ canvas: canvas });
         expect(context.webGlRenderingContext).toBeInstanceOf(WebGLRenderingContext);
     });
     
     it('should clear the canvas in red',async () => {
         const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
 
-        const context = new TglContext(canvas);
+        const context = new TglContext({ 
+            canvas: canvas,
+            width: 320,
+            height: 240 
+        });
         context.state.clearColor([1,0,0,1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
         

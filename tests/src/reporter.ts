@@ -31,7 +31,11 @@ export default class Reporter {
 
         const button = document.createElement('button');
         button.textContent = 'Run all';
-        button.onclick = () => this.runners.forEach(x => x());
+        button.onclick = async () => {
+            for (const runner of this.runners) {
+                await runner();
+            }  
+        };
         h1.appendChild(button);
         frag.appendChild(h1);
 

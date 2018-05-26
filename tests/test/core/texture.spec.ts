@@ -1,4 +1,4 @@
-import { describe, it, expect } from "test";
+import { describe, it, expect, getContext } from "test";
 import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlMagType } from '@tgl/core';
 
 const vertex = `attribute vec2 aPosition;
@@ -21,8 +21,6 @@ void main(void) {
 
 describe("Core.Texture", () => {
 
-    const context = new TglContext(document.createElement('canvas'));
-    const gl = context.webGlRenderingContext;
     const checker = new Uint8Array([
         0,0,255,255, 
         255,255,0,255,
@@ -31,7 +29,11 @@ describe("Core.Texture", () => {
     ]);
 
     it('should create texture', () => {
-        
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+                
         const texture = new Texture(gl, {
             source: checker,
             width: 2,
@@ -42,7 +44,12 @@ describe("Core.Texture", () => {
         expect(texture.webGlTexture).toBeInstanceOf(WebGLTexture);
     });
 
-    it('should load texture', async () => {        
+    it('should load texture', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;        
+        
         const texture = await Texture.fromFile(gl, './assets/grid.png');
         
         context.checkErrors();
@@ -52,7 +59,11 @@ describe("Core.Texture", () => {
     });
 
     it('should report the correct size', () => {
-        
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+                
         const texture = new Texture(gl, {
             source: checker,
             width: 2,
@@ -65,11 +76,9 @@ describe("Core.Texture", () => {
     });
 
     it('should render checkers', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {

@@ -1,3 +1,5 @@
+import { TglContext } from '@tgl/core';
+
 const _suites: Suite[] = [];
 
 let _suite: Suite = null;
@@ -71,6 +73,17 @@ export function it(description: string, func: () => void | Promise<void>) {
 
 export function expect<T>(actual: T) {
     return new Expected(actual);
+}
+
+let ctx: TglContext = null;
+export function getContext() {
+    if(ctx === null){
+        ctx = new TglContext({
+            width: 320,
+            height: 240
+        });
+    }
+    return ctx;
 }
 
 export class ImageError {

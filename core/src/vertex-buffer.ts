@@ -2,9 +2,11 @@ import { GlBufferUsage } from './constants/gl-buffer-usage';
 import { GlDataType } from './constants/gl-data-type';
 import { TglState } from './tgl-state';
 
+export type BufferData = Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array | Int16Array | Int32Array | Int8Array;
+
 export interface BufferOptions {
     usage?: GlBufferUsage,
-    data: number[] | Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array | Int16Array | Int32Array | Int8Array
+    data: BufferData | number[]
     attributes: AttributeOptions[]
 }
 
@@ -104,7 +106,7 @@ export class VertexBuffer {
         return this.size / this.vertexSize;
     }
 
-    public subData(offset: number, data: ArrayBuffer){
+    public updateData(offset: number, data: BufferData){
         this.bind();
         this.gl.bufferSubData(this.gl.ARRAY_BUFFER, offset, data);
     }

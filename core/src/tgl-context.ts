@@ -2,9 +2,17 @@ import { GlClearFlags } from './constants/gl-clear-flags';
 import { GlBlendEquation } from './constants/gl-blend-equation';
 import { GlCullMode } from './constants/gl-cull-mode';
 import { GlError } from './constants/gl-error';
-import { TglState } from './tgl-state';
+import { TglState, vec4 } from './tgl-state';
 
-const defaultOptions: WebGLContextAttributes = {
+export interface TglContextOptions extends WebGLContextAttributes {
+    canvas?: HTMLCanvasElement,
+    width?: number,
+    height?: number
+}
+
+const defaultOptions: TglContextOptions = {
+    width: 320,
+    height: 240,
     alpha: false,
     antialias: false,
     depth: false,
@@ -20,22 +28,36 @@ export class TglContext {
     private elementArrayBuffer: WebGLBuffer;
 
     readonly state: TglState;
+    readonly canvas: HTMLCanvasElement;
 
-    constructor(public readonly canvas: HTMLCanvasElement, options?: WebGLContextAttributes){
-
-        const context = this.canvas.getContext('webgl', { ...defaultOptions, ...options });         
+    constructor(options: TglContextOptions = {}){
+        this.canvas = options.canvas || document.createElement('canvas');
+        const context = <WebGLRenderingContext>this.canvas.getContext('webgl', { ...defaultOptions, ...options });      
         
         if(context !== null)
             this.gl = context; 
         else
             throw 'Unable to initialize WebGLRenderingContext';  
-            
+        
+        if(options.width)
+            this.canvas.width = options.width;
+        if(options.height)
+            this.canvas.height = options.height;
+
         this.state = TglState.getCurrent(this.gl);
-        this.state.viewport([0,0,canvas.width, canvas.height]);
+        this.resize();
     }
 
     get webGlRenderingContext(){
         return this.gl;
+    }
+
+    resize(){
+        const nvp: vec4<number> = [0,0,this.canvas.width, this.canvas.height];
+        const vp = this.state.viewport();
+        if(vp[0] !== nvp[0] || vp[1] !== nvp[1] || vp[2] !== nvp[2] || vp[3] !== nvp[3]){
+            this.state.viewport(nvp)
+        }
     }
 
     clear(flags = GlClearFlags.COLOR_BUFFER_BIT){

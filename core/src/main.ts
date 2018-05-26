@@ -6,6 +6,7 @@ export * from './drawable';
 export * from './shader';
 export * from './texture';
 export * from './vertex-buffer';
+export * from './tgl-state';
 
 // constants
 export * from './constants/gl-clear-flags';

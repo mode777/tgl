@@ -1,5 +1,3 @@
-import { vec2, mat3 } from 'gl-matrix';
-
 export interface Transform2dOptions {
     x?: number;
     y?: number;
@@ -42,7 +40,11 @@ export class Transform2d {
     private _sx: number;
     private _sy: number;
 
-    private _matrix = mat3.identity(mat3.create());
+    private _matrix = new Float32Array([
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
+    ]);
     private _dirty = true;
 
     private _enableTranslation;
@@ -117,8 +119,13 @@ export class Transform2d {
         this.resetInternal(opt);
     }
 
-    public transform(out: vec2, vector: vec2 | number[]){
-        vec2.transformMat3(out, vector, this.matrix)
+    public transform(x: number, y: number){
+        const m = this.matrix;
+
+        return [
+            m[0] * x + m[3] * y + m[6], 
+            m[1] * x + m[4] * y + m[7]
+        ];
     }
 
     private resetInternal(opt: Transform2dOptions){

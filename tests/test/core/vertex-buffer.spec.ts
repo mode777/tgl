@@ -1,4 +1,4 @@
-import { describe, it, expect } from "test";
+import { describe, it, expect, getContext } from "test";
 import { TglContext, Shader, VertexBuffer, GlBufferUsage, GlDataType, GlPrimitiveType, GlClearFlags, IndexBuffer } from '@tgl/core';
 
 const vertex1 = `attribute vec2 aPosition;
@@ -34,11 +34,12 @@ void main(void) {
 
 describe("Core.VertexBuffer", () => {
 
-    const context = new TglContext(document.createElement('canvas'));
-    const gl = context.webGlRenderingContext;
-
     it('should calculate vertex size', async () => {   
-
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+        
         const buffer = new VertexBuffer(gl, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: new Float32Array([
@@ -70,11 +71,9 @@ describe("Core.VertexBuffer", () => {
     });
 
     it('should render triangle', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
@@ -100,12 +99,42 @@ describe("Core.VertexBuffer", () => {
         await expect(gl).toLookLike('./assets/reference/vertex-triangle.png', 100)
     });
 
-    it('should render color triangle', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
+    it('should update data', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
 
-        const context = new TglContext(canvas);
+        const shader = new Shader(gl, {
+            fragmentSource: fragment1,
+            vertexSource: vertex1
+        });
+
+        const buffer = new VertexBuffer(gl, {
+            usage: GlBufferUsage.STATIC_DRAW,
+            data: new Float32Array(6),
+            attributes: [{
+                components: 2,
+                name: 'aPosition'
+            }]
+        });
+
+        const data = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0, 0.5]);
+
+        buffer.updateData(0, data);
+        buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
+
+        context.state.clearColor([0, 0, 0, 1]);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        gl.drawArrays(GlPrimitiveType.TRIANGLES, 0, 3);
+
+        await expect(gl).toLookLike('./assets/reference/vertex-triangle.png', 100)
+    });
+
+    it('should render color triangle', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
 
         const shader = new Shader(gl, {
@@ -147,12 +176,11 @@ describe("Core.VertexBuffer", () => {
     });
 
     it('should render with index buffer', async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 320;
-        canvas.height = 240;
-
-        const context = new TglContext(canvas);
+        const context = getContext();
+        context.state.reset();
+        context.resize();
         const gl = context.webGlRenderingContext;
+
 
         const shader = new Shader(gl, {
             fragmentSource: fragment1,
