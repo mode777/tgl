@@ -39,23 +39,25 @@ const attributeDefaults = {
 export class VertexBuffer {
     
     private handle: WebGLBuffer;
-    private options: BufferOptions;
     private attributesByName: {[key:string]:AttributeInfo} = {};
     private state = TglState.getCurrent(this.gl);
 
     public readonly vertexSize: number;
     public readonly size: number;
     public readonly attributes: AttributeInfo[];
+    public readonly usage: GlBufferUsage;
 
     constructor(protected gl: WebGLRenderingContext, options: BufferOptions){
         options.data = Object.prototype.toString.call(options.data) === '[object Array]'
             ? new Float32Array(options.data)
             : options.data;
 
-        this.options =  { ...bufferDefaults, ...options };
+        const opt =  { ...bufferDefaults, ...options };
+
+        this.usage = opt.usage;
         
         let offset = 0;
-        this.attributes = this.options.attributes
+        this.attributes = opt.attributes
             .map(x => ({ ...attributeDefaults, ...x }))
             .map(x => {
                 const attr = {
@@ -71,12 +73,12 @@ export class VertexBuffer {
             });
         this.vertexSize = offset;
 
-        const data: any = this.options.data;
+        const data: any = opt.data;
         this.size = data.byteLength;
         
         this.handle = gl.createBuffer();
-        this.bind();
-        this.gl.bufferData(gl.ARRAY_BUFFER, <any>this.options.data, this.options.usage);
+
+        this.data(<any>opt.data);
     }
 
     private getSize(type: GlDataType){
@@ -106,9 +108,14 @@ export class VertexBuffer {
         return this.size / this.vertexSize;
     }
 
-    public updateData(offset: number, data: BufferData){
+    public subData(offset: number, data: BufferData){
         this.bind();
         this.gl.bufferSubData(this.gl.ARRAY_BUFFER, offset, data);
+    }
+
+    public data(data: BufferData){
+        this.bind();
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.usage);        
     }
     
     public enableAttribute(name:string, location:number){

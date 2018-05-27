@@ -34,15 +34,15 @@ export class TglContext {
         this.canvas = options.canvas || document.createElement('canvas');
         const context = <WebGLRenderingContext>this.canvas.getContext('webgl', { ...defaultOptions, ...options });      
         
-        if(context !== null)
-            this.gl = context; 
-        else
-            throw 'Unable to initialize WebGLRenderingContext';  
-        
         if(options.width)
             this.canvas.width = options.width;
         if(options.height)
             this.canvas.height = options.height;
+
+        if(context !== null)
+            this.gl = context; 
+        else
+            throw 'Unable to initialize WebGLRenderingContext';         
 
         this.state = TglState.getCurrent(this.gl);
         this.resize();

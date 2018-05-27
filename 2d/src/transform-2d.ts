@@ -119,13 +119,13 @@ export class Transform2d {
         this.resetInternal(opt);
     }
 
-    public transform(x: number, y: number){
+    public transform(x: number, y: number, out: any = new Array(2), offset = 0){
         const m = this.matrix;
 
-        return [
-            m[0] * x + m[3] * y + m[6], 
-            m[1] * x + m[4] * y + m[7]
-        ];
+        out[offset    ] = m[0] * x + m[3] * y + m[6];
+        out[offset + 1] = m[1] * x + m[4] * y + m[7];
+
+        return out;
     }
 
     private resetInternal(opt: Transform2dOptions){

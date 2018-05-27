@@ -121,7 +121,7 @@ describe("Core.VertexBuffer", () => {
 
         const data = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0, 0.5]);
 
-        buffer.updateData(0, data);
+        buffer.subData(0, data);
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
 
         context.state.clearColor([0, 0, 0, 1]);
