@@ -5,6 +5,35 @@ import { vec2, mat3, mat4, vec3 } from 'gl-matrix';
 
 describe("2d.SpriteBatch", () => {
 
+    it('Should create sprites', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();        
+        const gl = context.webGlRenderingContext;
+
+        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+
+        const batch = new SpriteBatch(gl, {
+            size: 4,
+            texture: tex,
+            sprites: [
+                { index: 0, frame: [0,0,32,32], transform: { x: 50, y: 50, rotation: 1 } },
+                { index: 1, frame: [128,128,32,32], transform: { x:150, y: 150, rotation: 2 } },
+                { index: 2, frame: [128,0,32,32], transform: { x: 150, y: 50, rotation: 3 } },
+                { index: 3, frame: [0,128,32,32], transform: { x: 50, y: 150, rotation: 4 } },
+            ]
+        });
+
+        batch.update();
+
+        context.state.clearColor([0,0,0,1]);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+
+        batch.draw();
+
+        await expect(gl).toLookLike('./assets/reference/2d-sprite-batch-sprites.png', 97)
+    });
+
     it('Should render correctly', async() => {
         const context = getContext();
         context.state.reset();

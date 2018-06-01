@@ -1,7 +1,8 @@
 import { Texture, Drawable, Shader, VertexBuffer, IndexBuffer, GlDataType, TglState } from '@tgl/core';
-import { Transform2d } from './transform-2d';
+import { Transform2d, Transform2dOptions } from './transform-2d';
 import { Shader2d } from './shader-2d';
 import { Frame, ISprite } from './common';
+import { BaseSprite } from './base-sprite';
 
 const FRAME_SIZE = 4 * 4;
 const INDICES_FRAME = 6;
@@ -11,14 +12,23 @@ export interface SpriteBatchOptions {
     size: number,
     texture: Texture,
     shader?: Shader,
-    frames?: Frame[] 
+    sprites?: SpriteBatchSpriteOptions[] 
 }
 
-const spriteBatchDefaults = {
-    sprites: []
+const spriteBatchDefaults: SpriteBatchOptions = {
+    sprites: [],
+    texture: null,
+    size: 16
 }
 
-export class SpriteBatch {
+export interface SpriteBatchSpriteOptions {
+    index: number,
+    frame?: Frame,
+    transform?: Transform2d | Transform2dOptions 
+}
+
+export class SpriteBatch {    
+    public readonly size: number;
     
     private readonly vertexData: Int16Array;
     private readonly texture: Texture;
@@ -27,8 +37,8 @@ export class SpriteBatch {
     private readonly indexBuffer: IndexBuffer;
     private readonly shader: Shader;
     private readonly transform = new Transform2d();
-    private readonly size: number;
     private readonly state = TglState.getCurrent(this.gl);
+    private readonly proxies: ProxySprite[] = [];
 
     constructor(protected gl: WebGLRenderingContext, options: SpriteBatchOptions){
         const opt = { ...spriteBatchDefaults, ...options }
@@ -50,7 +60,9 @@ export class SpriteBatch {
                 'uProject': Shader2d.getProjectionMatrix(this.state.viewport()),
                 'uTransform': this.transform.matrix
             }
-        })
+        });
+
+        opt.sprites.forEach(x => this.createSprite(x));
     }    
 
     public setSprite(index: number, frame: Frame, transform: Transform2d){
@@ -85,7 +97,20 @@ export class SpriteBatch {
         }
     }
 
+    public createSprite(options: SpriteBatchSpriteOptions): ISprite {
+        const frame = options.frame || [0,0,this.texture.width, this.texture.height];
+        const transform = options.transform instanceof Transform2d 
+            ? options.transform 
+            : new Transform2d(options.transform || null);
+
+        const proxy = new ProxySprite(this, options.index, frame, transform);
+        this.proxies.push(proxy);
+
+        return proxy;
+    }
+
     public update(){
+        this.proxies.forEach(x => x.update());
         this.updateBuffer();
     }
 
@@ -130,43 +155,35 @@ export class SpriteBatch {
     }
 }
 
-export interface BatchedSpriteOptions {
-    data: Int16Array,
-    frame?: Frame,
-    transform?: Transform2d;
-}
+class ProxySprite extends BaseSprite {
 
-class BatchedSprite implements ISprite {
+    private isDirty = true;
+    private bbox: Frame = [0,0,0,0];
 
-    boundingBox: [number, number, number, number];
-
-    public center(x = true, y = true): ISprite {
-        throw new Error("Method not implemented.");
-    }
-    
-   public  moveTo(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
+    constructor(private batch: SpriteBatch,private index: number, frame: Frame, transform: Transform2d){
+        super(frame, transform);        
     }
 
-    public move(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
+    get boundingBox(): [number,number,number,number] {
+        if(this.isDirty){
+            this.calculateBoundingBox(this.bbox)
+            this.isDirty = false;
+        }
+        return this.bbox;
     }
-    public rotateTo(r: number): ISprite {
-        throw new Error("Method not implemented.");
+
+    update(){
+        if(this.isDirty){            
+            this.batch.setSprite(this.index, this.frame, this.transform)
+            this.isDirty = false;
+        }
     }
-    public rotate(r: number): ISprite {
-        throw new Error("Method not implemented.");
+
+    delete(){
+        this.batch.clearSprite(this.index);
     }
-    public scale(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
-    }
-    public scaleTo(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
-    }
-    public moveOrigin(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
-    }
-    public moveOriginTo(x: number, y: number): ISprite {
-        throw new Error("Method not implemented.");
+
+    protected setDirty(){
+        this.isDirty = true;
     }
 }

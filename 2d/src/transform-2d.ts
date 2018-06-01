@@ -46,6 +46,7 @@ export class Transform2d {
         0, 0, 1
     ]);
     private _dirty = true;
+    private _generation = 0;
 
     private _enableTranslation;
     private _enableRotation;

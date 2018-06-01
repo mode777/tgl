@@ -5,7 +5,8 @@ module.exports = {
         simple: './src/simple.ts',
         vertexbuffer: './src/vertex-buffer.ts',
         'framebuffer-tutorial': './src/framebuffer-tutorial.ts',
-        sprite: './src/sprite.ts'
+        sprite: './src/sprite.ts',
+        'particle-system': './src/particle-system.ts'
     },
     module: {
         rules: [

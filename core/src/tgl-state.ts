@@ -1,8 +1,10 @@
 import { GlBlendEquation } from './constants/gl-blend-equation';
 import { GlCullMode } from './constants/gl-cull-mode';
+import { GlBlendMode } from './constants/gl-blend-mode';
 
 export type Accessor<T> = (value?: T, cacheOnly?: boolean) => T;
 export type vec4<T> = [T,T,T,T];
+export type vec2<T> = [T,T];
 
 function createAccessor<T>(initial: T, setter: (value: T) => void, comparer?: (a: T, b: T) => boolean): Accessor<T>{
     let closure = initial;
@@ -67,6 +69,11 @@ export class TglState {
     readonly viewport = createAccessor<vec4<number>>(
         this.gl.getParameter(this.gl.VIEWPORT),
         (value) => this.gl.viewport(value[0], value[1], value[2], value[3]));
+
+    readonly blendFunc = createAccessor<vec2<GlBlendMode>>(
+        [this.gl.getParameter(this.gl.BLEND_SRC_RGB), this.gl.getParameter(this.gl.BLEND_DST_RGB)],
+        (value) => this.gl.blendFunc(value[0], value[1]),
+        arrayComparer);
 
     readonly blendEquation = createAccessor<GlBlendEquation>(
         this.gl.getParameter(this.gl.BLEND_EQUATION),
@@ -204,6 +211,7 @@ export class TglState {
             stencilTestEnabled: this.stencilTestEnabled(),
             vertexBuffer: this.vertexBuffer(),
             viewport: this.viewport(),
+            blendFunc: this.blendFunc()
             //maxCombinedTextureImageUnits: this.textures.length
         }
     }
@@ -234,4 +242,5 @@ export interface TglStateSnapshot {
     stencilTestEnabled: boolean,
     vertexBuffer: WebGLBuffer,
     viewport: vec4<number>,
+    blendFunc: vec2<GlBlendMode>
 }

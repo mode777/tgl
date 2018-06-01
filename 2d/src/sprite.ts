@@ -2,6 +2,7 @@ import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState } from '@
 import { Transform2dCreateOptions, Transform2d } from './transform-2d';
 import { Frame, ISprite } from './common';
 import { Shader2d } from './shader-2d';
+import { BaseSprite } from './base-sprite';
 
 export class SpriteOptions {
     texture: Texture;
@@ -10,21 +11,22 @@ export class SpriteOptions {
     shader?: Shader;
 }
 
-export class Sprite implements ISprite {
+export class Sprite extends BaseSprite {
 
     private drawable: Drawable;
     private readonly state = TglState.getCurrent(this.gl);
-    private readonly frame: Frame;
     private readonly bbox: Frame = [0,0,0,0];
-    private readonly transform: Transform2d;
     private dirty = true;
 
     constructor(protected gl: WebGLRenderingContext, options: SpriteOptions){
+        super(options.frame || [ 0, 0, options.texture.width, options.texture.height ], 
+            options.transform instanceof Transform2d 
+            ? options.transform 
+            : new Transform2d(options.transform || null));
+        
         const texture = options.texture;
         const shader = options.shader || Shader2d.getInstance(gl);
-        this.frame = options.frame || [ 0, 0, options.texture.width, options.texture.height ];
-        this.transform = new Transform2d(options.transform || null)
-    
+       
         this.drawable = new Drawable(gl, {
             shader: shader,
             textures: { 'uTexture': texture },
@@ -38,9 +40,13 @@ export class Sprite implements ISprite {
         })
     }
 
+    protected setDirty(){
+        this.dirty = true;
+    }
+
     public get boundingBox(){
         if(this.dirty){
-            this.calculateBoundingBox();
+            this.calculateBoundingBox(this.bbox);
             this.dirty = false;
         }
         return this.bbox;
@@ -51,92 +57,7 @@ export class Sprite implements ISprite {
         this.drawable.uniforms['uTransform'] = this.transform.matrix;
 
         this.drawable.draw();
-    }
-
-    public center(x = true, y = true) {
-        if(x)
-            this.transform.originX = this.frame[2] / 2;
-        if(y)
-            this.transform.originY = this.frame[3] / 2;
-
-        this.dirty = true;
-        
-        return this;
-    }
-
-    public moveTo(x: number, y: number) {
-        this.transform.x = x;
-        this.transform.y = y;
-        this.dirty = true;
-
-        return this;
-    }
-
-    public move(x: number, y: number) {
-        this.transform.x += x;
-        this.transform.y += y;
-        this.dirty = true;       
-
-        return this;
-    }
-
-    public rotateTo(r: number) {
-        this.transform.rotation = r;
-        this.dirty = true;       
-
-        return this;
-    }
-
-    public rotate(r: number) {
-        this.transform.rotation += r;
-        this.dirty = true;
-
-        return this;
-    }
-
-    public scale(x: number, y: number) {
-        this.transform.scaleX *= x;
-        this.transform.scaleY *= y;
-        this.dirty = true;
-
-        return this;
-    }
-
-    public scaleTo(x: number, y: number) {
-        this.transform.scaleX = x;
-        this.transform.scaleY = y;
-        this.dirty = true;
-
-        return this;
-    }
-
-    public moveOrigin(x: number, y: number){
-        this.transform.originX += x;
-        this.transform.originY += y;
-        this.dirty = true;
-
-        return this;
-    }
-    
-    public moveOriginTo(x: number, y: number){
-        this.transform.originX = x;
-        this.transform.originY = y;
-        this.dirty = true;
-
-        return this;
-    }
-
-    private calculateBoundingBox() {
-        const a = this.transform.transform(0,0);
-        const b = this.transform.transform(this.frame[2],0);
-        const c = this.transform.transform(this.frame[2],this.frame[3]);
-        const d = this.transform.transform(0,this.frame[3]);
-
-        this.bbox[0] = Math.min(a[0], b[0], c[0], d[0]);
-        this.bbox[1] = Math.min(a[1], b[1], c[1], d[1]);        
-        this.bbox[2] = Math.max(a[0], b[0], c[0], d[0]) - this.bbox[0];
-        this.bbox[3] = Math.max(a[1], b[1], c[1], d[1]) - this.bbox[1];
-    }
+    }    
 
     private createBuffer(frame: Frame){
         const x = frame[0];

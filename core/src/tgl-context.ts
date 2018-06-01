@@ -3,11 +3,16 @@ import { GlBlendEquation } from './constants/gl-blend-equation';
 import { GlCullMode } from './constants/gl-cull-mode';
 import { GlError } from './constants/gl-error';
 import { TglState, vec4 } from './tgl-state';
+import { GlBlendMode } from './constants/gl-blend-mode';
 
 export interface TglContextOptions extends WebGLContextAttributes {
     canvas?: HTMLCanvasElement,
     width?: number,
     height?: number
+}
+
+export enum BlendMode {
+    Additive
 }
 
 const defaultOptions: TglContextOptions = {
@@ -62,6 +67,11 @@ export class TglContext {
 
     clear(flags = GlClearFlags.COLOR_BUFFER_BIT){
         this.gl.clear(flags);
+    }
+
+    setAdditiveBlending(){
+        this.state.blendingEnabled(true);
+        this.state.blendFunc([GlBlendMode.SRC_ALPHA, GlBlendMode.ONE]);
     }
 
     checkErrors(){

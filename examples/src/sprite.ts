@@ -18,28 +18,28 @@ async function main() {
 
     sprites[0] = new Sprite(gl, {
         texture: texture,
-        frame: { x: 0, y: 0, w: 128, h: 128 }
+        frame: [0,0,128,128]
     })
     .center()
     .moveTo(160, 120)
     
     sprites[1] = new Sprite(gl, {
         texture: texture,
-        frame: { x: 128, y: 0, w: 128, h: 128 }
+        frame: [128,0,128,128]
     })
     .center()
     .moveTo(320+160, 120);
 
     sprites[2] = new Sprite(gl, {
         texture: texture,
-        frame: { x: 0, y: 128, w: 128, h: 128 }
+        frame: [0,128,128,128]
     })
     .center()
     .moveTo(160, 240+120);
 
     sprites[3] = new Sprite(gl, {
         texture: texture,
-        frame: { x: 128, y: 128, w: 128, h: 128 }
+        frame: [128,128,128,128]
     })
     .center()
     .moveTo(320+160, 240+120);
