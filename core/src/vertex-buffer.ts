@@ -48,9 +48,7 @@ export class VertexBuffer {
     public readonly usage: GlBufferUsage;
 
     constructor(protected gl: WebGLRenderingContext, options: BufferOptions){
-        options.data = Object.prototype.toString.call(options.data) === '[object Array]'
-            ? new Float32Array(options.data)
-            : options.data;
+        options.data = this.getData(options.data, options.attributes[0].type)
 
         const opt =  { ...bufferDefaults, ...options };
 
@@ -79,6 +77,33 @@ export class VertexBuffer {
         this.handle = gl.createBuffer();
 
         this.data(<any>opt.data);
+    }
+
+    private getData(data: BufferData | number[], type: GlDataType = GlDataType.FLOAT): BufferData{
+        const isNumbers =  Object.prototype.toString.call(data) === '[object Array]'
+        if(isNumbers){
+            switch (type) {
+                case GlDataType.BYTE:
+                    return new Int8Array(data);
+                case GlDataType.UNSIGNED_BYTE:
+                    return new Uint8Array(data);
+                case GlDataType.SHORT:
+                    return new Int16Array(data);
+                case GlDataType.UNSIGNED_SHORT:
+                    return new Uint16Array(data);
+                case GlDataType.INT:
+                    return new Int32Array(data);
+                case GlDataType.UNSIGNED_INT:
+                    return new Uint32Array(data);
+                case GlDataType.FLOAT:
+                    return new Float32Array(data);
+                default:
+                    throw 'Unknown data type: ' + type;
+            }
+        }
+        else {
+            return <BufferData>data;
+        }
     }
 
     private getSize(type: GlDataType){

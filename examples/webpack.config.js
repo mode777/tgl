@@ -7,7 +7,8 @@ module.exports = {
         'framebuffer-tutorial': './src/framebuffer-tutorial.ts',
         sprite: './src/sprite.ts',
         'particle-system': './src/particle-system.ts',
-        'texture-atlas': './src/texture-atlas.ts'
+        'texture-atlas': './src/texture-atlas.ts',
+        debug: './src/debug.ts'
     },
     module: {
         rules: [
