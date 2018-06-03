@@ -1,3 +1,4 @@
+import './test/2d/blending.spec.ts';
 import './test/2d/shader.spec.ts';
 import './test/2d/sprite-batch.spec.ts';
 import './test/2d/sprite.spec.ts';

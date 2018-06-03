@@ -3,13 +3,14 @@ import { Sprite } from '@tgl/2d';
 import { mat3 } from 'gl-matrix';
 
 async function main() {
-    // create a canvas
-    const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 480;
-    document.body.appendChild(canvas);
-
-    const context = new TglContext(canvas);
+    const context = new TglContext({
+        width: 512,
+        height: 512,
+        //antialias: true
+    })
+    document.body.appendChild(context.canvas);
+    
+    // get the WebGLRenderingContext 
     const gl = context.webGlRenderingContext;
 
     const texture = await Texture.fromFile(gl, '../assets/grid.png');
@@ -46,8 +47,7 @@ async function main() {
 
     function draw(time) {
         // clear the screen black
-        context.state.clearColor([0, 0, 0, 1]);
-        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT, [0, 0, 0, 1]);
 
         const step = time / 1000;
 

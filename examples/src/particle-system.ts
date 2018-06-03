@@ -1,11 +1,12 @@
-import { TglContext, GlClearFlags, Texture } from '@tgl/core'
-import { SpriteBatch, ISprite } from '@tgl/2d';
+import { TglContext, GlClearFlags, Texture, BlendMode } from '@tgl/core'
+import { SpriteBatch, ISprite, Sprite } from '@tgl/2d';
 
 async function main(){    
-    // use of TglContext is completely optional
+
     const context = new TglContext({
         width: 512,
-        height: 512
+        height: 512,
+        //antialias: true
     })
     document.body.appendChild(context.canvas);
     
@@ -13,12 +14,13 @@ async function main(){
     const gl = context.webGlRenderingContext;
 
     const particleSystem = new SpriteBatch(gl, {
-        size: 1024,
+        size: 512,
         texture: await Texture.fromFile(gl, '../assets/particle.png'),
         //sprites: [{ index: 0 }]
     });
 
     const origin = [256, 480];
+    const speed = 1;
 
     const sprites: Particle[] = Array.from({length: particleSystem.size}, (_,i) => {
         
@@ -31,8 +33,8 @@ async function main(){
             .center()
             .scaleTo(scale, scale)
             .moveTo(origin[0], origin[1]),
-            vx: Math.random() * 1 - .5,
-            vy: (Math.random() * -4) - 1,
+            vx: Math.random() * speed - speed/2,
+            vy: (Math.random() * -speed * 4) - speed,
             lifetime: Math.random() * 100 + 60
         };
     });
@@ -41,21 +43,23 @@ async function main(){
     function updateParticle(particle: Particle){
         if(particle.lifetime > 0){
             particle.sprite.move(particle.vx, particle.vy);
+            const scale = particle.lifetime / 100;
+            particle.sprite.scaleTo(scale, scale);
             //particle.vy += .002;
             particle.lifetime--;
         }
         else {
             particle.sprite.moveTo(origin[0], origin[1]);
-            particle.lifetime = Math.random() * 600 + 60;
+            particle.lifetime = Math.random() * 100 + 60;
         }
     }
 
     function draw(){
         // clear the screen black
-        context.state.clearColor([0, 0, 0, 1]);
-        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT, [0,0,0,1]);
 
-        context.setAdditiveBlending();
+        context.setBlendMode(BlendMode.Add)
+        
         sprites.forEach(updateParticle)
         particleSystem.update();
         particleSystem.draw();

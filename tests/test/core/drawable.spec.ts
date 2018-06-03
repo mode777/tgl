@@ -78,6 +78,55 @@ describe("Core.Drawable", () => {
         await expect(gl).toLookLike('./assets/reference/texture-checker.png', 100)
     });
 
+    it('should render different attributes correctly', async () => {
+        const context = getContext();
+        context.state.reset();
+        context.resize();
+        const gl = context.webGlRenderingContext;
+
+        const options1 = { ...bufferOptions, data: [
+            -1,-1, 0,0, 
+             0,-1, 2,0,
+             0, 0, 2,2,
+            -1, 0, 0,2
+        ] }
+
+        const drawable1 = new Drawable(gl, {
+            buffers: [options1],
+            shader: shaderOptions,
+            indices: indices,
+            textures: {
+                'uTexture': textureOptions 
+            }
+        });
+
+        const options2 = { ...bufferOptions, data: [
+            0,0, 0,0, 
+             1,0, 1,0,
+             1, 1, 1,1,
+            0, 1, 0,1
+        ] }
+
+        const drawable2 = new Drawable(gl, {
+            buffers: [options2],
+            shader: shaderOptions,
+            indices: indices,
+            textures: {
+                'uTexture': textureOptions 
+            }
+        });
+
+        context.state.clearColor([0, 0, 0, 1]);
+        context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+
+        drawable1.draw();
+        drawable2.draw();
+        drawable1.draw();
+        drawable2.draw();
+
+        await expect(gl).toLookLike('./assets/reference/drawable-attributes.png', 100)
+    });
+
     it('should render checkers from objects', async () => {
         const context = getContext();
         const gl = context.webGlRenderingContext;

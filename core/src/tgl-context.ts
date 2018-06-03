@@ -12,7 +12,12 @@ export interface TglContextOptions extends WebGLContextAttributes {
 }
 
 export enum BlendMode {
-    Additive
+    None,
+    Alpha,
+    Add,
+    Multiply,
+    Subtract,
+    Screen  
 }
 
 const defaultOptions: TglContextOptions = {
@@ -65,13 +70,57 @@ export class TglContext {
         }
     }
 
-    clear(flags = GlClearFlags.COLOR_BUFFER_BIT){
+    clear(flags = GlClearFlags.COLOR_BUFFER_BIT, color?: vec4<number>){
+        if(color)
+            this.state.clearColor(color);
+
         this.gl.clear(flags);
     }
 
-    setAdditiveBlending(){
-        this.state.blendingEnabled(true);
-        this.state.blendFunc([GlBlendMode.SRC_ALPHA, GlBlendMode.ONE]);
+    setBlendMode(mode: BlendMode){
+        if(mode === BlendMode.None)
+            this.state.blendingEnabled(false);
+        else
+            this.state.blendingEnabled(true);
+
+        let func: number = this.gl.FUNC_ADD;
+        let srcRGB: number = this.gl.ONE;
+        let srcA: number =  this.gl.ONE;
+        let dstRGB: number = this.gl.ZERO;
+        let dstA: number = this.gl.ZERO;
+
+        switch (mode)
+        {
+            case BlendMode.Alpha:
+                srcRGB = srcA = this.gl.SRC_ALPHA;
+                dstRGB = dstA = this.gl.ONE_MINUS_SRC_ALPHA;
+                break;
+            case BlendMode.Multiply:
+                srcRGB = srcA = this.gl.DST_COLOR;
+                dstRGB = dstA = this.gl.ZERO;
+                break;
+            case BlendMode.Subtract:
+                func = this.gl.FUNC_REVERSE_SUBTRACT;
+            case BlendMode.Add:
+                srcRGB = this.gl.ONE;
+                srcA = this.gl.ZERO;
+                dstRGB = dstA = this.gl.ONE;
+                break;        
+            case BlendMode.Screen:
+                srcRGB = srcA = this.gl.ONE;
+                dstRGB = dstA = this.gl.ONE_MINUS_SRC_COLOR;
+                break;
+            case BlendMode.None:
+            default:
+                srcRGB = srcA = this.gl.ONE;
+                dstRGB = dstA = this.gl.ZERO;
+                break;
+        }
+
+        this.state.blendEquationRgb(func);
+        this.state.blendEquationAlpha(func);
+        this.state.blendFuncRgb([srcRGB, dstRGB]);
+        this.state.blendFuncAlpha([srcA, dstA]);        
     }
 
     checkErrors(){

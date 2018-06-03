@@ -1,13 +1,12 @@
 import { TglContext, Drawable, GlClearFlags } from '@tgl/core'
 
-// create a canvas
-const canvas = document.createElement('canvas');
-canvas.width = 320;
-canvas.height = 240;
-document.body.appendChild(canvas);
+const context = new TglContext({
+    width: 512,
+    height: 512,
+    //antialias: true
+})
+document.body.appendChild(context.canvas);
 
-// use of TglContext is completely optional
-const context = new TglContext(canvas);
 // get the WebGLRenderingContext 
 const gl = context.webGlRenderingContext;
 
@@ -50,8 +49,7 @@ const drawable = new Drawable(gl, {
 });
 
 // clear the screen black
-context.state.clearColor([0, 0, 0, 1]);
-context.clear(GlClearFlags.COLOR_BUFFER_BIT);
+context.clear(GlClearFlags.COLOR_BUFFER_BIT, [0, 0, 0, 1]);
 
 // draw the triangle
 drawable.draw();

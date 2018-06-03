@@ -1,5 +1,5 @@
 import { describe, it, expect, getContext } from "test";
-import { Transform2d, Shader2d, Frame, SpriteBatch } from  '@tgl/2d';
+import { Transform2d, Shader2d, Frame, SpriteBatch, Sprite } from  '@tgl/2d';
 import { TglContext, Shader, Drawable, GlClearFlags, Texture, GlDataType, GlMagType } from '@tgl/core';
 import { vec2, mat3, mat4, vec3 } from 'gl-matrix';
 
@@ -71,5 +71,5 @@ describe("2d.SpriteBatch", () => {
         batch.draw();
 
         await expect(gl).toLookLike('./assets/reference/2d-sprite-batch.png', 97)
-    })
+    });    
 });

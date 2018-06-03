@@ -70,14 +70,19 @@ export class TglState {
         this.gl.getParameter(this.gl.VIEWPORT),
         (value) => this.gl.viewport(value[0], value[1], value[2], value[3]));
 
-    readonly blendFunc = createAccessor<vec2<GlBlendMode>>(
+    readonly blendFuncRgb = createAccessor<vec2<GlBlendMode>>(
         [this.gl.getParameter(this.gl.BLEND_SRC_RGB), this.gl.getParameter(this.gl.BLEND_DST_RGB)],
-        (value) => this.gl.blendFunc(value[0], value[1]),
+        (value) => this.gl.blendFuncSeparate(value[0], value[1], this.blendFuncAlpha()[0], this.blendFuncAlpha()[1]),
         arrayComparer);
 
-    readonly blendEquation = createAccessor<GlBlendEquation>(
-        this.gl.getParameter(this.gl.BLEND_EQUATION),
-        (value) => this.gl.blendEquation(value));
+    readonly blendFuncAlpha = createAccessor<vec2<GlBlendMode>>(
+        [this.gl.getParameter(this.gl.BLEND_SRC_ALPHA), this.gl.getParameter(this.gl.BLEND_DST_ALPHA)],
+        (value) => this.gl.blendFuncSeparate(this.blendFuncRgb()[0], this.blendFuncRgb()[1],  value[0], value[1]),
+        arrayComparer);
+
+    // readonly blendEquation = createAccessor<GlBlendEquation>(
+    //     this.gl.getParameter(this.gl.BLEND_EQUATION),
+    //     (value) => this.gl.blendEquation(value));
 
     readonly blendEquationRgb = createAccessor<GlBlendEquation>(
         this.gl.getParameter(this.gl.BLEND_EQUATION_RGB),
@@ -190,7 +195,7 @@ export class TglState {
             texture: this.texture(),
             activeTexture: this.activeTexture(),
             blendColor: this.blendColor(),
-            blendEquation: this.blendEquation(),
+            //blendEquation: this.blendEquation(),
             blendEquationAlpha: this.blendEquationAlpha(),
             blendEquationRgb: this.blendEquationRgb(),
             blendingEnabled: this.blendingEnabled(),
@@ -211,7 +216,8 @@ export class TglState {
             stencilTestEnabled: this.stencilTestEnabled(),
             vertexBuffer: this.vertexBuffer(),
             viewport: this.viewport(),
-            blendFunc: this.blendFunc()
+            blendFuncRgb: this.blendFuncRgb(),
+            blendFuncAlpha: this.blendFuncAlpha()
             //maxCombinedTextureImageUnits: this.textures.length
         }
     }
@@ -221,7 +227,7 @@ export interface TglStateSnapshot {
     texture: WebGLTexture,
     activeTexture: number,
     blendColor: vec4<number>,
-    blendEquation: GlBlendEquation,
+    //blendEquation: GlBlendEquation,
     blendEquationAlpha: GlBlendEquation,
     blendEquationRgb: GlBlendEquation,
     blendingEnabled: boolean,
@@ -242,5 +248,6 @@ export interface TglStateSnapshot {
     stencilTestEnabled: boolean,
     vertexBuffer: WebGLBuffer,
     viewport: vec4<number>,
-    blendFunc: vec2<GlBlendMode>
+    blendFuncRgb: vec2<GlBlendMode>,
+    blendFuncAlpha: vec2<GlBlendMode>
 }

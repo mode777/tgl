@@ -24,14 +24,16 @@ void main() {
    gl_FragColor = texture2D(u_texture, v_texcoord);
 }`;
 
-// create a canvas
-const canvas = document.createElement('canvas');
-canvas.width = 512;
-canvas.height = 512;
-document.body.appendChild(canvas);
+const context = new TglContext({
+  width: 512,
+  height: 512,
+  antialias: true
+})
+document.body.appendChild(context.canvas);
 
-// create tgl context
-const context = new TglContext(canvas);
+// get the WebGLRenderingContext 
+const gl = context.webGlRenderingContext;
+
 context.state.depthTestEnabled(true);
 context.state.faceCullingEnabled(true);
 

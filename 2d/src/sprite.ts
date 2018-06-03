@@ -1,4 +1,4 @@
-import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState } from '@tgl/core';
+import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState, vec2 } from '@tgl/core';
 import { Transform2dCreateOptions, Transform2d } from './transform-2d';
 import { Frame, ISprite } from './common';
 import { Shader2d } from './shader-2d';
@@ -16,6 +16,7 @@ export class Sprite extends BaseSprite {
     private drawable: Drawable;
     private readonly state = TglState.getCurrent(this.gl);
     private readonly bbox: Frame = [0,0,0,0];
+    private readonly textureSize: vec2<number>;
     private dirty = true;
 
     constructor(protected gl: WebGLRenderingContext, options: SpriteOptions){
@@ -27,13 +28,15 @@ export class Sprite extends BaseSprite {
         const texture = options.texture;
         const shader = options.shader || Shader2d.getInstance(gl);
        
+        this.textureSize = [texture.width, texture.height];
+
         this.drawable = new Drawable(gl, {
             shader: shader,
             textures: { 'uTexture': texture },
             buffers: [this.createBuffer(this.frame)],
             indices: [0,1,2,0,3,1],
             uniforms: {
-                'uTextureSize': [texture.width, texture.height],
+                'uTextureSize': this.textureSize,
                 'uProject': Shader2d.getProjectionMatrix(this.state.viewport()),
                 'uTransform': this.transform.matrix
             }
@@ -55,6 +58,7 @@ export class Sprite extends BaseSprite {
     public draw(){
         this.drawable.uniforms['uProject'] = Shader2d.getProjectionMatrix(this.state.viewport());
         this.drawable.uniforms['uTransform'] = this.transform.matrix;
+        this.drawable.uniforms['uTextureSize'] = this.textureSize;
 
         this.drawable.draw();
     }    

@@ -6,7 +6,8 @@ module.exports = {
         vertexbuffer: './src/vertex-buffer.ts',
         'framebuffer-tutorial': './src/framebuffer-tutorial.ts',
         sprite: './src/sprite.ts',
-        'particle-system': './src/particle-system.ts'
+        'particle-system': './src/particle-system.ts',
+        'texture-atlas': './src/texture-atlas.ts'
     },
     module: {
         rules: [
