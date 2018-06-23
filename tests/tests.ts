@@ -2,6 +2,7 @@ import './test/2d/blending.spec.ts';
 import './test/2d/shader.spec.ts';
 import './test/2d/sprite-batch.spec.ts';
 import './test/2d/sprite.spec.ts';
+import './test/2d/tilemap.spec.ts';
 import './test/2d/transform.spec.ts';
 import './test/core/drawable.spec.ts';
 import './test/core/framebuffer.spec.ts';
