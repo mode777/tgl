@@ -12,3 +12,10 @@ export interface ISprite {
     moveOrigin(x: number, y: number): ISprite;
     moveOriginTo(x: number, y: number): ISprite;
 }
+
+export enum FlipFlags {
+    None                = 0x00000000,
+    FlippedHorizontally = 0x80000000,
+    FlippedVertically   = 0x40000000,
+    FlippedDiagonally   = 0x20000000
+}
