@@ -8,6 +8,8 @@ export abstract class BaseSprite implements ISprite {
     }
 
     abstract get boundingBox();
+    abstract flip();
+    abstract flipTo();
 
     protected abstract setDirty();
  

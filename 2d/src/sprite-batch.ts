@@ -189,4 +189,12 @@ class ProxySprite extends BaseSprite {
     protected setDirty(){
         this.isDirty = true;
     }
+
+    flip() {
+        throw new Error("Method not implemented.");
+    }
+    
+    flipTo() {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -11,6 +11,8 @@ export interface ISprite {
     scaleTo(x: number, y: number): ISprite;
     moveOrigin(x: number, y: number): ISprite;
     moveOriginTo(x: number, y: number): ISprite;
+    flipTo(flags: FlipFlags);
+    flip(flags: FlipFlags);
 }
 
 export enum FlipFlags {

@@ -16,11 +16,11 @@ export class Sprite extends BaseSprite {
     private drawable: Drawable;
     private data: Int16Array;
     private dirty = true;
+    private flipState: FlipFlags;
 
     private readonly state = TglState.getCurrent(this.gl);
     private readonly bbox: Frame = [0,0,0,0];
     private readonly textureSize: vec2<number>;
-    private readonly flip: FlipFlags;
 
     constructor(protected gl: WebGLRenderingContext, options: SpriteOptions){
         super(options.frame || [ 0, 0, options.texture.width, options.texture.height ], 
@@ -31,13 +31,13 @@ export class Sprite extends BaseSprite {
         const texture = options.texture;
         const shader = Shader2d.getInstance(gl);
     
-        this.flip = options.flip || FlipFlags.None;
+        this.flipState = options.flip || FlipFlags.None;
         this.textureSize = [texture.width, texture.height];
 
         this.drawable = new Drawable(gl, {
             shader: shader,
             textures: { 'uTexture': texture },
-            buffers: [this.createBuffer(this.frame, this.flip)],
+            buffers: [this.createBuffer(this.frame, this.flipState)],
             indices: [0,1,2,0,3,1],
             uniforms: {
                 'uTextureSize': this.textureSize,
@@ -66,6 +66,24 @@ export class Sprite extends BaseSprite {
 
         this.drawable.draw();
     }    
+
+    public flipTo(flags: FlipFlags){
+        // bitwise xor to determine flipping direction
+        this.flipInternal(this.flipState ^ flags);
+        this.flipState = flags;
+        this.drawable.buffers[0].subData(0, this.data);
+    }
+
+    public flip(flags: FlipFlags){
+        this.flipInternal(flags);
+        // bitwise xor to determine flipping state
+        this.flipState = this.flipState ^ flags;
+        this.drawable.buffers[0].subData(0, this.data);
+    }
+
+    // public update(){
+    //     this.drawable.buffers[0].subData(0, this.data);
+    // }
 
     private createBuffer(frame: Frame, flip: FlipFlags){
         const x = frame[0];
