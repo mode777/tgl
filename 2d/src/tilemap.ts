@@ -1,6 +1,7 @@
 import { TilesetOptions, Tileset } from './tileset';
 import { BufferData } from '@tgl/core';
 import { SpriteBatch, Transform2d } from './main';
+import { Context2d } from './context-2d';
 
 export interface TilemapOptions {
     tileset: Tileset | TilesetOptions,
@@ -19,7 +20,7 @@ export class Tilemap {
     private readonly transforms: Transform2d[];
     private readonly data: number[];
 
-    constructor(gl: WebGLRenderingContext, options: TilemapOptions){
+    constructor(private context: Context2d, options: TilemapOptions){
         this.width = options.width;
         this.height = options.height;
 
@@ -27,7 +28,7 @@ export class Tilemap {
             ? options.tileset
             : new Tileset(options.tileset);
 
-        this.batch = new SpriteBatch(gl, {
+        this.batch = new SpriteBatch(this.context, {
             size: this.width * this.height,
             texture: this.tileset.texture
         });

@@ -1,5 +1,5 @@
 import { describe, it, expect, getContext } from "test";
-import { Transform2d, Shader2d, Frame } from  '@tgl/2d';
+import { Transform2d, Shader2d, Frame, Context2d } from  '@tgl/2d';
 import { TglContext, Shader, Drawable, GlClearFlags, Texture, GlDataType, GlMagType } from '@tgl/core';
 import { vec2, mat3, mat4, vec3 } from 'gl-matrix';
 
@@ -11,7 +11,7 @@ describe("2d.Shader", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grass_dirt.png', {
+        const tex = await Texture.fromFile(context, '../assets/2d/grass_dirt.png', {
             filterMag: GlMagType.NEAREST
         });
         const transform = new Transform2d({
@@ -28,8 +28,6 @@ describe("2d.Shader", () => {
         mat3.translate(projection, projection, [-1.0, 1.0])
         mat3.scale(projection, projection, [2.0/320,-2.0/240])
         
-        const shader = Shader2d.getInstance(gl);
-
         const frame = {
             x: 16,
             y: 0,
@@ -37,13 +35,13 @@ describe("2d.Shader", () => {
             h: 16
         }
 
-        const drawable = new Drawable(gl, {
-            shader: shader,
+        const drawable = new Drawable(context, {
+            shader: new Shader2d(context).tglShader,
             textures: { 'uTexture': tex },
             buffers: [{
                 attributes: [
-                    { name: 'aPosition', components: 2, type: GlDataType.SHORT },
-                    { name: 'aTexcoord', components: 2, type: GlDataType.SHORT }
+                    { name: 'aPosition', components: 2, dataType: GlDataType.SHORT },
+                    { name: 'aTexcoord', components: 2, dataType: GlDataType.SHORT }
                 ],
                 data: new Int16Array([
                     0, 0, frame.x, frame.y,

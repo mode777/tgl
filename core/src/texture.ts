@@ -3,7 +3,7 @@ import { GlMagType } from './constants/gl-mag-type';
 import { GlWrapMode } from './constants/gl-wrap-mode';
 import { GlPixelFormat } from './constants/gl-pixel-format';
 import { GlPixelType } from './constants/gl-pixel-type';
-import { TglState } from './tgl-state';
+import { TglContext } from './tgl-context';
 
 export interface TextureOptions {
     source?: TextureImage | ArrayBufferView,
@@ -36,31 +36,32 @@ const DefaultTextureOptions = {
 
 export class Texture {
     
-    public static async fromFile(gl: WebGLRenderingContext, url: string, options: Partial<TextureOptions> = {}){
+    public static async fromFile(context: TglContext, url: string, options: Partial<TextureOptions> = {}){
         return new Promise<Texture>((res, rej) => {
             const img = new Image();            
             img.src = url;
             options.source = img;            
             
             img.onerror = (e) => rej(e);
-            img.onload = () => res(new Texture(gl, <TextureOptions>options));
+            img.onload = () => res(new Texture(context, <TextureOptions>options));
         });
     }
 
     private handle: WebGLTexture;
-    private state = TglState.getCurrent(this.gl);
+    private gl = this.context.webGlRenderingContext;
+    private state = this.context.state;
 
     protected options: TextureOptions;
     
     public readonly width: number;
     public readonly height: number;
     
-    constructor(protected gl: WebGLRenderingContext, options: TextureOptions) {
+    constructor(protected context: TglContext, options: TextureOptions) {
         
         this.options =  { ...DefaultTextureOptions, ...options };
         this.handle = this.gl.createTexture();
         this.bind();
-        this.gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+        this.gl.pixelStorei(this.gl.UNPACK_ALIGNMENT, 1);
 
         if(this.options.source){
             // is typed array
@@ -90,7 +91,7 @@ export class Texture {
         
         this.bind();
         if(this.options.generateMipmaps){
-            gl.generateMipmap(gl.TEXTURE_2D);
+            this.gl.generateMipmap(this.gl.TEXTURE_2D);
         }
         this.setFilter(this.options.filterMin, this.options.filterMag);
         this.setWrapping(this.options.wrapX, this.options.wrapY);

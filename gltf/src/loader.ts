@@ -1,5 +1,5 @@
 import { GlTf as IGltf, Mesh as IMesh, Scene as IScene, Node as INode, Buffer as IBuffer, BufferView as IBufferView, Accessor as IAccessor, GlTf } from './gltf';
-import { GlDataType, GlBufferType, IndexBuffer, VertexBuffer, BufferOptions, GlBufferUsage, Shader, Drawable } from '@tgl/core'
+import { GlDataType, GlBufferType, IndexBuffer, VertexBuffer, BufferOptions, GlBufferUsage, Shader, Drawable, TglContext } from '@tgl/core'
 
 export class Scene {
     constructor(public readonly nodes: Node[]){
@@ -86,8 +86,9 @@ export class GltfLoader {
     private nodes: Node[] = [];
     meshes: Mesh[] = [];
     private buffers: ArrayBuffer[] = [];
-    
-    constructor(private gl: WebGLRenderingContext, private url: string){
+    private gl = this.context.webGlRenderingContext;
+
+    constructor(private context: TglContext, private url: string){
         
     }
     
@@ -105,7 +106,7 @@ export class GltfLoader {
                     const view = gltf.bufferViews[accessor.bufferView];
                     const buffer = this.buffers[view.buffer];
 
-                    indexBuffer = new IndexBuffer(this.gl, new Uint16Array(buffer, view.byteOffset, view.byteLength));
+                    indexBuffer = new IndexBuffer(this.context, new Uint16Array(buffer, view.byteOffset, view.byteLength));
                 }
 
                 const attributeMap = Object.keys(p.attributes).reduce<{[key: string]: BufferOptions}>((agg,name) => {
@@ -124,14 +125,14 @@ export class GltfLoader {
                         components: <any>accessor.count,
                         offset: accessor.byteOffset,
                         name: name,
-                        type: accessor.componentType
+                        dataType: accessor.componentType
                     });
                     
                     return agg;
                 },{})               
                 
                 return new MeshPrimitive(this.gl, {
-                    vertexBuffers: Object.keys(attributeMap).map(x => new VertexBuffer(this.gl, attributeMap[x])),
+                    vertexBuffers: Object.keys(attributeMap).map(x => new VertexBuffer(this.context, attributeMap[x])),
                     indexBuffer: indexBuffer
                 });
             });

@@ -33,11 +33,9 @@
     "typedoc": "^0.11.1",
     "typescript": "^2.7.2"
   },
-  "dependencies": {
-    "gl-matrix": "^2.6.1",
-    "tslib": "^1.9.0"
-  },
   "peerDependencies": {
+    "gl-matrix": "^2.6.1",
+    "tslib": "^1.9.0",
     "@tgl/core": "^0.2.3"
   }
 }

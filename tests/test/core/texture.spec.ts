@@ -34,7 +34,7 @@ describe("Core.Texture", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
                 
-        const texture = new Texture(gl, {
+        const texture = new Texture(context, {
             source: checker,
             width: 2,
             height: 2
@@ -50,7 +50,7 @@ describe("Core.Texture", () => {
         context.resize();
         const gl = context.webGlRenderingContext;        
         
-        const texture = await Texture.fromFile(gl, './assets/grid.png');
+        const texture = await Texture.fromFile(context, './assets/grid.png');
         
         context.checkErrors();
         expect(texture.webGlTexture).toBeInstanceOf(WebGLTexture);
@@ -64,7 +64,7 @@ describe("Core.Texture", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
                 
-        const texture = new Texture(gl, {
+        const texture = new Texture(context, {
             source: checker,
             width: 2,
             height: 2
@@ -81,19 +81,19 @@ describe("Core.Texture", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             fragmentSource: fragment,
             vertexSource: vertex
         });
 
-        const texture = new Texture(gl, {
+        const texture = new Texture(context, {
             source: checker,
             width: 2,
             height: 2,
             filterMag: GlMagType.NEAREST
         });
 
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: [
                 -0.5,-0.5, 0,0, 
@@ -107,7 +107,7 @@ describe("Core.Texture", () => {
             ]
         });
 
-        const indices = new IndexBuffer(gl, [3, 0, 1, 3, 1, 2]);
+        const indices = new IndexBuffer(context, [3, 0, 1, 3, 1, 2]);
 
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
         buffer.enableAttribute('aTexcoord', shader.getAttributeLocation('aTexcoord'));

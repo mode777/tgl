@@ -24,7 +24,7 @@ describe('Core.Shader', () => {
         context.resize();
         const gl = context.webGlRenderingContext;
         
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             vertexSource: vertex,
             fragmentSource: fragment
         });
@@ -39,7 +39,7 @@ describe('Core.Shader', () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const shader = await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl');        
+        const shader = await Shader.fromFiles(context, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl');        
 
         context.checkErrors();
         expect(shader.webGlProgram).toBeInstanceOf(WebGLProgram);
@@ -50,7 +50,7 @@ describe('Core.Shader', () => {
         context.state.reset();
         const gl = context.webGlRenderingContext;
         
-        expect(() => new Shader(gl, {
+        expect(() => new Shader(context, {
             vertexSource: fragment,
             fragmentSource: vertex
         })).toThrow();

@@ -1,6 +1,6 @@
 import { GlBufferUsage } from './constants/gl-buffer-usage';
 import { GlDataType } from './constants/gl-data-type';
-import { TglState } from './tgl-state';
+import { TglContext } from './tgl-context';
 
 export type BufferData = Float32Array | ArrayBuffer | Uint16Array | Uint8Array | Uint32Array | Int16Array | Int32Array | Int8Array;
 
@@ -13,7 +13,7 @@ export interface BufferOptions {
 export interface AttributeOptions {
     name: string;
     components: 1 | 2 | 3 | 4,
-    type?: GlDataType,
+    dataType?: GlDataType,
     normalized?: boolean,
     offset?: number
 }
@@ -32,7 +32,7 @@ const bufferDefaults = {
 }
 
 const attributeDefaults = {
-    type: GlDataType.FLOAT,
+    dataType: GlDataType.FLOAT,
     normalized: false
 }
 
@@ -40,15 +40,15 @@ export class VertexBuffer {
     
     private handle: WebGLBuffer;
     private attributesByName: {[key:string]:AttributeInfo} = {};
-    private state = TglState.getCurrent(this.gl);
+    private gl = this.context.webGlRenderingContext;
 
     public readonly vertexSize: number;
     public readonly size: number;
     public readonly attributes: AttributeInfo[];
     public readonly usage: GlBufferUsage;
 
-    constructor(protected gl: WebGLRenderingContext, options: BufferOptions){
-        options.data = this.getData(options.data, options.attributes[0].type)
+    constructor(protected context: TglContext, options: BufferOptions){
+        options.data = this.getData(options.data, options.attributes[0].dataType)
 
         const opt =  { ...bufferDefaults, ...options };
 
@@ -61,7 +61,7 @@ export class VertexBuffer {
                 const attr = {
                     name: x.name,
                     components: x.components,
-                    dataType: x.type,
+                    dataType: x.dataType,
                     normalized: x.normalized,
                     offset: x.offset !== undefined ? x.offset : offset,
                 };                
@@ -74,7 +74,7 @@ export class VertexBuffer {
         const data: any = opt.data;
         this.size = data.byteLength;
         
-        this.handle = gl.createBuffer();
+        this.handle = this.gl.createBuffer();
 
         this.data(<any>opt.data);
     }
@@ -126,7 +126,7 @@ export class VertexBuffer {
     }
 
     public bind(){
-        this.state.vertexBuffer(this.handle);
+        this.context.state.vertexBuffer(this.handle);
     }
 
     public get vertexCount(){

@@ -40,7 +40,7 @@ describe("Core.VertexBuffer", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
         
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: new Float32Array([
                 -0.5, -0.5, 1,
@@ -51,12 +51,12 @@ describe("Core.VertexBuffer", () => {
                 {
                     components: 2,
                     name: "aPosition",
-                    type: GlDataType.FLOAT
+                    dataType: GlDataType.FLOAT
                 },
                 {
                     components: 4,
                     name: "aColor",
-                    type: GlDataType.UNSIGNED_BYTE,
+                    dataType: GlDataType.UNSIGNED_BYTE,
                     normalized: true
                 }
             ]
@@ -76,12 +76,12 @@ describe("Core.VertexBuffer", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             fragmentSource: fragment1,
             vertexSource: vertex1
         });
 
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: [-0.5, -0.5, 0.5, -0.5, 0, 0.5],
             attributes: [{
@@ -105,12 +105,12 @@ describe("Core.VertexBuffer", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             fragmentSource: fragment1,
             vertexSource: vertex1
         });
 
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: new Float32Array(6),
             attributes: [{
@@ -137,12 +137,12 @@ describe("Core.VertexBuffer", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             fragmentSource: fragment2,
             vertexSource: vertex2
         });
 
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: [
                 -0.5, -0.5, 1, 0, 0,
@@ -153,12 +153,12 @@ describe("Core.VertexBuffer", () => {
                 {
                     components: 2,
                     name: "aPosition",
-                    type: GlDataType.FLOAT
+                    dataType: GlDataType.FLOAT
                 },
                 {
                     components: 3,
                     name: "aColor",
-                    type: GlDataType.FLOAT
+                    dataType: GlDataType.FLOAT
                 }
             ]
         });
@@ -182,22 +182,22 @@ describe("Core.VertexBuffer", () => {
         const gl = context.webGlRenderingContext;
 
 
-        const shader = new Shader(gl, {
+        const shader = new Shader(context, {
             fragmentSource: fragment1,
             vertexSource: vertex1
         });
 
-        const buffer = new VertexBuffer(gl, {
+        const buffer = new VertexBuffer(context, {
             usage: GlBufferUsage.STATIC_DRAW,
             data: [-0.5,-0.5, 0.5,-0.5, 0.5,0.5, -0.5,0.5],
             attributes: [{
                 components: 2,
                 name: "aPosition",
-                type: GlDataType.FLOAT
+                dataType: GlDataType.FLOAT
             }]
         });
 
-        const indices = new IndexBuffer(gl, [3, 0, 1, 3, 1, 2]);
+        const indices = new IndexBuffer(context, [3, 0, 1, 3, 1, 2]);
 
         buffer.enableAttribute('aPosition', shader.getAttributeLocation('aPosition'));
         

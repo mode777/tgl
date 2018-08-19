@@ -3,21 +3,10 @@ import { GlCullMode } from './constants/gl-cull-mode';
 import { GlBlendMode } from './constants/gl-blend-mode';
 
 export type Accessor<T> = (value?: T, cacheOnly?: boolean) => T;
+export type GlEventHandler<T> = (value?: T) => void;
 export type vec4<T> = [T,T,T,T];
 export type vec2<T> = [T,T];
 
-function createAccessor<T>(initial: T, setter: (value: T) => void, comparer?: (a: T, b: T) => boolean): Accessor<T>{
-    let closure = initial;
-
-    return function(value?: T, cacheOnly = false) {
-        if(value !== undefined && (comparer !== undefined ? !comparer(closure, value) : closure !== value)){
-            if(!cacheOnly) 
-                setter(value);
-            closure = value;
-        }
-        return closure;
-    }
-}
 
 function arrayComparer(a: any[], b: any[]){
     const len = Math.min(a.length, b.length);
@@ -29,21 +18,14 @@ function arrayComparer(a: any[], b: any[]){
 }
 
 export class TglState {
-
-    private static refCtr = 0;
-    private static _current: TglState[] = [];
-    public static getCurrent(gl: WebGLRenderingContext){
-        if(gl['ref'] === undefined){
-            gl['ref'] = this.refCtr++;
-            TglState._current[gl['ref']] = new TglState(gl);
-        }
-        return TglState._current[gl['ref']];
-    }
     
     private stack: any[] = [];
+    private accessors: {[key: string]: Accessor<any>} = {};
+    private listeners: {[key:string]: GlEventHandler<any>[]} = {}
     private textures: WebGLTexture[] = new Array(this.gl.getParameter(this.gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 
-    readonly activeTexture = createAccessor<number>(
+    readonly activeTexture = this.createAccessor<number>(
+        'activeTexture',
         this.gl.getParameter(this.gl.ACTIVE_TEXTURE) - this.gl.TEXTURE0,
         (value) => {
             if(value >= this.textures.length)
@@ -51,31 +33,37 @@ export class TglState {
             this.gl.activeTexture(value + this.gl.TEXTURE0)
         });
     
-    readonly clearColor = createAccessor<vec4<number>>(
+    readonly clearColor = this.createAccessor<vec4<number>>(
+        'clearColor',
         this.gl.getParameter(this.gl.COLOR_CLEAR_VALUE),
         (value) => this.gl.clearColor(value[0], value[1], value[2], value[3]),
         arrayComparer);
 
-    readonly blendColor = createAccessor<vec4<number>>(
+    readonly blendColor = this.createAccessor<vec4<number>>(
+        'blendColor',
         this.gl.getParameter(this.gl.BLEND_COLOR),
         (value) => this.gl.blendColor(value[0],value[1],value[2],value[3]),
         arrayComparer);
 
-    readonly colorMask = createAccessor<vec4<boolean>>(
+    readonly colorMask = this.createAccessor<vec4<boolean>>(
+        'colorMask',
         this.gl.getParameter(this.gl.COLOR_WRITEMASK),
         (value) => this.gl.colorMask(value[0],value[1],value[2],value[3]),
         arrayComparer);
 
-    readonly viewport = createAccessor<vec4<number>>(
+    readonly viewport = this.createAccessor<vec4<number>>(
+        'viewport',
         this.gl.getParameter(this.gl.VIEWPORT),
         (value) => this.gl.viewport(value[0], value[1], value[2], value[3]));
 
-    readonly blendFuncRgb = createAccessor<vec2<GlBlendMode>>(
+    readonly blendFuncRgb = this.createAccessor<vec2<GlBlendMode>>(
+        'blendFuncRgb',
         [this.gl.getParameter(this.gl.BLEND_SRC_RGB), this.gl.getParameter(this.gl.BLEND_DST_RGB)],
         (value) => this.gl.blendFuncSeparate(value[0], value[1], this.blendFuncAlpha()[0], this.blendFuncAlpha()[1]),
         arrayComparer);
 
-    readonly blendFuncAlpha = createAccessor<vec2<GlBlendMode>>(
+    readonly blendFuncAlpha = this.createAccessor<vec2<GlBlendMode>>(
+        'blendFuncAlpha',
         [this.gl.getParameter(this.gl.BLEND_SRC_ALPHA), this.gl.getParameter(this.gl.BLEND_DST_ALPHA)],
         (value) => this.gl.blendFuncSeparate(this.blendFuncRgb()[0], this.blendFuncRgb()[1],  value[0], value[1]),
         arrayComparer);
@@ -84,55 +72,68 @@ export class TglState {
     //     this.gl.getParameter(this.gl.BLEND_EQUATION),
     //     (value) => this.gl.blendEquation(value));
 
-    readonly blendEquationRgb = createAccessor<GlBlendEquation>(
+    readonly blendEquationRgb = this.createAccessor<GlBlendEquation>(
+        'blendEquationRgb',
         this.gl.getParameter(this.gl.BLEND_EQUATION_RGB),
         (value) => this.gl.blendEquationSeparate(value, this.blendEquationAlpha()));
 
-    readonly blendEquationAlpha = createAccessor<GlBlendEquation>(
+    readonly blendEquationAlpha = this.createAccessor<GlBlendEquation>(
+        'blendEquationAlpha',
         this.gl.getParameter(this.gl.BLEND_EQUATION_ALPHA),
         (value) => this.gl.blendEquationSeparate(this.blendEquationRgb(), value));
 
-    readonly cullFaceMode = createAccessor<GlCullMode>(
+    readonly cullFaceMode = this.createAccessor<GlCullMode>(
+        'cullFaceMode',
         this.gl.getParameter(this.gl.CULL_FACE_MODE),
         (value) =>this.gl.cullFace(value));
 
-    readonly clearDepth = createAccessor<number>(
+    readonly clearDepth = this.createAccessor<number>(
+        'clearDepth',
         this.gl.getParameter(this.gl.DEPTH_CLEAR_VALUE),
         (value) => this.gl.clearDepth(value));
 
-    readonly clearStencil = createAccessor<number>(
+    readonly clearStencil = this.createAccessor<number>(
+        'clearStencil',
         this.gl.getParameter(this.gl.STENCIL_CLEAR_VALUE),
         (value) => this.gl.clearStencil(value));
 
-    readonly blendingEnabled = createAccessor<boolean>(
+    readonly blendingEnabled = this.createAccessor<boolean>(
+        'blendingEnabled',
         this.gl.isEnabled(this.gl.BLEND),
         (value) => value ? this.gl.enable(this.gl.BLEND) : this.gl.disable(this.gl.BLEND));
 
-    readonly faceCullingEnabled = createAccessor<boolean>(
+    readonly faceCullingEnabled = this.createAccessor<boolean>(
+        'faceCullingEnabled',
         this.gl.isEnabled(this.gl.CULL_FACE),
         (value) => value ? this.gl.enable(this.gl.CULL_FACE) : this.gl.disable(this.gl.CULL_FACE));
 
-    readonly depthTestEnabled = createAccessor<boolean>(
+    readonly depthTestEnabled = this.createAccessor<boolean>(
+        'depthTestEnabled',
         this.gl.isEnabled(this.gl.DEPTH_TEST),
         (value) => value ? this.gl.enable(this.gl.DEPTH_TEST) : this.gl.disable(this.gl.DEPTH_TEST));
 
-    readonly polygonOffsetFillEnabled = createAccessor<boolean>(
+    readonly polygonOffsetFillEnabled = this.createAccessor<boolean>(
+        'polygonOffsetFillEnabled',
         this.gl.isEnabled(this.gl.POLYGON_OFFSET_FILL),
         (value) => value ? this.gl.enable(this.gl.POLYGON_OFFSET_FILL) : this.gl.disable(this.gl.POLYGON_OFFSET_FILL));
 
-    readonly sampleAlphaToCoverageEnabled = createAccessor<boolean>(
+    readonly sampleAlphaToCoverageEnabled = this.createAccessor<boolean>(
+        'sampleAlphaToCoverageEnabled',
         this.gl.isEnabled(this.gl.SAMPLE_ALPHA_TO_COVERAGE),
         (value) => value ? this.gl.enable(this.gl.SAMPLE_ALPHA_TO_COVERAGE) : this.gl.disable(this.gl.SAMPLE_ALPHA_TO_COVERAGE));
         
-    readonly sampleCoverageEnabled = createAccessor<boolean>(
+    readonly sampleCoverageEnabled = this.createAccessor<boolean>(
+        'sampleCoverageEnabled',
         this.gl.isEnabled(this.gl.SAMPLE_COVERAGE),
         (value) => value ? this.gl.enable(this.gl.SAMPLE_COVERAGE) : this.gl.disable(this.gl.SAMPLE_COVERAGE));
 
-    readonly scissorTestEnabled = createAccessor<boolean>(
+    readonly scissorTestEnabled = this.createAccessor<boolean>(
+        'scissorTestEnabled',
         this.gl.isEnabled(this.gl.SCISSOR_TEST),
         (value) => value ? this.gl.enable(this.gl.SCISSOR_TEST) : this.gl.disable(this.gl.SCISSOR_TEST));
 
-    readonly stencilTestEnabled = createAccessor<boolean>(
+    readonly stencilTestEnabled = this.createAccessor<boolean>(
+        'stencilTestEnabled',
         this.gl.isEnabled(this.gl.STENCIL_TEST),
         (value) => value ? this.gl.enable(this.gl.STENCIL_TEST) : this.gl.disable(this.gl.STENCIL_TEST));
 
@@ -141,31 +142,38 @@ export class TglState {
             this.textures[this.activeTexture()] = value;
             if(!cacheOnly)
                 this.gl.bindTexture(this.gl.TEXTURE_2D, value);
+            this.dispatch('texture', { texture: value, unit: this.activeTexture() });
         }
         return this.textures[this.activeTexture()];
     }
 
-    readonly framebuffer = createAccessor<WebGLFramebuffer>(
+    readonly framebuffer = this.createAccessor<WebGLFramebuffer>(
+        'framebuffer',
         null,
         (value) => this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, value));
 
-    readonly vertexBuffer = createAccessor<WebGLBuffer>(
+    readonly vertexBuffer = this.createAccessor<WebGLBuffer>(
+        'vertexBuffer',
         null,
         (value) => this.gl.bindBuffer(this.gl.ARRAY_BUFFER, value));
 
-    readonly indexBuffer = createAccessor<WebGLBuffer>(
+    readonly indexBuffer = this.createAccessor<WebGLBuffer>(
+        'indexBuffer',
         null,
         (value) => this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, value));
 
-    readonly program = createAccessor<WebGLProgram>(
+    readonly program = this.createAccessor<WebGLProgram>(
+        'program',
         null,
         (value) => this.gl.useProgram(value));
 
-    readonly renderbuffer = createAccessor<WebGLRenderbuffer>(
+    readonly renderbuffer = this.createAccessor<WebGLRenderbuffer>(
+        'renderbuffer',
         null,
         (value) => this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, value));
 
-    private constructor(private gl: WebGLRenderingContext){
+    public constructor(private gl: WebGLRenderingContext){
+        this.accessors['texture'] = this.texture;
         this.push();
     }
 
@@ -191,36 +199,51 @@ export class TglState {
     }
 
     public get(): TglStateSnapshot {
-        return {
-            texture: this.texture(),
-            activeTexture: this.activeTexture(),
-            blendColor: this.blendColor(),
-            //blendEquation: this.blendEquation(),
-            blendEquationAlpha: this.blendEquationAlpha(),
-            blendEquationRgb: this.blendEquationRgb(),
-            blendingEnabled: this.blendingEnabled(),
-            clearColor: this.clearColor(),
-            clearDepth: this.clearDepth(),
-            clearStencil: this.clearStencil(),
-            colorMask: this.colorMask(),
-            cullFaceMode: this.cullFaceMode(),
-            depthTestEnabled: this.depthTestEnabled(),
-            faceCullingEnabled: this.faceCullingEnabled(),
-            framebuffer: this.framebuffer(),
-            indexBuffer: this.indexBuffer(),
-            polygonOffsetFillEnabled: this.polygonOffsetFillEnabled(),
-            program: this.program(),
-            sampleAlphaToCoverageEnabled: this.sampleAlphaToCoverageEnabled(),
-            sampleCoverageEnabled: this.sampleCoverageEnabled(),
-            scissorTestEnabled: this.scissorTestEnabled(),
-            stencilTestEnabled: this.stencilTestEnabled(),
-            vertexBuffer: this.vertexBuffer(),
-            viewport: this.viewport(),
-            blendFuncRgb: this.blendFuncRgb(),
-            blendFuncAlpha: this.blendFuncAlpha()
-            //maxCombinedTextureImageUnits: this.textures.length
+        return Object.keys(this.accessors)
+            .reduce<TglStateSnapshot>((p,c) => {
+                p[c] = this.accessors[c]();
+                return p; 
+            }, <TglStateSnapshot>{});        
+    }
+
+    public on(property: string, handler: GlEventHandler<any>){
+        if(!this.listeners[property])
+            this.listeners[property] = [];
+
+        this.listeners[property].push(handler);
+    }
+
+    public off(property: string, handler: GlEventHandler<any>){
+        if(this.listeners[property]){
+            var index = this.listeners[property].indexOf(handler);
+            if(index !== -1){
+                this.listeners[property].splice(index, 1);
+            }
         }
     }
+
+    private dispatch(property: string, value: any){
+        if(this.listeners[property])
+            this.listeners[property].forEach(x => x(value));
+    }
+
+    private createAccessor<T>(name: string, initial: T, setter: (value: T) => void, comparer?: (a: T, b: T) => boolean): Accessor<T>{
+        let state = initial;
+        
+        var acc = (value?: T, cacheOnly = false) => {
+            if(value !== undefined && (comparer !== undefined ? !comparer(state, value) : state !== value)){
+                if(!cacheOnly) 
+                    setter(value);
+                state = value;
+                this.dispatch(name, value);
+            }
+            return state;
+        }
+
+        this.accessors[name] = acc;
+        return acc;
+    }
+
 }
 
 export interface TglStateSnapshot {

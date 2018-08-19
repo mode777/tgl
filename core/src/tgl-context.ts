@@ -52,9 +52,9 @@ export class TglContext {
         if(context !== null)
             this.gl = context; 
         else
-            throw 'Unable to initialize WebGLRenderingContext';         
+            throw 'Unable to initialize WebGLRenderingContext';      
 
-        this.state = TglState.getCurrent(this.gl);
+        this.state = new TglState(context);
         this.resize();
     }
 

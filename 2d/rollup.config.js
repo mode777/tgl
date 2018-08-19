@@ -29,7 +29,7 @@ export default [
 	// `file` and `format` for each target)
 	{
 		input: 'src/main.ts',
-		//external: ['ms'],
+		external: ['tslib','gl-matrix','@tgl/core'],
         plugins: [
             typescript(),
             uglify() 

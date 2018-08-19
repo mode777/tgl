@@ -3,6 +3,7 @@ import { Transform2d, Transform2dOptions } from './transform-2d';
 import { Shader2d } from './shader-2d';
 import { Frame, ISprite } from './common';
 import { BaseSprite } from './base-sprite';
+import { Context2d } from './context-2d';
 
 const FRAME_SIZE = 4 * 4;
 const INDICES_FRAME = 6;
@@ -11,7 +12,6 @@ const VERTICES_FRAME = 4;
 export interface SpriteBatchOptions {
     size: number,
     texture: Texture,
-    shader?: Shader,
     sprites?: SpriteBatchSpriteOptions[] 
 }
 
@@ -35,33 +35,26 @@ export class SpriteBatch {
     private readonly drawable: Drawable;
     private readonly vertexBuffer: VertexBuffer;
     private readonly indexBuffer: IndexBuffer;
-    private readonly shader: Shader;
+    private readonly shader = this.context.shader;
     private readonly transform = new Transform2d();
-    private readonly state = TglState.getCurrent(this.gl);
     private readonly proxies: ProxySprite[] = [];
     private readonly textureSize: vec2<number>;
 
-    constructor(protected gl: WebGLRenderingContext, options: SpriteBatchOptions){
+    constructor(protected context: Context2d, options: SpriteBatchOptions){
         const opt = { ...spriteBatchDefaults, ...options }
 
         this.size = opt.size;
         this.texture = opt.texture;
         this.vertexData = new Int16Array(FRAME_SIZE * opt.size);
         this.vertexBuffer = this.createVertexBuffer();
-        this.shader = opt.shader || Shader2d.getInstance(gl);
+        this.shader = context.shader;
         this.indexBuffer = this.createIndexBuffer();
         this.textureSize = [this.texture.width, this.texture.height];
         
-        this.drawable = new Drawable(gl, {
-            shader: this.shader,
-            textures: { 'uTexture': this.texture },
+        this.drawable = new Drawable(context.tglContext, {
+            shader: this.shader.tglShader,
             buffers: [this.vertexBuffer],
-            indices: this.indexBuffer,
-            uniforms: {
-                'uTextureSize': this.textureSize,
-                'uProject': Shader2d.getProjectionMatrix(this.state.viewport()),
-                'uTransform': this.transform.matrix
-            }
+            indices: this.indexBuffer
         });
 
         opt.sprites.forEach(x => this.createSprite(x));
@@ -117,9 +110,9 @@ export class SpriteBatch {
     }
 
     public draw(){
-        this.drawable.uniforms['uProject'] = Shader2d.getProjectionMatrix(this.state.viewport());
-        this.drawable.uniforms['uTransform'] = this.transform.matrix;
-        this.drawable.uniforms['uTextureSize'] = this.textureSize;
+        this.shader.modelMatrix = this.transform.matrix;
+        this.shader.textureSize = this.textureSize;
+        this.shader.texture = this.texture;
 
         this.drawable.draw();
     }
@@ -129,11 +122,8 @@ export class SpriteBatch {
     }
 
     private createVertexBuffer(){
-        return new VertexBuffer(this.gl, {
-            attributes: [
-                { name: 'aPosition', components: 2, type: GlDataType.SHORT },
-                { name: 'aTexcoord', components: 2, type: GlDataType.SHORT }
-            ],
+        return new VertexBuffer(this.context.tglContext, {
+            attributes: this.shader.attributes,
             data: this.vertexData
         })
     }
@@ -154,7 +144,7 @@ export class SpriteBatch {
             vertex += VERTICES_FRAME;
         }
 
-        return new IndexBuffer(this.gl, indexData);
+        return new IndexBuffer(this.context.tglContext, indexData);
     }
 }
 

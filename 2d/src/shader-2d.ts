@@ -1,42 +1,46 @@
-import { Shader } from '@tgl/core';
+import { Shader, TglContext, Texture, GlDataType, AttributeOptions } from '@tgl/core';
 import { mat3 } from 'gl-matrix';
 
-export class Shader2d extends Shader {
+export class Shader2d {
 
-    private static lastViewport = [0,0,0,0]
-    private static projection = mat3.identity(mat3.create());
+    readonly tglShader: Shader;
+    readonly attributes: AttributeOptions[] = [
+        { name: 'aPosition', components: 2, dataType: GlDataType.SHORT },
+        { name: 'aTexcoord', components: 2, dataType: GlDataType.SHORT }
+    ];
 
-    public static getProjectionMatrix(viewport: [number, number, number, number]) {
-        if(viewport[0] !== this.lastViewport[0] || 
-            viewport[1] !== this.lastViewport[1] || 
-            viewport[2] !== this.lastViewport[2] || 
-            viewport[3] !== this.lastViewport[3])
-        {
-            mat3.identity(Shader2d.projection);
-            mat3.translate(Shader2d.projection, Shader2d.projection, [-1.0, 1.0])
-            mat3.scale(Shader2d.projection, Shader2d.projection, [2.0/viewport[2],-2.0/viewport[3]])
-            
-            this.lastViewport = [...viewport];
-        }
-        return Shader2d.projection;
-    }
+    private projection = mat3.identity(mat3.create());
 
-    private static _instance: Shader2d; 
-
-    public static getInstance(gl: WebGLRenderingContext){
-        if(!Shader2d._instance){
-            Shader2d._instance = new Shader2d(gl);
-        }
-
-        return Shader2d._instance;
-    }
-
-    private constructor(gl: WebGLRenderingContext){
-        super(gl, {
-            fragmentSource: fragmentShader,
-            vertexSource: vertexShader 
-        });
+    public constructor(private context: TglContext){
+        this.tglShader = new Shader(context, {
+            vertexSource: vertexShader,
+            fragmentSource: fragmentShader
+        });        
+        this.setProjectionMatrix(this.context.state.viewport());
+        context.state.on('viewport', (vp) => this.setProjectionMatrix(vp));
     }    
+
+    set modelMatrix(value: Float32Array) { 
+        this.tglShader.setMat3(
+            this.tglShader.getUniformLocation('uTransform'), value) 
+    };
+    
+    set textureSize(value: [number, number]) { 
+        this.tglShader.setVec2(
+            this.tglShader.getUniformLocation('uTextureSize'), value) 
+    };
+    
+    set texture(value: Texture) { 
+        var unit = value.bind(0);
+        this.tglShader.setUniform('uTexture', unit);
+    }
+
+    private setProjectionMatrix(viewport: [number, number, number, number]){
+        mat3.identity(this.projection);
+        mat3.translate(this.projection, this.projection, [-1.0, 1.0])
+        mat3.scale(this.projection, this.projection, [2.0/viewport[2],-2.0/viewport[3]])
+        this.tglShader.setMat3(this.tglShader.getUniformLocation('uProject'), this.projection);
+    }
 }
 
 const vertexShader = `

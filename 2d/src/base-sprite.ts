@@ -1,4 +1,4 @@
-import { ISprite, Frame } from './common';
+import { ISprite, Frame, FlipFlags } from './common';
 import { Transform2d } from './main';
 
 export abstract class BaseSprite implements ISprite {
@@ -8,8 +8,8 @@ export abstract class BaseSprite implements ISprite {
     }
 
     abstract get boundingBox();
-    abstract flip();
-    abstract flipTo();
+    abstract flip(flags: FlipFlags);
+    abstract flipTo(flags: FlipFlags);
 
     protected abstract setDirty();
  

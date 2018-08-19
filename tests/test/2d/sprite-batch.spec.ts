@@ -1,5 +1,5 @@
 import { describe, it, expect, getContext } from "test";
-import { Transform2d, Shader2d, Frame, SpriteBatch, Sprite } from  '@tgl/2d';
+import { Transform2d, Shader2d, Frame, SpriteBatch, Sprite, Context2d } from  '@tgl/2d';
 import { TglContext, Shader, Drawable, GlClearFlags, Texture, GlDataType, GlMagType } from '@tgl/core';
 import { vec2, mat3, mat4, vec3 } from 'gl-matrix';
 
@@ -7,13 +7,14 @@ describe("2d.SpriteBatch", () => {
 
     it('Should create sprites', async () => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();        
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+        const tex = await Texture.fromFile(context, '../assets/2d/grid.png');
 
-        const batch = new SpriteBatch(gl, {
+        const batch = new SpriteBatch(ctx2d, {
             size: 4,
             texture: tex,
             sprites: [
@@ -36,13 +37,14 @@ describe("2d.SpriteBatch", () => {
 
     it('Should render correctly', async() => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();        
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+        const tex = await Texture.fromFile(context, '../assets/2d/grid.png');
 
-        const batch = new SpriteBatch(gl, {
+        const batch = new SpriteBatch(ctx2d, {
             size: 4,
             texture: tex
         });

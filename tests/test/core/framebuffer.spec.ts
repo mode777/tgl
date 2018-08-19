@@ -1,35 +1,5 @@
 import { describe, it, expect, getContext } from "test";
-import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlMagType, Drawable, Framebuffer, GlMinType, GlWrapMode } from '@tgl/core';
-
-const vertex1 = `attribute vec2 aPosition;
-	
-void main(void) {
-    gl_Position = vec4(aPosition, 1.0, 1.0);
-}`;
-
-const fragment1 = `precision mediump float;
-
-void main(void) {
-    gl_FragColor = vec4(1, 1, 1, 1);
- }`;
-
-const vertex = `attribute vec2 aPosition;
-attribute vec2 aTexcoord;
-varying vec2 vTexcoord;
-	
-void main(void) {
-    vTexcoord = aTexcoord;
-    gl_Position = vec4(aPosition, 1.0, 1.0);
-}`;
-
-const fragment = `precision mediump float;
-uniform sampler2D uTexture;
-
-varying vec2 vTexcoord;
-
-void main(void) {
-    gl_FragColor = texture2D(uTexture, vTexcoord);
- }`;
+import { TglContext, Shader, Texture, GlPixelFormat, VertexBuffer, GlBufferUsage, GlDataType, IndexBuffer, GlClearFlags, GlPrimitiveType, GlMagType, Drawable, Framebuffer, GlMinType, GlWrapMode, Renderbuffer } from '@tgl/core';
 
 describe('Core.Framebuffer', () => {
  
@@ -40,19 +10,37 @@ describe('Core.Framebuffer', () => {
         const gl = context.webGlRenderingContext;
 
         // create a framebuffer texture
-        const fbTexture = new Texture(gl, {
+        const fbTexture = new Texture(context, {
             width: 64,
             height: 64,
             filterMag: GlMagType.NEAREST,
         });
 
-        const framebuffer = new Framebuffer(gl, {
+        const framebuffer = new Framebuffer(context, {
             width: fbTexture.width,
             height: fbTexture.height,
-            colorAttachment: fbTexture.webGlTexture
+            colorAttachment: fbTexture
         });
 
-        expect(framebuffer.colorAttachment).toBe(fbTexture.webGlTexture);
+        expect(framebuffer.colorAttachment).toBe(fbTexture);
+    });
+
+    it('should deduct texture size', async () => {
+        const context = getContext();
+        
+        const fb = new Framebuffer(context, {
+            colorAttachment: new Texture(context, {
+                width: 128,
+                height: 128,
+            }),
+            depthAttachment: new Renderbuffer(context, {
+                width: 128,
+                height: 128
+            })
+        })
+
+        expect(fb.height).toBe(128);
+        expect(fb.width).toBe(128);
     });
 
     it('should render triangle to framebuffer', async () => {        
@@ -62,20 +50,20 @@ describe('Core.Framebuffer', () => {
         const gl = context.webGlRenderingContext;
 
         // create a framebuffer texture
-        const fbTexture = new Texture(gl, {
+        const fbTexture = new Texture(context, {
             width: 64,
             height: 64,
             filterMag: GlMagType.NEAREST,
         });
 
-        const framebuffer = new Framebuffer(gl, {
+        const framebuffer = new Framebuffer(context, {
             width: fbTexture.width,
             height: fbTexture.height,
-            colorAttachment: fbTexture.webGlTexture
+            colorAttachment: fbTexture
         })
                 
         // set up drawable and render to the framebuffer
-        const fbDrawable = new Drawable(gl, {
+        const fbDrawable = new Drawable(context, {
             buffers: [{
                 data: [-0.5,-0.5, 0.5,-0.5, 0,0.5],
                 attributes: [{ name: 'aPosition', components: 2 }]
@@ -94,7 +82,7 @@ describe('Core.Framebuffer', () => {
         
         //draw framebuffer texture as a fullscreen quad
 
-        const drawable = new Drawable(gl, {
+        const drawable = new Drawable(context, {
             shader: {
                 fragmentSource: fragment,
                 vertexSource: vertex
@@ -126,3 +114,33 @@ describe('Core.Framebuffer', () => {
     });
 
 });
+
+const vertex1 = `attribute vec2 aPosition;
+	
+void main(void) {
+    gl_Position = vec4(aPosition, 1.0, 1.0);
+}`;
+
+const fragment1 = `precision mediump float;
+
+void main(void) {
+    gl_FragColor = vec4(1, 1, 1, 1);
+ }`;
+
+const vertex = `attribute vec2 aPosition;
+attribute vec2 aTexcoord;
+varying vec2 vTexcoord;
+	
+void main(void) {
+    vTexcoord = aTexcoord;
+    gl_Position = vec4(aPosition, 1.0, 1.0);
+}`;
+
+const fragment = `precision mediump float;
+uniform sampler2D uTexture;
+
+varying vec2 vTexcoord;
+
+void main(void) {
+    gl_FragColor = texture2D(uTexture, vTexcoord);
+ }`;

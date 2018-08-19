@@ -1,37 +1,37 @@
 import { GlFramebufferStatus } from './constants/gl-framebuffer-status';
-import { TglState } from './tgl-state';
+import { TglContext } from './tgl-context';
+import { Texture } from './texture';
+import { Renderbuffer } from './renderbuffer';
 
 export interface FramebufferOptions {
-    width: number,
-    height: number,
-    colorAttachment?: WebGLTexture | WebGLRenderbuffer,
-    depthAttachment?: WebGLTexture | WebGLRenderbuffer,
-    stencilAttachment?: WebGLTexture | WebGLRenderbuffer
+    width?: number,
+    height?: number,
+    colorAttachment?: Texture | WebGLRenderbuffer,
+    depthAttachment?: Texture | WebGLRenderbuffer,
+    stencilAttachment?: Texture | WebGLRenderbuffer
 }
 
 export class Framebuffer {
-    private state = TglState.getCurrent(this.gl);
+    private state = this.context.state;
+    private gl = this.context.webGlRenderingContext;
     private handle: WebGLFramebuffer;
     
     public readonly width: number;
     public readonly height: number;
-    public readonly colorAttachment: WebGLTexture | WebGLRenderbuffer;
-    public readonly depthAttachment: WebGLTexture | WebGLRenderbuffer;
-    public readonly stencilAttachment: WebGLTexture | WebGLRenderbuffer;
+    public readonly colorAttachment: Texture | Renderbuffer;
+    public readonly depthAttachment: Texture | Renderbuffer;
+    public readonly stencilAttachment: Texture | Renderbuffer;
     
-    constructor(protected gl: WebGLRenderingContext, options: FramebufferOptions){
-        this.handle = gl.createFramebuffer();
-        
-        this.width = options.width;
-        this.height = options.height;
+    constructor(protected context: TglContext, options: FramebufferOptions){
+        this.handle = this.gl.createFramebuffer();
         
         this.bind();
         
         if(options.colorAttachment){
-            if(options.colorAttachment instanceof WebGLTexture)
-                this.attachTexture(gl.COLOR_ATTACHMENT0, options.colorAttachment);
-            else if(options.colorAttachment instanceof WebGLRenderbuffer)
-                this.attachRenderbuffer(gl.COLOR_ATTACHMENT0, options.colorAttachment)
+            if(options.colorAttachment instanceof Texture)
+                this.attachTexture(this.gl.COLOR_ATTACHMENT0, options.colorAttachment);
+            else if(options.colorAttachment instanceof Renderbuffer)
+                this.attachRenderbuffer(this.gl.COLOR_ATTACHMENT0, options.colorAttachment)
             else
                 throw 'colorAttachment is not a WebGlTexture nor WebGlRenderbuffer';
 
@@ -39,10 +39,10 @@ export class Framebuffer {
         }
 
         if(options.depthAttachment){
-            if(options.depthAttachment instanceof WebGLTexture)
-                this.attachTexture(gl.DEPTH_ATTACHMENT, options.depthAttachment);
-            else if(options.depthAttachment instanceof WebGLRenderbuffer)
-                this.attachRenderbuffer(gl.DEPTH_ATTACHMENT, options.depthAttachment);
+            if(options.depthAttachment instanceof Texture)
+                this.attachTexture(this.gl.DEPTH_ATTACHMENT, options.depthAttachment);
+            else if(options.depthAttachment instanceof Renderbuffer)
+                this.attachRenderbuffer(this.gl.DEPTH_ATTACHMENT, options.depthAttachment);
             else
                 throw 'depthAttachment is not a WebGlTexture nor WebGlRenderbuffer';
             
@@ -50,26 +50,36 @@ export class Framebuffer {
         }
 
         if(options.stencilAttachment){
-            if(options.stencilAttachment instanceof WebGLTexture)
-                this.attachTexture(gl.STENCIL_ATTACHMENT, options.stencilAttachment);            
-            else if(options.stencilAttachment instanceof WebGLRenderbuffer)
-                this.attachRenderbuffer(gl.STENCIL_ATTACHMENT, options.stencilAttachment);            
+            if(options.stencilAttachment instanceof Texture)
+                this.attachTexture(this.gl.STENCIL_ATTACHMENT, options.stencilAttachment);            
+            else if(options.stencilAttachment instanceof Renderbuffer)
+                this.attachRenderbuffer(this.gl.STENCIL_ATTACHMENT, options.stencilAttachment);            
             else
                 throw 'stencilAttachment is not a WebGlTexture nor WebGlRenderbuffer';
 
             this.stencilAttachment = options.stencilAttachment;
         }
 
-        switch(gl.checkFramebufferStatus(gl.FRAMEBUFFER))
+        switch(this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER))
         {
-            case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            case this.gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
                 throw 'FRAMEBUFFER_INCOMPLETE_ATTACHMENT: The framebuffer attachment types are mismatched or not all framebuffer attachment points are framebuffer attachment complete.';
-            case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            case this.gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
                 throw 'FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: There is no attachment.';
-            case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+            case this.gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
                 throw 'FRAMEBUFFER_INCOMPLETE_DIMENSIONS: Height and width of the attachments are not the same.'
-            case gl.FRAMEBUFFER_UNSUPPORTED:
+            case this.gl.FRAMEBUFFER_UNSUPPORTED:
                 throw 'FRAMEBUFFER_UNSUPPORTED: The format of the attachment is not supported or if depth and stencil attachments are not the same renderbuffer.';
+        }
+
+        if(!options.width || !options.height){
+            const anyAttachment = this.colorAttachment || this.depthAttachment || this.stencilAttachment;
+            this.width = anyAttachment.width;
+            this.height = anyAttachment.height;
+        }
+        else {
+            this.width = options.width;
+            this.height = options.height;
         }
 
         this.state.framebuffer(null);
@@ -95,27 +105,26 @@ export class Framebuffer {
         this.state.viewport(viewport);
     }
 
-    private attachTexture(attachmentType: number, texture: WebGLTexture){
+    private attachTexture(attachmentType: number, texture: Texture){
         this.bind();
-        this.state.texture(texture);
+        this.state.texture(texture.webGlTexture);
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, 
             attachmentType, 
             this.gl.TEXTURE_2D, 
-            texture, 
+            texture.webGlTexture, 
             0);
     }
         
-    private attachRenderbuffer(attachmentType: number, renderbuffer: WebGLRenderbuffer){
+    private attachRenderbuffer(attachmentType: number, renderbuffer: Renderbuffer){
         this.bind();
-        this.state.renderbuffer(renderbuffer);
+        this.state.renderbuffer(renderbuffer.webGlRenderbuffer);
         this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, 
             attachmentType, 
             this.gl.RENDERBUFFER, 
-            renderbuffer);
+            renderbuffer.webGlRenderbuffer);
     }
 
     checkStatus(): GlFramebufferStatus {
         throw "Not implemented"
     }
-
 }

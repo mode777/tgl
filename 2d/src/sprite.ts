@@ -1,8 +1,9 @@
-import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState, vec2 } from '@tgl/core';
+import { Texture, VertexBuffer, Shader, Drawable, GlDataType, TglState, vec2, TglContext } from '@tgl/core';
 import { Transform2dCreateOptions, Transform2d } from './transform-2d';
 import { Frame, ISprite, FlipFlags } from './common';
 import { Shader2d } from './shader-2d';
 import { BaseSprite } from './base-sprite';
+import { Context2d } from './context-2d';
 
 export class SpriteOptions {
     texture: Texture;
@@ -17,34 +18,28 @@ export class Sprite extends BaseSprite {
     private data: Int16Array;
     private dirty = true;
     private flipState: FlipFlags;
+    private shader = this.context.shader;
+    private texture: Texture;
 
-    private readonly state = TglState.getCurrent(this.gl);
     private readonly bbox: Frame = [0,0,0,0];
     private readonly textureSize: vec2<number>;
 
-    constructor(protected gl: WebGLRenderingContext, options: SpriteOptions){
+    constructor(protected context: Context2d, options: SpriteOptions){
         super(options.frame || [ 0, 0, options.texture.width, options.texture.height ], 
             options.transform instanceof Transform2d 
             ? options.transform 
             : new Transform2d(options.transform || null));
         
-        const texture = options.texture;
-        const shader = Shader2d.getInstance(gl);
+        this.texture = options.texture;
     
         this.flipState = options.flip || FlipFlags.None;
-        this.textureSize = [texture.width, texture.height];
+        this.textureSize = [this.texture.width, this.texture.height];
 
-        this.drawable = new Drawable(gl, {
-            shader: shader,
-            textures: { 'uTexture': texture },
+        this.drawable = new Drawable(context.tglContext, {
+            shader: context.shader.tglShader,
             buffers: [this.createBuffer(this.frame, this.flipState)],
-            indices: [0,1,2,0,3,1],
-            uniforms: {
-                'uTextureSize': this.textureSize,
-                'uProject': Shader2d.getProjectionMatrix(this.state.viewport()),
-                'uTransform': this.transform.matrix
-            }
-        })
+            indices: [0,1,2,0,3,1]            
+        });
     }
 
     protected setDirty(){
@@ -60,9 +55,9 @@ export class Sprite extends BaseSprite {
     }
 
     public draw(){
-        this.drawable.uniforms['uProject'] = Shader2d.getProjectionMatrix(this.state.viewport());
-        this.drawable.uniforms['uTransform'] = this.transform.matrix;
-        this.drawable.uniforms['uTextureSize'] = this.textureSize;
+        this.shader.modelMatrix = this.transform.matrix;
+        this.shader.textureSize = this.textureSize;
+        this.shader.texture = this.texture;
 
         this.drawable.draw();
     }    
@@ -100,11 +95,8 @@ export class Sprite extends BaseSprite {
 
         this.flipInternal(flip);
 
-        return new VertexBuffer(this.gl, {
-            attributes: [
-                { name: 'aPosition', components: 2, type: GlDataType.SHORT },
-                { name: 'aTexcoord', components: 2, type: GlDataType.SHORT }
-            ],
+        return new VertexBuffer(this.context.tglContext, {
+            attributes: this.shader.attributes,
             data: this.data
         });
     }

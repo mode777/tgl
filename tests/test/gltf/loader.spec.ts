@@ -22,12 +22,12 @@ describe("Gltf.Loader", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
         
-        const gltf = new GltfLoader(context.webGlRenderingContext, './../assets/gltf/minimal.json');
+        const gltf = new GltfLoader(context, './../assets/gltf/minimal.json');
         await gltf.load();
         
         const primitive = gltf.meshes[0].primitives[0];
 
-        const drawable = new Drawable(context.webGlRenderingContext, {
+        const drawable = new Drawable(context, {
             indices: primitive.indexBuffer,
             buffers: primitive.vertexBuffers,
             shader: {

@@ -1,5 +1,6 @@
-import { TglState } from './tgl-state';
+import { TglContext } from './tgl-context';
 
+export type UniformSetter = () => void; 
 /** Represents a valid value for an uniform in TGL */
 export type UniformValue = number | number[] | Float32Array; 
 /** An uniform object, where the keys correspond to uniform values in the shader */
@@ -21,8 +22,6 @@ interface UniformInfo {
 
 /** Describes a shader programm, which can be used for drawing. */
 export class Shader {
-
-    private state = TglState.getCurrent(this.gl);
     
     /** Loads shader sources from files via the fetch API
      * and initializes the shader with them.
@@ -30,12 +29,12 @@ export class Shader {
      * @param vertexUrl Url to the vertex shader file.
      * @param fragmentUrl Url to the fragment shader file.
      * @param options Additional shader options. */
-    static async fromFiles(gl: WebGLRenderingContext, vertexUrl: string, fragmentUrl: string, options?: Partial<ShaderOptions>){
+    static async fromFiles(context: TglContext, vertexUrl: string, fragmentUrl: string, options?: Partial<ShaderOptions>){
         const strings = await Promise.all((
             await Promise.all([fetch(vertexUrl), fetch(fragmentUrl)]))
                 .map(x => x.text()));
 
-        return new Shader(gl, {
+        return new Shader(context, {
             ...(options || {}),
             vertexSource: strings[0],
             fragmentSource: strings[1],
@@ -44,27 +43,32 @@ export class Shader {
 
     private handle: WebGLProgram;    
     private uniforms: {[name: string]: UniformInfo} = {};
+    private uniformSetters: UniformSetter[] = []
+    private uniformSettersMap: {[name: string]: number};
     private attributes: WebGLActiveInfo[] = [];
     private attributeLocations: {[name: string]: number} = {};
+
+    private gl = this.context.webGlRenderingContext;
+    private state = this.context.state;
     
     /** Creates a new Shader
      * @param gl Rendering context
      * @param options Options to initialize the shader with. See {@link ShaderOptions}. */
-    constructor(protected gl: WebGLRenderingContext, options: ShaderOptions) {
+    constructor(protected context: TglContext, options: ShaderOptions) {
         if(!options || !options.fragmentSource || !options.vertexSource)
             throw 'Source files are missing';
 
-        const vertexShader = this.gl.createShader(gl.VERTEX_SHADER);
+        const vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);
         this.gl.shaderSource(vertexShader, options.vertexSource);
         this.gl.compileShader(vertexShader);
-        if(!this.gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)){
+        if(!this.gl.getShaderParameter(vertexShader, this.gl.COMPILE_STATUS)){
             throw this.gl.getShaderInfoLog(vertexShader);
         }
 
-        const fragmentShader = this.gl.createShader(gl.FRAGMENT_SHADER);
+        const fragmentShader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
         this.gl.shaderSource(fragmentShader, options.fragmentSource);
         this.gl.compileShader(fragmentShader);
-        if(!this.gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)){
+        if(!this.gl.getShaderParameter(fragmentShader, this.gl.COMPILE_STATUS)){
             throw this.gl.getShaderInfoLog(fragmentShader);
         }
 
@@ -223,10 +227,20 @@ export class Shader {
         this.use();
         this.gl.uniform1i(loc, unit);
     }
-    
+
     /** Delete the underlying WebGLProgramm */
     delete(){
         this.gl.deleteProgram(this.handle);
+    }
+
+    private registerSetter(name: string, setter: UniformSetter){
+        if(!this.uniformSettersMap[name]){
+            this.uniformSettersMap[name] = this.uniformSetters.length;
+            this.uniformSetters.push(setter);
+        }
+        else {
+            this.uniformSetters[this.uniformSettersMap[name]] = setter;
+        }
     }
 
     private getParameter(param: number){

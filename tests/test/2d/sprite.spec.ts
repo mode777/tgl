@@ -1,5 +1,5 @@
 import { describe, it, expect, getContext } from "test";
-import { Transform2d, Shader2d, Frame, Sprite } from  '@tgl/2d';
+import { Transform2d, Shader2d, Frame, Sprite, Context2d } from  '@tgl/2d';
 import { TglContext, Shader, Drawable, GlClearFlags, Texture, GlDataType, GlMagType } from '@tgl/core';
 import { vec2, mat3, mat4, vec3 } from 'gl-matrix';
 
@@ -7,13 +7,14 @@ describe("2d.Sprite", () => {
 
     it('Should render correctly', async() => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();        
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+        const tex = await Texture.fromFile(context, '../assets/2d/grid.png');
 
-        const sprite = new Sprite(gl, {
+        const sprite = new Sprite(ctx2d, {
             texture: tex,
             transform: {
                 x: 160,
@@ -35,13 +36,14 @@ describe("2d.Sprite", () => {
 
     it('Should create from texture',async () => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+        const tex = await Texture.fromFile(context, '../assets/2d/grid.png');
 
-        const sprite = new Sprite(gl, { texture: tex });
+        const sprite = new Sprite(ctx2d, { texture: tex });
         
         context.state.clearColor([0,0,0,1]);
         context.clear(GlClearFlags.COLOR_BUFFER_BIT);
@@ -53,13 +55,14 @@ describe("2d.Sprite", () => {
     
     it('Should calculate bbox',async () => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grid.png');
+        const tex = await Texture.fromFile(ctx2d.tglContext, '../assets/2d/grid.png');
 
-        const sprite = new Sprite(gl, { 
+        const sprite = new Sprite(ctx2d, { 
             texture: tex,
             frame: [128,128,128,128],
             transform: {

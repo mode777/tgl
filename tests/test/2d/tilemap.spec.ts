@@ -1,18 +1,19 @@
 import { getContext, describe, it, expect } from "test";
 import { Texture, GlClearFlags } from '@tgl/core';
-import { Tilemap } from '@tgl/2d';
+import { Tilemap, Context2d } from '@tgl/2d';
 
 describe("2d.Tilemap", () => {
 
     it('Render map', async () => {
         const context = getContext();
+        const ctx2d = new Context2d(context);
         context.state.reset();
         context.resize();        
         const gl = context.webGlRenderingContext;
 
-        const tex = await Texture.fromFile(gl, '../assets/2d/grass_dirt.png');
+        const tex = await Texture.fromFile(context, '../assets/2d/grass_dirt.png');
 
-        const map = new Tilemap(gl, {
+        const map = new Tilemap(ctx2d, {
             data: [
                 1, 2, 3, 4,
                 5, 6, 7, 8,

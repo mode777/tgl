@@ -5,3 +5,4 @@ export * from './sprite';
 export * from './sprite-batch';
 export * from './tileset';
 export * from './tilemap';
+export * from './context-2d';

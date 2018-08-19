@@ -38,7 +38,7 @@ context.state.depthTestEnabled(true);
 context.state.faceCullingEnabled(true);
 
 // pixel texture for 'inner' cube
-const texture = new Texture(context.webGlRenderingContext, {
+const texture = new Texture(context, {
   format: GlPixelFormat.LUMINANCE,
   source: new Uint8Array([128, 64, 254, 0]),
   width: 2,
@@ -47,7 +47,7 @@ const texture = new Texture(context.webGlRenderingContext, {
 });
 
 // drawable for the cube
-const cube = new Drawable(context.webGlRenderingContext, {
+const cube = new Drawable(context, {
   buffers: [{
     attributes: [
       { name: 'a_position', components: 3 },
@@ -77,13 +77,13 @@ const cube = new Drawable(context.webGlRenderingContext, {
 })
 
 // empty texture to render to
-const targetTexture = new Texture(context.webGlRenderingContext, {
+const targetTexture = new Texture(context, {
   width: 256,
   height: 256,
   source: null
 });
 // framebuffer which can render to the texture
-const framebuffer = new Framebuffer(context.webGlRenderingContext, {
+const framebuffer = new Framebuffer(context, {
   width: 256,
   height: 256,
   colorAttachment: targetTexture.webGlTexture

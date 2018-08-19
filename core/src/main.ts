@@ -1,12 +1,15 @@
-export * from './framebuffer';
+// framework
 export * from './tgl-context';
-export * from './index-buffer';
-//export * from './renderbuffer';
 export * from './drawable';
+export * from './tgl-state';
+
+// gl primitives
+export * from './framebuffer';
+export * from './index-buffer';
+export * from './renderbuffer';
 export * from './shader';
 export * from './texture';
 export * from './vertex-buffer';
-export * from './tgl-state';
 
 // constants
 export * from './constants/gl-clear-flags';
@@ -22,3 +25,4 @@ export * from './constants/gl-pixel-type';
 export * from './constants/gl-buffer-usage';
 export * from './constants/gl-buffer-type';
 export * from './constants/gl-data-type';
+export * from './constants/gl-renderbuffer-format';

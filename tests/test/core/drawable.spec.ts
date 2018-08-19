@@ -61,7 +61,7 @@ describe("Core.Drawable", () => {
         context.resize();
         const gl = context.webGlRenderingContext;
 
-        const drawable = new Drawable(gl, {
+        const drawable = new Drawable(context, {
             buffers: [bufferOptions],
             shader: shaderOptions,
             indices: indices,
@@ -91,7 +91,7 @@ describe("Core.Drawable", () => {
             -1, 0, 0,2
         ] }
 
-        const drawable1 = new Drawable(gl, {
+        const drawable1 = new Drawable(context, {
             buffers: [options1],
             shader: shaderOptions,
             indices: indices,
@@ -107,7 +107,7 @@ describe("Core.Drawable", () => {
             0, 1, 0,1
         ] }
 
-        const drawable2 = new Drawable(gl, {
+        const drawable2 = new Drawable(context, {
             buffers: [options2],
             shader: shaderOptions,
             indices: indices,
@@ -131,12 +131,12 @@ describe("Core.Drawable", () => {
         const context = getContext();
         const gl = context.webGlRenderingContext;
 
-        const drawable = new Drawable(gl, {
-            buffers: [new VertexBuffer(gl, bufferOptions)],
-            shader: new Shader(gl, shaderOptions),
-            indices: new IndexBuffer(gl, indices),
+        const drawable = new Drawable(context, {
+            buffers: [new VertexBuffer(context, bufferOptions)],
+            shader: new Shader(context, shaderOptions),
+            indices: new IndexBuffer(context, indices),
             textures: {
-                'uTexture': new Texture(gl, textureOptions)
+                'uTexture': new Texture(context, textureOptions)
             }
         });
 
@@ -152,7 +152,7 @@ describe("Core.Drawable", () => {
         const context = getContext();
         const gl = context.webGlRenderingContext;
 
-        const drawable = new Drawable(gl, {
+        const drawable = new Drawable(context, {
             buffers: [{
                 data: [
                     -0.5,-0.5, 
@@ -191,12 +191,12 @@ describe("Core.Drawable", () => {
         context.resize();        
         const gl = context.webGlRenderingContext;
 
-        const drawable = new Drawable(gl, {
+        const drawable = new Drawable(context, {
             buffers: [{
                 data: [-0.5,-0.5, 0.5,-0.5,0, 0.5],
                 attributes: [{ name: 'aPosition', components: 2 }]
             }],
-            shader: await Shader.fromFiles(gl, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl')
+            shader: await Shader.fromFiles(context, './assets/simple.vertex.glsl', './assets/simple.fragment.glsl')
         });
 
         context.state.clearColor([0, 0, 0, 1]);

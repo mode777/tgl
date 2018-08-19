@@ -4,7 +4,7 @@ import { Shader, ShaderOptions, UniformValue } from './shader';
 import { IndexBuffer } from './index-buffer';
 import { GlPrimitiveType } from './constants/gl-primitive-type';
 import { FramebufferOptions, Framebuffer } from './framebuffer';
-import { TglState } from './tgl-state';
+import { TglContext } from './tgl-context';
 
 /** Options to initialize a drawable with */
 export interface DrawableOptions {
@@ -29,7 +29,8 @@ export interface DrawableOptions {
 
 /** Represents a set of WebGL primitives, which can be utilized to draw an image. */
 export class Drawable {
-    private state = TglState.getCurrent(this.gl);
+    private state = this.context.state;
+    private gl = this.context.webGlRenderingContext;
     private indices: IndexBuffer = null;
     
     public readonly textures: {[key:string]: Texture } = {};
@@ -40,27 +41,27 @@ export class Drawable {
     /** Creates a new drawable instance
      * @param gl A WebGL rendering context
      * @param options Options object to initialize drawable with. */
-    constructor(protected gl: WebGLRenderingContext, private options: DrawableOptions){
+    constructor(protected context: TglContext, private options: DrawableOptions){
         if(options.buffers.length === 0)
             throw 'You need at least one buffer to draw.';
 
         this.buffers = options.buffers.map(x => x instanceof VertexBuffer 
             ? x 
-            : new VertexBuffer(gl, x));
+            : new VertexBuffer(this.context, x));
         this.shader = options.shader instanceof Shader 
             ? options.shader 
-            : new Shader(gl, options.shader);
+            : new Shader(this.context, options.shader);
         this.indices = options.indices !== undefined 
             ? (options.indices instanceof IndexBuffer 
                 ? options.indices
-                : new IndexBuffer(gl, options.indices)) 
+                : new IndexBuffer(this.context, options.indices)) 
             : null;
 
         Object.keys(options.textures || {}).forEach(name => {
             const tex = options.textures[name];
             this.textures[name] = options.textures[name] instanceof Texture 
                 ? <Texture>options.textures[name]
-                : new Texture(gl, <TextureOptions>options.textures[name])
+                : new Texture(this.context, <TextureOptions>options.textures[name])
         });
         this.uniforms = this.options.uniforms ? {...options.uniforms} : {};
     }
